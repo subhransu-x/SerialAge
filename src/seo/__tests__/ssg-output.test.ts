@@ -1,0 +1,181 @@
+/**
+ * ssg-output.test.ts — Validates the raw HTML output of the SSG process.
+ * 
+ * Ensures that <head> metadata (title, description, canonical, json-ld) 
+ * is correctly injected into the static HTML files without requiring JS hydration.
+ */
+
+import { describe, it, expect, beforeAll } from 'vitest';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { parse } from 'node-html-parser';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const CLIENT_DIST = path.resolve(__dirname, '..', '..', '..', 'dist');
+
+const ROUTES = [
+  '/',
+  '/methodology',
+  '/carrier-serial-number-decoder',
+  '/goodman-serial-number-decoder',
+  '/lennox-serial-number-decoder',
+  '/trane-serial-number-decoder',
+  '/rheem-serial-number-decoder',
+  '/ruud-serial-number-decoder',
+  '/york-serial-number-decoder',
+  '/bryant-serial-number-decoder',
+  '/payne-serial-number-decoder',
+  '/amana-serial-number-decoder'
+];
+
+function getFilePathForRoute(route: string): string {
+  if (route === '/') {
+    return path.join(CLIENT_DIST, 'index.html');
+  }
+  const slug = route.replace(/^\//, '');
+  return path.join(CLIENT_DIST, slug, 'index.html');
+}
+
+describe('SSG Raw HTML Output', () => {
+  beforeAll(() => {
+    if (!fs.existsSync(CLIENT_DIST)) {
+      throw new Error(`dist directory not found at ${CLIENT_DIST}. Did you run npm run build?`);
+    }
+  });
+
+  for (const route of ROUTES) {
+    describe(`Route: ${route}`, () => {
+      let rawHtml = '';
+      let rootNode: any;
+      
+      beforeAll(() => {
+        const filePath = getFilePathForRoute(route);
+        if (!fs.existsSync(filePath)) {
+          throw new Error(`Missing generated file: ${filePath}`);
+        }
+        rawHtml = fs.readFileSync(filePath, 'utf-8');
+        rootNode = parse(rawHtml);
+      });
+
+      it('has exactly one meaningful <title> inside <head>', () => {
+        const head = rootNode.querySelector('head');
+        expect(head).toBeDefined();
+        
+        const titles = head.querySelectorAll('title');
+        expect(titles.length).toBe(1);
+        
+        const titleText = titles[0].textContent.trim();
+        expect(titleText.length).toBeGreaterThan(5);
+        expect(titleText).not.toBe('{{title}}');
+        expect(titleText).not.toBe('<!--app-head-->');
+
+        // Verify it doesn't accidentally have the homepage title unless it IS the homepage
+        if (route !== '/') {
+          expect(titleText).not.toBe('HVAC Serial Number Decoder — Find Equipment Age | SerialAge');
+        }
+      });
+
+      it('has one meta description inside <head>', () => {
+        const head = rootNode.querySelector('head');
+        const descriptions = head.querySelectorAll('meta[name="description"]');
+        expect(descriptions.length).toBe(1);
+        
+        const content = descriptions[0].getAttribute('content');
+        expect(content).toBeDefined();
+        expect(content?.length).toBeGreaterThan(10);
+      });
+
+      it('has one canonical link inside <head>', () => {
+        const head = rootNode.querySelector('head');
+        const canonicals = head.querySelectorAll('link[rel="canonical"]');
+        expect(canonicals.length).toBe(1);
+        
+        const href = canonicals[0].getAttribute('href');
+        expect(href).toBeDefined();
+        expect(href).toMatch(/^https:\/\//);
+        expect(href).not.toContain('localhost');
+
+        // Check it points to the correct route
+        if (route === '/') {
+          expect(href).toBe('https://serialage.com/');
+        } else {
+          expect(href).toBe(`https://serialage.com${route}`);
+        }
+      });
+
+      it('has JSON-LD script(s) inside <head>', () => {
+        const head = rootNode.querySelector('head');
+        const jsonLdScripts = head.querySelectorAll('script[type="application/ld+json"]');
+        
+        // Homepage and brand pages should have JSON-LD
+        if (route !== '/methodology' && route !== '/privacy') {
+          expect(jsonLdScripts.length).toBeGreaterThanOrEqual(1);
+        }
+
+        for (const script of jsonLdScripts) {
+          const content = script.textContent;
+          expect(content).toBeDefined();
+          
+          // Verify it parses as valid JSON
+          expect(() => JSON.parse(content)).not.toThrow();
+        }
+      });
+
+      it('has no SEO metadata incorrectly leaked inside #root', () => {
+        const appRoot = rootNode.querySelector('#root');
+        expect(appRoot).toBeDefined();
+        
+        const rootTitles = appRoot.querySelectorAll('title');
+        expect(rootTitles.length).toBe(0);
+        
+        const rootDescriptions = appRoot.querySelectorAll('meta[name="description"]');
+        expect(rootDescriptions.length).toBe(0);
+        
+        const rootCanonicals = appRoot.querySelectorAll('link[rel="canonical"]');
+        expect(rootCanonicals.length).toBe(0);
+      });
+
+      // Verification for Phase 9C-1: Sources & Methodology Separation
+      if (route !== '/' && route !== '/methodology' && route !== '/privacy') {
+        it('renders External Sources and Our Methodology correctly', () => {
+          const appRoot = rootNode.querySelector('#root');
+          expect(appRoot).toBeDefined();
+
+          const textContent = appRoot.textContent;
+          const hasExternal = textContent.includes('External Sources');
+          const hasInternal = textContent.includes('Our Methodology');
+
+          // The page should have at least one of the two sections
+          expect(hasExternal || hasInternal).toBe(true);
+
+          if (hasExternal) {
+            const extSection = appRoot.querySelector('#external-sources')?.parentNode;
+            expect(extSection).toBeDefined();
+            
+            // Should contain links or plain text with publisher
+            const listItems = extSection?.querySelectorAll('li');
+            expect(listItems?.length).toBeGreaterThan(0);
+          }
+
+          if (hasInternal) {
+            const intSection = appRoot.querySelector('#methodology')?.parentNode;
+            expect(intSection).toBeDefined();
+
+            // Internal sources should not be links
+            const intLinks = intSection?.querySelectorAll('a');
+            expect(intLinks?.length).toBe(0);
+
+            // Ensure "Internal research record" or similar terminology is present
+            const intText = intSection?.textContent || '';
+            expect(
+              intText.includes('Internal research record') || 
+              intText.includes('Implementation audit') ||
+              intText.includes('Source evaluation record')
+            ).toBe(true);
+          }
+        });
+      }
+    });
+  }
+});

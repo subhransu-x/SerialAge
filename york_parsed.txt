@@ -1,0 +1,277 @@
+Title: Live Content
+
+Description: Fetched live
+
+Source: https://www.building-center.org/york-hvac-age/
+
+---
+York HVAC age | Building Intelligence Center
+Navigation
+Home
+What’s New !
+Request Assistance
+New or Updated Info Submission
+Recalls
+Link to Us
+About Us
+Contact Us
+Make a Donation/Support This Site
+Hints & Tips
+How to Use This Site & FAQs
+Guides/Indexes
+HVAC Brand Index
+Water Heater Brand Index
+Small Appliances Index
+Appliances & HVAC Recall Search
+EPDM Roofing Date Codes
+IRC Quick Reference Links
+Fee Calculators
+Brand Histories
+Offline Reference e-Books
+Estimated Useful Service Life Data
+Blog
+Join
+Teams and Group Discounts
+Login
+Search
+Home
+What’s New !
+Request Assistance
+New or Updated Info Submission
+Recalls
+Link to Us
+About Us
+Contact Us
+Make a Donation/Support This Site
+Hints & Tips
+How to Use This Site & FAQs
+Guides/Indexes
+HVAC Brand Index
+Water Heater Brand Index
+Small Appliances Index
+Appliances & HVAC Recall Search
+EPDM Roofing Date Codes
+IRC Quick Reference Links
+Fee Calculators
+Brand Histories
+Offline Reference e-Books
+Estimated Useful Service Life Data
+Blog
+Join
+Teams and Group Discounts
+Login
+Search
+Home
+/
+York HVAC age
+Search
+Submit
+Clear
+HVAC Index
+Click Here to go to the index
+Water Heater Index
+Click Here to go to the index
+York® HVAC age
+How to determine the date of production/manufacture or age of
+York
+® brand HVAC Systems.
+The industry average service design life for most forced air furnaces is 15-20 years, and the industry average service design life for most air conditioning condensing units is 10-15 years. The average service design life of boilers can vary from as little as 10 years to as many as 50 years depending on the type and quality of materials used in their manufacture.
+Routine upkeep/maintenance, regional weather/climate, and location/placement of the mechanical systems will all play critical roles in the longevity of these systems.
+See also:
+Estimated Useful Service Life Expectancies
+Parent Company:
+Johnson Controls International (soon to be Bosch in 2024-2025)
+Subsidiaries or other related brands:
+Borg-Warner® | Coleman® | Champion® |Evcon® | Unitary® | Unitary Products Group® | Fraser-Johnson® | Guardian® | Luxaire® | Moncrief® | Red T® | TempMaster® | York®
+The date of production/manufacture or age of
+York
+brand HVAC equipment can be determined from the
+ten
+character serial number located on the rating data plate.
+Example serial number styles/formats found:
+Style 1:
+W
+0
+K
+5
+896070
+Style 2:
+W
+A
+K
+M011379
+Legend:
+Year is
+RED
+;  Month is
+GREEN
+; Week is
+BLUE
+Style 1:
+W
+0
+K
+5
+896070
+Style used since 2004
+Year
+of manufacture can be determined by using the
+2
+nd
+& 4
+th
+positions (numbers) of the serial number
+Month
+of manufacture can be determined by using the
+3
+rd
+position (letter) of the serial number (see chart)
+This style of serial number has been used exclusively since 2004.
+Style 2:
+W
+A
+K
+M011379
+Style used from 1971 to 2004
+Year
+of manufacture can be determined by using the
+3
+rd
+position of the serial number (see chart)
+Month
+of manufacture can be determined by using the
+2
+nd
+position of the serial number (see chart)
+CAUTION:
+We have seen some serial numbers of this style begin with a letter contained in parenthesis - i.e.
+(S)EBHM062202.  This is the same styling, just ignore the first letter in parenthesis.
+This style of serial number was used
+prior to
+2004.
+Brand® History¹
+1874 -
+York Manufacturing Co. was founded in York, Pennsylvania
+1885 -
+T
+he company built its first ice machine for a customer in Mississippi
+1897 -
+Ice making and refrigeration comprised York's product lines. All other product lines discontinued or sold.
+1903 -
+Company installed a large system for dehumidifying blast-furnace air in a factory operated by Carnegie Steel Co.
+1914 -
+A
+ir conditioned the Empire Theater in Montgomery, Alabama
+1923 -
+York's first air-conditioning for an office building
+1927 -
+Company reincorporated in Delaware with nine affiliated companies, and was renamed the York Ice Machinery Corp.
+1942 -
+C
+ompany was renamed the York Corp.
+1948 -
+York's
+first automatic ice makers for hotels, restaurants, and hospitals, were introduced
+1950 -
+Hermetically-sealed cooling circuits for room air conditioners were brought to market. Y
+ork also introduced a residential air-conditioning unit to sell for under $1,000
+1954 -
+Introduced first single-stage, high-speed centrifugal refrigeration compressor
+1956 -
+Borg-Warner Corp., a diversified Chicago-based manufacturing company known best for its automotive parts, acquired York. Becomes York Division of Borg-Warner Corp.
+1968 -
+York installed the world's largest water-cooled air-conditioning system , weighing 49,600 tons at the World Trade Center in New York City
+1981 -
+York
+acquired Westinghouse Electric Corp.'s air-conditioning division
+1986 -
+Borg-Warner spun off
+York as an independent company - York International Corp.
+1994 -
+York residential products now being marketed under the
+York, Luxaire, Fraser-Johnston, Moncrief, Homeair, and Bristol trademarks
+. York commercial products
+were being marketed under the York, Luxaire, Fraser-Johnston, Miller-Picking, and Tempmaster trademarks
+. York r
+efrigeration and gas-compression equipment designed for industry were being marketed under the York, York Food Systems, Frick, Frigid Coil, Imeco, Reco, and Recold trademarks.
+2005 -
+Johnson Controls acquires York International
+2015 -
+Johnson Controls enters into joint venture with Hitachi, creating Johnson Controls Hitachi AC Limited incorporated in Tokyo, Japan. The joint venture is a 60/40 split between Johnson Controls and Hitachi respectively. The joint venture remains based in the Asian markets.
+2016 -
+Johnson Controls mergers with Tyco International to become Johnson Controls International - making them now headquartered in Cork, Ireland.
+2023 -
+Johnson Controls reports the business generated approximately $4.5 billion in consolidated revenue in fiscal year 2023, and will continue to provide products under the York, Hitachi, Coleman, Champion, Luxaire, Guardian, Evcon and TempMaster brands. This revenue made up 40% of 2023 fiscal year sales for Johnson Controls.
+2024 -
+In march of 2024, Johnson Controls announced its intent or interest to sell the residential and light commercial HVAC business. Reuters reported that Bosch, Lennox International and Samsung Electronics were potential interested buyers at the time. In July of 2024, it was announced that Bosch had agreed to purchase the residential and light commercial heating, ventilation and air conditioning business of Johnson Controls International for $8 billion in cash, the largest acquisition in Bosch's history.
+As part of the transaction, Bosch
+plans to acquire 100% of the joint venture between Johnson Controls and Hitachi
+, including Hitachi’s 40% stake. The sale is slated to be completed within approximately 12 months contingent on regulatory approval.
+Page last updated: 12/26/2024
+▸
+Contact Info
+Contacting York:
+https://www.york.com
+▸
+Trademarks (Disclaimer)
+Any of the trademarks, service marks, collective marks, design rights or similar rights that are mentioned, used or cited in the articles of the Building Intelligence Center (www.building-center.org) are the property of their respective owners. Their use here does not imply that you may use them for any purpose other than for the same or a similar informational use as contemplated by the original authors of these articles under the CC-BY-SA and GFDL licensing schemes. Unless otherwise stated Building Intelligence Center (www.building-center.org) sites are neither endorsed by nor affiliated with any of the holders of any such rights and as such Building Intelligence Center (www.building-center.org) cannot grant any rights to use any otherwise protected materials. Your use of any such or similar incorporeal property is at your own risk. This guide is intended to assist Commercial/Residential Building Inspectors, HVAC professionals, Facilities Managers, HOA’s, etc.., in determining the date of manufacture and/or age of HVAC equipment to determine the expected useful life (EUL). This web site should not be relied upon for commercial use or interpretations. Accuracy and reliability of the information provided is believed accurate but is not guaranteed. The burden for fitness of information provided relies solely and completely with the user. In no event will Building Intelligence Center or its representatives be liable for any loss or damages whatsoever for consequential, incidental, indirect, special, or tort damages of any kind, including but not limited to loss of data, lost profits, business interruption, loss of business information, or other pecuniary loss that might arise from the use of or reliance on the information provided within.
+Every effort is undertaken to offer you correct and concise information to assist you in determining the age or manufacture date of HVAC/R equipment. Users relying on this information do so at their own risk.
+Welcome !
+Member Login/Logout
+What’s New at BiC
+Remove the Ads
+Teams and Group Discounts
+Brand History Information
+Decode HVAC size information
+Recall Search Tool
+Decode Small Appliance Serial #’s
+EPDM Roof Date Codes
+IRC reference index
+Service Life Data
+FAQ’s
+Hints & Tips
+Send us Updated info
+Contact Us
+Fee Calculators
+Offline E-book
+Request Assistance
+Search
+Welcome
+Indexes
+Business Directory
+Admin
+Privacy Policy
+Terms of Use
+POWERED BY BOWMAN-WARNER-FOGARTY INGENUITY!  ALL Content ©2024
+Type and Press “enter” to Search
+Main Menu
+Home
+What’s New !
+Request Assistance
+New or Updated Info Submission
+Recalls
+Link to Us
+About Us
+Contact Us
+Make a Donation/Support This Site
+Hints & Tips
+How to Use This Site & FAQs
+Guides/Indexes
+HVAC Brand Index
+Water Heater Brand Index
+Small Appliances Index
+Appliances & HVAC Recall Search
+EPDM Roofing Date Codes
+IRC Quick Reference Links
+Fee Calculators
+Brand Histories
+Offline Reference e-Books
+Estimated Useful Service Life Data
+Blog
+Join
+Teams and Group Discounts
+Login
+Search
+Search
+Toggle the Widgetbar
+×

@@ -1,0 +1,12 @@
+# Cloudflare Pages SPA fallback redirect
+# Serves index.html for all paths that don't match a static file or directory.
+# This enables React Router client-side navigation after the initial prerendered
+# page loads.
+#
+# Rules are evaluated top-to-bottom. Order: specific overrides → SPA fallback.
+#
+# /404    → our prerendered 404.html (served with 404 status)
+# /*      → SPA fallback: serve /index.html with 200 so React handles routing
+
+/404    /404.html   404
+/*      /index.html 200
