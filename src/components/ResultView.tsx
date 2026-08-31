@@ -95,8 +95,11 @@ function SerialBreakdown({ normalized, segments }: BreakdownProps) {
 }
 
 
+import type { EnhancedWarrantyWarning } from '../data/enhancedWarrantyWarnings';
+
 interface Props {
   result: DecodeResult & { status: 'success' };
+  warrantyResult?: EnhancedWarrantyWarning | null;
   onDecodeAnother: () => void;
 }
 
@@ -162,7 +165,7 @@ function getManufacturerLinks(brandId: string) {
   }
 }
 
-export function ResultView({ result, onDecodeAnother }: Props) {
+export function ResultView({ result, warrantyResult, onDecodeAnother }: Props) {
   const [copied, setCopied] = useState(false);
 
   async function handleCopy() {
@@ -191,6 +194,77 @@ export function ResultView({ result, onDecodeAnother }: Props) {
           )}
         </div>
       </div>
+
+      {warrantyResult && warrantyResult.id === 'INSUFFICIENT_INFORMATION' && (
+        <div className="re" style={{ borderTop: 'none', background: 'var(--surface)', padding: '16px' }}>
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+            <div style={{ color: 'var(--brand-blue)', marginTop: '2px' }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 16v-4"/>
+                <path d="M12 8h.01"/>
+              </svg>
+            </div>
+            <div>
+              <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '4px' }}>
+                {warrantyResult.title}
+              </div>
+              <div style={{ fontSize: '14px', color: 'var(--slate)', lineHeight: '1.4' }}>
+                {warrantyResult.body}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {warrantyResult && warrantyResult.id === 'MATCHED_PROGRAM_RANGE' && (
+        <div className="re" style={{ borderTop: 'none', background: 'var(--brand-orange-light)', padding: '16px', borderLeft: '4px solid var(--brand-orange)' }}>
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+            <div style={{ color: 'var(--brand-orange)', marginTop: '2px' }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+            </div>
+            <div>
+              <div style={{ fontWeight: 700, color: '#9a3412', marginBottom: '6px' }}>
+                {warrantyResult.title}
+              </div>
+              <div style={{ fontSize: '14px', color: '#7c2d12', lineHeight: '1.5', marginBottom: '12px' }}>
+                {warrantyResult.body}
+              </div>
+              
+              {warrantyResult.verificationDisclaimer && (
+                <div style={{ fontSize: '13px', color: '#7c2d12', lineHeight: '1.4', fontStyle: 'italic', marginBottom: '12px', opacity: 0.9 }}>
+                  {warrantyResult.verificationDisclaimer}
+                </div>
+              )}
+              
+              <div>
+                <a 
+                  href="/payne-secondary-heat-exchanger-warranty" 
+                  style={{ 
+                    display: 'inline-flex', 
+                    alignItems: 'center', 
+                    gap: '4px',
+                    fontSize: '14px', 
+                    fontWeight: 600, 
+                    color: '#9a3412', 
+                    textDecoration: 'underline' 
+                  }}
+                >
+                  Read the Payne warranty guide
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M5 12h14"/>
+                    <path d="M12 5l7 7-7 7"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {(result.segments.length > 0 || result.explanation) && (
         <div className="re" style={{ borderTop: 'none', background: 'var(--surface)' }}>

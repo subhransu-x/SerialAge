@@ -45,6 +45,7 @@
   --error-deep:       #cc001f;
   --success-deep:     #103c25;
   --success-pale:     #c7f0da;
+  --success-border:   #a8e6c4;
   --focus-outer:      #435ee5;
   --focus-inner:      #ffffff;
 
@@ -87,6 +88,10 @@ html.dark {
   
   --hairline:         #333333;
   --hairline-soft:    #222222;
+
+  --success-deep:     #c7f0da;
+  --success-pale:     #103c25;
+  --success-border:   #1f5737;
 }
 
 /* ============================================================
@@ -442,7 +447,7 @@ body {
 /* Result header */
 .rh {
   background: var(--success-pale);
-  border-bottom: 1px solid #a8e6c4;
+  border-bottom: 1px solid var(--success-border);
   padding: 20px 24px;
   display: flex;
   align-items: center;
@@ -490,7 +495,7 @@ body {
   border-radius: var(--r-full);
   padding: 6px 16px;
 }
-.conf-high { background: var(--ink); color: var(--on-dark); }
+.conf-high { background: var(--ink); color: var(--canvas); }
 .conf-med  { background: var(--secondary-bg); color: var(--ink); }
 .conf-label { font-size: 11px; color: var(--ash); }
 

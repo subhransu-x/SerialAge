@@ -124,7 +124,7 @@ export function buildFaqPageSchema(faqs: FaqItem[]): Record<string, unknown> {
       name: item.question,
       acceptedAnswer: {
         '@type': 'Answer',
-        text: item.answer,
+        text: item.answerSchema || (typeof item.answer === 'string' ? item.answer : ''),
       },
     })),
   };

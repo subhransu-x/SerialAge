@@ -2167,7 +2167,7 @@ function getManufacturerLinks(brandId) {
 		default: return [];
 	}
 }
-function ResultView({ result, onDecodeAnother }) {
+function ResultView({ result, warrantyResult, onDecodeAnother }) {
 	const [copied, setCopied] = (0, react.useState)(false);
 	async function handleCopy() {
 		try {
@@ -2209,6 +2209,153 @@ function ResultView({ result, onDecodeAnother }) {
 							children: getAgeCategoryText(result.approximateAge.years)
 						})
 					]
+				})
+			}),
+			warrantyResult && warrantyResult.id === "INSUFFICIENT_INFORMATION" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+				className: "re",
+				style: {
+					borderTop: "none",
+					background: "var(--surface)",
+					padding: "16px"
+				},
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+					style: {
+						display: "flex",
+						gap: "12px",
+						alignItems: "flex-start"
+					},
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+						style: {
+							color: "var(--brand-blue)",
+							marginTop: "2px"
+						},
+						children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("svg", {
+							width: "20",
+							height: "20",
+							viewBox: "0 0 24 24",
+							fill: "none",
+							stroke: "currentColor",
+							strokeWidth: "2",
+							children: [
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("circle", {
+									cx: "12",
+									cy: "12",
+									r: "10"
+								}),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { d: "M12 16v-4" }),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { d: "M12 8h.01" })
+							]
+						})
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+						style: {
+							fontWeight: 600,
+							color: "var(--text-primary)",
+							marginBottom: "4px"
+						},
+						children: warrantyResult.title
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+						style: {
+							fontSize: "14px",
+							color: "var(--slate)",
+							lineHeight: "1.4"
+						},
+						children: warrantyResult.body
+					})] })]
+				})
+			}),
+			warrantyResult && warrantyResult.id === "MATCHED_PROGRAM_RANGE" && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+				className: "re",
+				style: {
+					borderTop: "none",
+					background: "var(--brand-orange-light)",
+					padding: "16px",
+					borderLeft: "4px solid var(--brand-orange)"
+				},
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+					style: {
+						display: "flex",
+						gap: "12px",
+						alignItems: "flex-start"
+					},
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+						style: {
+							color: "var(--brand-orange)",
+							marginTop: "2px"
+						},
+						children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("svg", {
+							width: "20",
+							height: "20",
+							viewBox: "0 0 24 24",
+							fill: "none",
+							stroke: "currentColor",
+							strokeWidth: "2",
+							children: [
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { d: "M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" }),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("line", {
+									x1: "12",
+									y1: "9",
+									x2: "12",
+									y2: "13"
+								}),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("line", {
+									x1: "12",
+									y1: "17",
+									x2: "12.01",
+									y2: "17"
+								})
+							]
+						})
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", { children: [
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+							style: {
+								fontWeight: 700,
+								color: "#9a3412",
+								marginBottom: "6px"
+							},
+							children: warrantyResult.title
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+							style: {
+								fontSize: "14px",
+								color: "#7c2d12",
+								lineHeight: "1.5",
+								marginBottom: "12px"
+							},
+							children: warrantyResult.body
+						}),
+						warrantyResult.verificationDisclaimer && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+							style: {
+								fontSize: "13px",
+								color: "#7c2d12",
+								lineHeight: "1.4",
+								fontStyle: "italic",
+								marginBottom: "12px",
+								opacity: .9
+							},
+							children: warrantyResult.verificationDisclaimer
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", { children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("a", {
+							href: "/payne-secondary-heat-exchanger-warranty",
+							style: {
+								display: "inline-flex",
+								alignItems: "center",
+								gap: "4px",
+								fontSize: "14px",
+								fontWeight: 600,
+								color: "#9a3412",
+								textDecoration: "underline"
+							},
+							children: ["Read the Payne warranty guide", /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("svg", {
+								width: "14",
+								height: "14",
+								viewBox: "0 0 24 24",
+								fill: "none",
+								stroke: "currentColor",
+								strokeWidth: "2",
+								children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { d: "M5 12h14" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { d: "M12 5l7 7-7 7" })]
+							})]
+						}) })
+					] })]
 				})
 			}),
 			(result.segments.length > 0 || result.explanation) && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
@@ -2640,6 +2787,111 @@ function RatingPlateHelp({ manufacturerId, open, onClose }) {
 	});
 }
 //#endregion
+//#region src/data/enhancedWarranty.ts
+var verifiedSources = [{
+	name: "DSB 09-0022 / SMB 19-0022",
+	url: null,
+	dateReviewed: "2026-08-31",
+	notes: "Secondary heat exchanger enhanced warranty bulletin.",
+	confidence: "verified"
+}];
+var payneEnhancedWarrantyRecords = [
+	{
+		brand: "Payne",
+		modelFamily: "490A",
+		modelPrefixes: [],
+		serialStart: "2993A00001",
+		serialEnd: "5211A99999",
+		manufacturePeriod: {
+			start: "1993",
+			end: "2011"
+		},
+		sources: verifiedSources,
+		status: "verified"
+	},
+	{
+		brand: "Payne",
+		modelFamily: "PG9M",
+		modelPrefixes: [],
+		serialStart: "2993A00001",
+		serialEnd: "5211A99999",
+		manufacturePeriod: {
+			start: "1993",
+			end: "2011"
+		},
+		sources: verifiedSources,
+		status: "verified"
+	},
+	{
+		brand: "Payne",
+		modelFamily: "PG9U",
+		modelPrefixes: [],
+		serialStart: "2993A00001",
+		serialEnd: "5211A99999",
+		manufacturePeriod: {
+			start: "1993",
+			end: "2011"
+		},
+		sources: verifiedSources,
+		status: "verified"
+	}
+];
+var enhancedWarrantyWarnings = {
+	NO_MATCH: {
+		id: "NO_MATCH",
+		severity: "none",
+		title: "No Enhanced Warranty Match",
+		body: "No known enhanced warranty match was found for this model and serial combination.",
+		notes: "Used when the serial or model explicitly falls outside published boundaries."
+	},
+	INSUFFICIENT_INFORMATION: {
+		id: "INSUFFICIENT_INFORMATION",
+		severity: "info",
+		title: "Model Number Required",
+		body: "Your serial number falls within a relevant production range, but the exact model number is needed to determine whether the published program applies.",
+		notes: "Used when the user only provided a serial number that falls within the 1993-2011 boundary, but we need the model to confirm eligibility."
+	},
+	MATCHED_PROGRAM_RANGE: {
+		id: "MATCHED_PROGRAM_RANGE",
+		severity: "warning",
+		title: "Enhanced Warranty Program Match",
+		body: "Your model and serial number match a published range associated with Payne/Carrier's enhanced secondary heat-exchanger warranty program.",
+		verificationDisclaimer: "SerialAge cannot confirm warranty eligibility or diagnose your equipment. Verify the exact coverage with Payne/Carrier or an authorized HVAC professional.",
+		sourceLinks: [{
+			label: "Methodology & Sources",
+			url: "/methodology"
+		}],
+		notes: "Used when BOTH the model family and serial boundaries perfectly match a verified record in the database."
+	}
+};
+//#endregion
+//#region src/decoder/engine/warranty.ts
+/**
+* Evaluates whether a given brand, serial, and optional model number 
+* match any verified enhanced warranty programs.
+* 
+* This logic operates independently from the main date decoding pipeline.
+*/
+function evaluateEnhancedWarranty(brand, serial, modelNumber) {
+	const relevantRecords = brand.toLowerCase() === "payne" ? payneEnhancedWarrantyRecords : [];
+	if (relevantRecords.length === 0) return enhancedWarrantyWarnings["NO_MATCH"];
+	const normalizedSerial = normalizeInput(serial).normalized;
+	if (normalizedSerial.length === 0) return enhancedWarrantyWarnings["NO_MATCH"];
+	const rangeMatchedRecords = relevantRecords.filter((record) => {
+		if (normalizedSerial.length !== record.serialStart.length) return false;
+		return normalizedSerial >= record.serialStart && normalizedSerial <= record.serialEnd;
+	});
+	if (rangeMatchedRecords.length === 0) return enhancedWarrantyWarnings["NO_MATCH"];
+	const normalizedModel = (modelNumber || "").trim().toUpperCase().replace(/[-\s]/g, "");
+	if (!normalizedModel) return enhancedWarrantyWarnings["INSUFFICIENT_INFORMATION"];
+	if (rangeMatchedRecords.some((record) => {
+		if (normalizedModel.startsWith(record.modelFamily.toUpperCase())) return true;
+		for (const prefix of record.modelPrefixes) if (normalizedModel.startsWith(prefix.toUpperCase())) return true;
+		return false;
+	})) return enhancedWarrantyWarnings["MATCHED_PROGRAM_RANGE"];
+	return enhancedWarrantyWarnings["NO_MATCH"];
+}
+//#endregion
 //#region src/components/DecoderWidget.tsx
 var REGISTERED_MANUFACTURERS = getAllManufacturers();
 function DecoderWidget({ defaultManufacturerId } = {}) {
@@ -2648,8 +2900,10 @@ function DecoderWidget({ defaultManufacturerId } = {}) {
 		return defaultManufacturerId ? REGISTERED_MANUFACTURERS[0]?.id ?? "" : "";
 	});
 	const [serial, setSerial] = (0, react.useState)("");
+	const [modelNumber, setModelNumber] = (0, react.useState)("");
 	const [validationMsg, setValidationMsg] = (0, react.useState)(null);
 	const [view, setView] = (0, react.useState)({ kind: "idle" });
+	const [warrantyResult, setWarrantyResult] = (0, react.useState)(null);
 	const [showHelp, setShowHelp] = (0, react.useState)(false);
 	const inputRef = (0, react.useRef)(null);
 	const selectRef = (0, react.useRef)(null);
@@ -2690,6 +2944,12 @@ function DecoderWidget({ defaultManufacturerId } = {}) {
 				brand: manufacturerId,
 				error_type: result.status
 			});
+			let warning = null;
+			if (manufacturerId === "payne") {
+				const normalizedModel = modelNumber.trim().toUpperCase().replace(/[\s\-_]/g, "");
+				warning = evaluateEnhancedWarranty(manufacturerId, trimmed, normalizedModel || void 0);
+			}
+			setWarrantyResult(warning);
 			setView({
 				kind: "result",
 				result,
@@ -2707,6 +2967,8 @@ function DecoderWidget({ defaultManufacturerId } = {}) {
 	function handleDecodeAnother() {
 		setView({ kind: "idle" });
 		setSerial("");
+		setModelNumber("");
+		setWarrantyResult(null);
 		setValidationMsg(null);
 		requestAnimationFrame(() => inputRef.current?.focus());
 	}
@@ -2719,6 +2981,7 @@ function DecoderWidget({ defaultManufacturerId } = {}) {
 	const isResultView = view.kind === "result";
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 		className: "decoder-wrap",
+		"data-warranty": warrantyResult?.kind || "none",
 		children: [
 			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 				className: "decoder-card",
@@ -2762,6 +3025,49 @@ function DecoderWidget({ defaultManufacturerId } = {}) {
 										}, m.id))]
 									})
 								})]
+							}),
+							manufacturerId === "payne" && /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+								className: "form-group",
+								children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("label", {
+										className: "form-label",
+										htmlFor: "inp-model",
+										children: ["Model Number ", /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+											style: {
+												fontSize: "13px",
+												color: "var(--slate)",
+												fontWeight: "normal"
+											},
+											children: "(Optional)"
+										})]
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("input", {
+										className: "form-input",
+										id: "inp-model",
+										type: "text",
+										placeholder: "e.g. PG9MAA048080",
+										autoCapitalize: "characters",
+										autoComplete: "off",
+										autoCorrect: "off",
+										spellCheck: "false",
+										"aria-label": "Enter model number",
+										value: modelNumber,
+										onChange: (e) => {
+											setModelNumber(e.target.value);
+											if (validationMsg) setValidationMsg(null);
+										},
+										onKeyDown: handleKeyDown,
+										disabled: view.kind === "scanning"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+										style: {
+											fontSize: "12px",
+											marginTop: "6px",
+											color: "var(--slate)"
+										},
+										children: "Model number — usually shown on the same equipment data plate as the serial number."
+									})
+								]
 							}),
 							/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 								className: "form-group",
@@ -2878,6 +3184,7 @@ function DecoderWidget({ defaultManufacturerId } = {}) {
 				"aria-label": "Decode result",
 				children: isResultView && (isSuccessResult(view.result) ? /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ResultView, {
 					result: view.result,
+					warrantyResult,
 					onDecodeAnother: handleDecodeAnother
 				}) : /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ErrorView, {
 					result: view.result,
@@ -3387,7 +3694,7 @@ function buildFaqPageSchema(faqs) {
 			name: item.question,
 			acceptedAnswer: {
 				"@type": "Answer",
-				text: item.answer
+				text: item.answerSchema || (typeof item.answer === "string" ? item.answer : "")
 			}
 		}))
 	};
@@ -3398,24 +3705,28 @@ function App() {
 	const [openFaq, setOpenFaq] = (0, react.useState)(null);
 	const faqs = [
 		{
-			q: "What is an HVAC serial number?",
-			a: "A serial number is a unique string of letters and numbers assigned by the manufacturer at the factory. Unlike a model number, which describes what the unit is, a serial number encodes when and where it was built — making it the key to finding the manufacture date."
+			q: "How old is my HVAC unit by serial number?",
+			a: "SerialAge decodes the manufacture date embedded in your unit's serial number. Each manufacturer encodes the date differently — once decoded, the age is calculated from today. Select your manufacturer above, enter the serial number from your data plate, and you'll see the manufacture date and current age instantly."
 		},
 		{
-			q: "Where can I find the serial number on my equipment?",
-			a: "It is printed on the data plate (a metal or foil sticker). On outdoor air conditioners and heat pumps, look on the side or back of the unit near the refrigerant pipes. On indoor furnaces and air handlers, check inside the front panel door. The data plate also shows the model number — make sure you enter the serial number, not the model number."
+			q: "Where can I find the serial number on my HVAC equipment?",
+			a: "The serial number is printed on the data plate — a metal or foil sticker on the unit. On outdoor air conditioners and heat pumps, look on the side or back of the cabinet near the refrigerant pipes. On indoor furnaces and air handlers, check inside the front panel door. The data plate also shows the model number — make sure you enter the serial number, not the model number."
 		},
 		{
-			q: "Can I use my model number to find the age?",
-			a: "No. Model numbers identify the product family, size, and efficiency rating of the unit, but they do not encode a manufacture date. You must use the serial number."
+			q: "What is the difference between a serial number and a model number?",
+			a: "The model number describes what the unit is — its product family, capacity, and efficiency rating. The serial number identifies the specific unit and encodes when it was manufactured. Both appear on the same data plate, usually labeled 'Model No.' and 'Serial No.' To find the age of your equipment, you need the serial number."
+		},
+		{
+			q: "How do I read an HVAC serial number?",
+			a: "There is no single universal format — each manufacturer encodes the date differently. For example, Carrier encodes week and year in the first four digits (WWYY), while Goodman uses year and month (YYMM). SerialAge handles these differences automatically: select your manufacturer and enter your serial number exactly as printed."
 		},
 		{
 			q: "Is the manufacture date the same as the installation date?",
-			a: "No. The manufacture date is when the unit was built at the factory. Equipment may sit in a warehouse or distributor inventory for weeks or months before being installed. Warranty coverage may depend on the installation date, registration, and manufacturer terms — check the manufacturer's documentation for details."
+			a: "No. The manufacture date is when the unit left the factory. Equipment can sit in a warehouse or distributor inventory for weeks or months before being installed. Warranty terms may depend on the installation date and registration — check the manufacturer's documentation for details."
 		},
 		{
-			q: "Does the serial number contain my personal information?",
-			a: "No. Serial numbers only contain factory data: manufacture date, plant code, and a production sequence number. They do not contain homeowner names, addresses, or any personal registration data."
+			q: "What if SerialAge cannot decode my serial number?",
+			a: "If the result is unsupported or unrecognized, the serial number format either predates the documented era for that manufacturer, uses a variation we have not verified, or may have been entered with a typo. We will not guess — if we cannot decode it reliably, we say so. Check the data plate carefully and re-enter the serial exactly as printed. For older equipment, the data plate sometimes includes a printed manufacture date you can use directly."
 		}
 	];
 	const toggleFaq = (index) => {
@@ -3593,28 +3904,7 @@ function App() {
 							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 								className: "faq-list",
 								role: "list",
-								children: [
-									{
-										q: "What is an HVAC serial number?",
-										a: "A serial number is a unique string of letters and numbers assigned by the manufacturer at the factory. Unlike a model number, which describes what the unit is, a serial number encodes when and where it was built — making it the key to finding the manufacture date."
-									},
-									{
-										q: "Where can I find the serial number on my equipment?",
-										a: "It is printed on the data plate (a metal or foil sticker). On outdoor air conditioners and heat pumps, look on the side or back of the unit near the refrigerant pipes. On indoor furnaces and air handlers, check inside the front panel door. The data plate also shows the model number — make sure you enter the serial number, not the model number."
-									},
-									{
-										q: "Can I use my model number to find the age?",
-										a: "No. Model numbers identify the product family, size, and efficiency rating of the unit, but they do not encode a manufacture date. You must use the serial number."
-									},
-									{
-										q: "Is the manufacture date the same as the installation date?",
-										a: "No. The manufacture date is when the unit was built at the factory. Equipment may sit in a warehouse or distributor inventory for weeks or months before being installed. Warranty coverage may depend on the installation date, registration, and manufacturer terms — check the manufacturer's documentation for details."
-									},
-									{
-										q: "Does the serial number contain my personal information?",
-										a: "No. Serial numbers only contain factory data: manufacture date, plant code, and a production sequence number. They do not contain homeowner names, addresses, or any personal registration data."
-									}
-								].map((faq, idx) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+								children: faqs.map((faq, idx) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
 									className: "faq-item",
 									role: "listitem",
 									children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("button", {
@@ -3722,44 +4012,44 @@ var ALL_BRAND_PAGES = [
 			description: "Reference for historical formatting trends."
 		}],
 		supportedFormats: [{
-			"label": "Modern Standard (10-Character)",
-			"example": "4206A12345",
-			"exampleType": "Synthetic",
-			"description": "Used from ~1985 to present. The first two digits encode the week (01–52), and the next two digits encode the year."
+			label: "Modern Standard (10-Character)",
+			example: "4206A12345",
+			exampleType: "Synthetic",
+			description: "Used from ~1985 to present. The first two digits encode the week (01–52), and the next two digits encode the year."
 		}, {
-			"label": "Legacy (9-Digit)",
-			"example": "851212345",
-			"exampleType": "Synthetic",
-			"description": "Used during the 1980s. The first two digits encode the year (80-89), and the next two digits encode the month."
+			label: "Legacy (9-Digit)",
+			example: "851212345",
+			exampleType: "Synthetic",
+			description: "Used during the 1980s. The first two digits encode the year (80-89), and the next two digits encode the month."
 		}],
 		faqs: [
 			{
-				"question": "Where can I find the Carrier serial number?",
-				"answer": "The serial number is located on the manufacturer's data plate (rating plate). For outdoor AC or heat pump units, it is usually on the side or back of the cabinet above the refrigerant valves. For indoor furnaces or air handlers, look inside the front access panel."
+				question: "Where can I find the Carrier serial number?",
+				answer: "The serial number is on the manufacturer's data plate (rating plate). On outdoor AC or heat pump units, look on the side or back of the cabinet above the refrigerant valves. On indoor furnaces or air handlers, look inside the front access panel."
 			},
 			{
-				"question": "How do I read a modern Carrier serial number?",
-				"answer": "Since roughly 1985, Carrier uses a 10-character format where the first four characters are numbers indicating the week and year of manufacture (WWYY). For example, a serial number starting with \"4206\" was manufactured in the 42nd week of 2006."
+				question: "How do I check the age of my Carrier air conditioner or furnace?",
+				answer: "Enter the serial number from your unit's data plate into the decoder above with 'Carrier' selected. Since roughly 1985, Carrier has used a 10-character format where the first two digits are the week of manufacture and the next two are the year (WWYY). For example, a serial starting with '4206' was manufactured in the 42nd week of 2006. The decoder calculates the current age from that date."
 			},
 			{
-				"question": "What if my Carrier serial number is 9 digits and starts with a letter?",
-				"answer": "If your serial number is 9 characters and consists entirely of digits (e.g., \"790512345\"), it likely uses the older YYMM format used between 1980 and 1989. In this format, the first two digits are the year and the next two are the month."
+				question: "What if my Carrier serial number is 9 digits?",
+				answer: "If your serial number is 9 digits consisting entirely of numbers (for example, '790512345'), it likely uses the older YYMM format from the 1980s. In this format, the first two digits are the year and the next two are the month. Enter the full 9-digit number — the decoder identifies the format automatically."
 			},
 			{
-				"question": "Does this decoder work for Bryant and Payne?",
-				"answer": "Yes. Bryant, Payne, and Day & Night are manufactured by Carrier (United Technologies / Carrier Global). Since the late 1980s, they share the exact same serial number formats and logic as Carrier equipment."
+				question: "Does this decoder work for Bryant and Payne?",
+				answer: "Yes. Bryant, Payne, and Day & Night are manufactured by Carrier Global. Since the late 1980s, they share the same serial number formats and decoding logic as Carrier equipment."
 			},
 			{
-				"question": "Why does the decoder say my pre-1985 Carrier serial number is unsupported?",
-				"answer": "Before 1985, Carrier's formatting was highly inconsistent. Serial numbers often require deep historical catalog cross-referencing to decode accurately. To guarantee we never provide you with a false date (\"no guessing\"), we explicitly mark these legacy formats (Styles 3, 4, 5, 6) as unsupported."
+				question: "Why does the decoder say my pre-1985 Carrier serial number is unsupported?",
+				answer: "Before 1985, Carrier's formatting was highly inconsistent. Serial numbers often require deep historical catalog cross-referencing to decode accurately. To ensure we never provide a false date, we explicitly mark these legacy formats as unsupported."
 			},
 			{
-				"question": "If there is a date printed directly on the data plate, should I trust it?",
-				"answer": "Yes. If your Carrier data plate has a printed \"MFR DATE\" (e.g., MFR DATE: 10/2018), always trust the printed date over the serial number if there is a discrepancy."
+				question: "If there is a date printed directly on the data plate, should I trust it?",
+				answer: "Yes. If your Carrier data plate shows a printed 'MFR DATE' (for example, MFR DATE: 10/2018), always use the printed date over the decoded result if they differ."
 			},
 			{
-				"question": "Does this decoder support Carrier water heaters?",
-				"answer": "No. This tool is strictly designed for residential HVAC equipment (air conditioners, furnaces, heat pumps). Water heaters are out of scope."
+				question: "Does this decoder support Carrier water heaters?",
+				answer: "No. This tool is designed for residential HVAC equipment — air conditioners, furnaces, and heat pumps. Water heaters are out of scope."
 			}
 		]
 	},
@@ -3792,40 +4082,40 @@ var ALL_BRAND_PAGES = [
 			description: "Internal research record."
 		}],
 		supportedFormats: [{
-			"label": "Modern Standard (10-Character)",
-			"example": "4206A12345",
-			"exampleType": "Synthetic",
-			"description": "Used from ~1985 to present. The first two digits encode the week (01–52), and the next two digits encode the year."
+			label: "Modern Standard (10-Character)",
+			example: "4206A12345",
+			exampleType: "Synthetic",
+			description: "Used from ~1985 to present. The first two digits encode the week (01–52), and the next two digits encode the year."
 		}, {
-			"label": "Legacy (9-Digit)",
-			"example": "851212345",
-			"exampleType": "Synthetic",
-			"description": "Used during the 1980s. The first two digits encode the year (80-89), and the next two digits encode the month."
+			label: "Legacy (9-Digit)",
+			example: "851212345",
+			exampleType: "Synthetic",
+			description: "Used during the 1980s. The first two digits encode the year (80-89), and the next two digits encode the month."
 		}],
 		faqs: [
 			{
-				"question": "Where can I find the Bryant serial number?",
-				"answer": "The serial number is located on the manufacturer's data plate (rating plate). For outdoor AC or heat pump units, it is usually on the side or back of the cabinet above the refrigerant valves. For indoor furnaces or air handlers, look inside the front access panel."
+				question: "Where can I find the Bryant serial number?",
+				answer: "The serial number is on the manufacturer's data plate. On outdoor AC or heat pump units, look on the side or back of the cabinet above the refrigerant valves. On indoor furnaces or air handlers, look inside the front access panel."
 			},
 			{
-				"question": "How do I read a modern Bryant serial number?",
-				"answer": "Since roughly 1985, Bryant uses a 10-character format where the first four characters are numbers indicating the week and year of manufacture (WWYY). For example, a serial number starting with \"4206\" was manufactured in the 42nd week of 2006."
+				question: "How do I check the age of my Bryant air conditioner or furnace?",
+				answer: "Enter the serial number from your unit's data plate into the decoder above with 'Bryant' selected. Since roughly 1985, Bryant has used a 10-character format where the first two digits are the week of manufacture and the next two are the year (WWYY). For example, a serial starting with '4206' was manufactured in the 42nd week of 2006."
 			},
 			{
-				"question": "Does this decoder work for Carrier?",
-				"answer": "Yes. Bryant is manufactured by Carrier Global. They share the exact same serial number formats and decoding logic."
+				question: "Does this decoder work for Carrier?",
+				answer: "Yes. Bryant is manufactured by Carrier Global and uses the exact same serial number formats and decoding logic as Carrier equipment."
 			},
 			{
-				"question": "Why does the decoder say my older Bryant serial number is unsupported?",
-				"answer": "Before 1985, formatting was highly inconsistent. To guarantee we never provide you with a false date (\"no guessing\"), we explicitly mark these legacy formats as unsupported."
+				question: "Why does the decoder say my older Bryant serial number is unsupported?",
+				answer: "Before 1985, formatting was highly inconsistent. To ensure we never provide a false date, we explicitly mark these legacy formats as unsupported."
 			},
 			{
-				"question": "If there is a date printed directly on the data plate, should I trust it?",
-				"answer": "Yes. If your Bryant data plate has a printed \"MFR DATE\" (e.g., MFR DATE: 10/2018), always trust the printed date over the serial number if there is a discrepancy."
+				question: "If there is a date printed directly on the data plate, should I trust it?",
+				answer: "Yes. If your Bryant data plate shows a printed 'MFR DATE' (for example, MFR DATE: 10/2018), always use the printed date over the decoded result if they differ."
 			},
 			{
-				"question": "Does this decoder support Bryant water heaters?",
-				"answer": "No. This tool is strictly designed for residential HVAC equipment (air conditioners, furnaces, heat pumps). Water heaters are out of scope."
+				question: "Does this decoder support Bryant water heaters?",
+				answer: "No. This tool is designed for residential HVAC equipment — air conditioners, furnaces, and heat pumps. Water heaters are out of scope."
 			}
 		]
 	},
@@ -3841,10 +4131,22 @@ var ALL_BRAND_PAGES = [
 			"slug": "bryant-serial-number-decoder"
 		}],
 		category: "HVAC",
-		pageTitle: "Payne Serial Number Decoder — Find Equipment Age | SerialAge",
-		metaDescription: "Free decoder for Payne HVAC serial numbers. Find out the age and manufacture date of your Payne air conditioner, furnace, or heat pump.",
-		headline: "Payne Serial Number Decoder",
-		shortDescription: "Determine the age and manufacture date of your Payne HVAC equipment. Payne operates under Carrier and uses the exact same serial number formats, primarily the 10-character WWYY format used since the late 1980s.",
+		pageTitle: "Payne Serial Number Decoder — Find HVAC Age | SerialAge",
+		metaDescription: "Free decoder for Payne HVAC serial numbers. Find the exact age and manufacture date of your equipment. Payne operates under Carrier and uses the same formats.",
+		headline: "Payne Serial Number Decoder: Find Your HVAC Age",
+		shortDescription: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
+			"Payne is a long-standing HVAC brand that became part of the BDP Company formed by ",
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_router_dom.Link, {
+				to: "/carrier-serial-number-decoder",
+				style: {
+					color: "var(--primary)",
+					textDecoration: "underline"
+				},
+				children: "Carrier"
+			}),
+			" in 1974. Today, Payne remains a Carrier brand, meaning Payne serial numbers use Carrier/BDP-family conventions. Use this decoder to determine the manufacture date and age of your Payne equipment."
+		] }),
+		shortDescriptionSchema: "Payne is a long-standing HVAC brand that became part of the BDP Company formed by Carrier in 1974. Today, Payne remains a Carrier brand, meaning Payne serial numbers use Carrier/BDP-family conventions. Use this decoder to determine the manufacture date and age of your Payne equipment.",
 		ratingPlateLocation: "The serial number is located on the manufacturer's data plate (rating plate). For outdoor AC or heat pump units, it is usually on the side or back of the cabinet above the refrigerant valves. For indoor furnaces or air handlers, look inside the front access panel.",
 		limitations: [
 			"Serial numbers manufactured before approximately 1985 (pre-Style 1) cannot be reliably decoded due to inconsistent historical formatting.",
@@ -3857,41 +4159,343 @@ var ALL_BRAND_PAGES = [
 			title: "SerialAge Manufacturer Decoding Audit - Carrier/Payne",
 			description: "Internal research record."
 		}],
+		headings: {
+			whereToFind: "Where to Find Your Payne Serial Number",
+			supportedFormats: "Payne Serial Number Formats",
+			faqs: "Payne Serial Number FAQs"
+		},
+		customContent: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+				className: "s-eye",
+				children: "Serial Formats"
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h2", {
+				className: "s-head",
+				id: "how-it-works",
+				children: "How Payne Serial Numbers Work"
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("p", {
+				className: "re-body-list",
+				style: { marginTop: "16px" },
+				children: [
+					"Older Payne equipment may use different historical formats, so you should not assume the modern rule applies to every unit. Read our ",
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_router_dom.Link, {
+						to: "/methodology",
+						style: {
+							color: "var(--primary)",
+							textDecoration: "underline"
+						},
+						children: "Methodology page"
+					}),
+					" for our full sourcing and decoding approach."
+				]
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h3", {
+				style: {
+					fontSize: "18px",
+					fontWeight: 600,
+					color: "var(--ink)",
+					marginTop: "32px",
+					marginBottom: "16px"
+				},
+				children: "Worked Example: 4006A17330"
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("p", {
+				className: "re-body-list",
+				style: { marginBottom: "16px" },
+				children: [
+					"For a unit with the modern serial number ",
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "4006A17330" }),
+					", here is how the age is determined:"
+				]
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("ul", {
+				className: "re-body-list",
+				style: {
+					margin: "0 0 32px 20px",
+					color: "var(--ink)"
+				},
+				children: [
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("li", {
+						style: { marginBottom: "8px" },
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "40" }), " = Manufactured in the 40th week"]
+					}),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("li", {
+						style: { marginBottom: "8px" },
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "06" }), " = Manufactured in the year 2006"]
+					}),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("li", {
+						style: { marginBottom: "8px" },
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "A" }), " = Plant / production letter"]
+					}),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("li", {
+						style: { marginBottom: "8px" },
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "17330" }), " = Production / sequence information"]
+					})
+				]
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h3", {
+				style: {
+					fontSize: "18px",
+					fontWeight: 600,
+					color: "var(--ink)",
+					marginBottom: "16px"
+				},
+				children: "5 Verified Payne Styles"
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+				style: { overflowX: "auto" },
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("table", {
+					style: {
+						width: "100%",
+						borderCollapse: "collapse",
+						textAlign: "left",
+						minWidth: "600px"
+					},
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("thead", { children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("tr", {
+						style: {
+							borderBottom: "2px solid var(--hairline)",
+							color: "var(--ink)"
+						},
+						children: [
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("th", {
+								style: {
+									padding: "12px 16px",
+									fontWeight: 600
+								},
+								children: "Style"
+							}),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("th", {
+								style: {
+									padding: "12px 16px",
+									fontWeight: 600
+								},
+								children: "Example"
+							}),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("th", {
+								style: {
+									padding: "12px 16px",
+									fontWeight: 600
+								},
+								children: "Era / Usage"
+							}),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("th", {
+								style: {
+									padding: "12px 16px",
+									fontWeight: 600
+								},
+								children: "Date Code Format"
+							})
+						]
+					}) }), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("tbody", {
+						style: { color: "var(--mute)" },
+						children: [
+							/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("tr", {
+								style: { borderBottom: "1px solid var(--hairline)" },
+								children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: {
+											padding: "12px 16px",
+											fontWeight: 500,
+											color: "var(--ink)"
+										},
+										children: "Modern Style"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: {
+											padding: "12px 16px",
+											fontFamily: "var(--font-mono)"
+										},
+										children: "4006A17330"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: { padding: "12px 16px" },
+										children: "~1985 to present"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: { padding: "12px 16px" },
+										children: "Positions 1-2 = Week, Positions 3-4 = Year"
+									})
+								]
+							}),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("tr", {
+								style: { borderBottom: "1px solid var(--hairline)" },
+								children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: {
+											padding: "12px 16px",
+											fontWeight: 500,
+											color: "var(--ink)"
+										},
+										children: "Style 2"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: {
+											padding: "12px 16px",
+											fontFamily: "var(--font-mono)"
+										},
+										children: "850304091"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: { padding: "12px 16px" },
+										children: "1980s"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: { padding: "12px 16px" },
+										children: "Positions 1-2 = Year, Positions 3-4 = Month"
+									})
+								]
+							}),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("tr", {
+								style: { borderBottom: "1px solid var(--hairline)" },
+								children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: {
+											padding: "12px 16px",
+											fontWeight: 500,
+											color: "var(--ink)"
+										},
+										children: "Style 3"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: {
+											padding: "12px 16px",
+											fontFamily: "var(--font-mono)"
+										},
+										children: "W4D14008"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: { padding: "12px 16px" },
+										children: "1980–1984"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: { padding: "12px 16px" },
+										children: "Position 1 = Month code, Position 2 = Year code"
+									})
+								]
+							}),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("tr", {
+								style: { borderBottom: "1px solid var(--hairline)" },
+								children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: {
+											padding: "12px 16px",
+											fontWeight: 500,
+											color: "var(--ink)"
+										},
+										children: "Style 4"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: {
+											padding: "12px 16px",
+											fontFamily: "var(--font-mono)"
+										},
+										children: "A167890"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: { padding: "12px 16px" },
+										children: "1970–1979"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: { padding: "12px 16px" },
+										children: "Position 1 = Month code, Position 2 = Year code"
+									})
+								]
+							}),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("tr", { children: [
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+									style: {
+										padding: "12px 16px",
+										fontWeight: 500,
+										color: "var(--ink)"
+									},
+									children: "Style 5"
+								}),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+									style: {
+										padding: "12px 16px",
+										fontFamily: "var(--font-mono)"
+									},
+									children: "6######"
+								}),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+									style: { padding: "12px 16px" },
+									children: "Prior to 1970"
+								}),
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+									style: { padding: "12px 16px" },
+									children: "First digit represents the year"
+								})
+							] })
+						]
+					})]
+				})
+			})
+		] }),
 		supportedFormats: [{
-			"label": "Modern Standard (10-Character)",
-			"example": "4206A12345",
-			"exampleType": "Synthetic",
-			"description": "Used from ~1985 to present. The first two digits encode the week (01–52), and the next two digits encode the year."
+			label: "Modern Standard (10-Character)",
+			example: "4206A12345",
+			exampleType: "Synthetic",
+			description: "Used from ~1985 to present. The first two digits encode the week (01–52), and the next two digits encode the year."
 		}, {
-			"label": "Legacy (9-Digit)",
-			"example": "851212345",
-			"exampleType": "Synthetic",
-			"description": "Used during the 1980s. The first two digits encode the year (80-89), and the next two digits encode the month."
+			label: "Legacy (9-Digit)",
+			example: "851212345",
+			exampleType: "Synthetic",
+			description: "Used during the 1980s. The first two digits encode the year (80-89), and the next two digits encode the month."
 		}],
 		faqs: [
 			{
-				"question": "Where can I find the Payne serial number?",
-				"answer": "The serial number is located on the manufacturer's data plate (rating plate). For outdoor AC or heat pump units, it is usually on the side or back of the cabinet above the refrigerant valves. For indoor furnaces or air handlers, look inside the front access panel."
+				question: "Is a Payne serial number the same as a Carrier or Bryant serial number?",
+				answer: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
+					"Yes. Payne is a brand under Carrier Global, and its equipment uses the exact same serial number formats and date codes as ",
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_router_dom.Link, {
+						to: "/carrier-serial-number-decoder",
+						style: {
+							color: "var(--primary)",
+							textDecoration: "underline"
+						},
+						children: "Carrier"
+					}),
+					" and ",
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_router_dom.Link, {
+						to: "/bryant-serial-number-decoder",
+						style: {
+							color: "var(--primary)",
+							textDecoration: "underline"
+						},
+						children: "Bryant"
+					}),
+					". The logic to determine the manufacture date is identical across all three brands."
+				] }),
+				answerSchema: "Yes. Payne is a brand under Carrier Global, and its equipment uses the exact same serial number formats and date codes as Carrier and Bryant. The logic to determine the manufacture date is identical across all three brands."
 			},
 			{
-				"question": "How do I read a modern Payne serial number?",
-				"answer": "Payne uses a 10-character format where the first four characters are numbers indicating the week and year of manufacture (WWYY). For example, a serial number starting with \"4206\" was manufactured in the 42nd week of 2006."
+				question: "What is the difference between a Payne model number and serial number?",
+				answer: "The model number identifies the specific design, efficiency, and capacity of your Payne equipment. The serial number is a unique identifier for your exact unit and contains the date it was built. You need the serial number—not the model number—to determine the age of the equipment."
 			},
 			{
-				"question": "Does this decoder work for Carrier and Bryant?",
-				"answer": "Yes. Payne is manufactured by Carrier Global. They share the exact same serial number formats and decoding logic."
+				question: "What does the manufacture date in a Payne serial number mean?",
+				answer: "The manufacture date encoded in your Payne serial number tells you exactly when the unit left the factory. It is not the same as the installation date. While most warranties begin on the installation date, the manufacture date is the baseline used to determine the age of the equipment."
 			},
 			{
-				"question": "If there is a date printed directly on the data plate, should I trust it?",
-				"answer": "Yes. If your Payne data plate has a printed \"MFR DATE\" (e.g., MFR DATE: 10/2018), always trust the printed date over the serial number if there is a discrepancy."
+				question: "What if my Payne serial number uses an older format?",
+				answer: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
+					"Prior to 1985, Payne used several different legacy formats that were not perfectly standardized. Our decoder specifically supports the reliable 9 and 10-character formats. For vintage units manufactured before 1980, consult our ",
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_router_dom.Link, {
+						to: "/methodology",
+						style: {
+							color: "var(--primary)",
+							textDecoration: "underline"
+						},
+						children: "Methodology page"
+					}),
+					" to manually compare historical date codes."
+				] }),
+				answerSchema: "Prior to 1985, Payne used several different legacy formats that were not perfectly standardized. Our decoder specifically supports the reliable 9 and 10-character formats. For vintage units manufactured before 1980, consult our Methodology page to manually compare historical date codes."
 			},
 			{
-				"question": "Why does the decoder say my older Payne serial number is unsupported?",
-				"answer": "Before 1985, formatting was highly inconsistent. To guarantee we never provide you with a false date (\"no guessing\"), we explicitly mark these legacy formats as unsupported."
-			},
-			{
-				"question": "Does this decoder support Payne water heaters?",
-				"answer": "No. This tool is strictly designed for residential HVAC equipment (air conditioners, furnaces, heat pumps). Water heaters are out of scope."
+				question: "What if my Payne serial number is hard to read?",
+				answer: "If the data plate on your Payne outdoor unit has faded due to sun or weather exposure, you can often find a secondary barcode sticker inside the electrical panel. Alternatively, you can check your original installation invoice or warranty registration paperwork for the recorded serial number."
 			}
 		]
 	},
@@ -3926,35 +4530,35 @@ var ALL_BRAND_PAGES = [
 			description: "Reference for historical formatting trends."
 		}],
 		supportedFormats: [{
-			"label": "Standard (10-Digit)",
-			"example": "2104123456",
-			"exampleType": "Synthetic",
-			"description": "Used from 1982 to present. The first two digits are the year of manufacture, and the next two digits are the month."
+			label: "Standard (10-Digit)",
+			example: "2104123456",
+			exampleType: "Synthetic",
+			description: "Used from 1982 to present. The first two digits are the year of manufacture, and the next two digits are the month."
 		}],
 		faqs: [
 			{
-				"question": "Where is the serial number on a Goodman unit?",
-				"answer": "On Goodman outdoor units (air conditioners and heat pumps), the data plate is typically on the side of the unit, near where the refrigerant lines connect. On indoor furnaces, it is usually pasted on the inside wall of the blower compartment."
+				question: "Where is the serial number on a Goodman unit?",
+				answer: "On Goodman outdoor units (air conditioners and heat pumps), the data plate is typically on the side of the unit, near where the refrigerant lines connect. On indoor furnaces, it is usually pasted on the inside wall of the blower compartment."
 			},
 			{
-				"question": "How do I read a Goodman serial number?",
-				"answer": "Goodman has used a highly consistent 10-digit serial number format (YYMMXXXXXX) since 1982. The first two digits are the year of manufacture, and the next two digits are the month. For example, a serial starting with \"2104\" was built in April 2021."
+				question: "How do I check the age of my Goodman air conditioner or furnace?",
+				answer: "Enter the serial number from your unit's data plate into the decoder above with 'Goodman' selected. Goodman has used a consistent 10-digit format since 1982 where the first two digits are the year and the next two are the month (YYMMXXXXXX). For example, a serial starting with '2104' was manufactured in April 2021."
 			},
 			{
-				"question": "Are Amana and Daikin serial numbers the same as Goodman?",
-				"answer": "For most standard residential equipment — especially after Daikin acquired Goodman, and Goodman acquired the Amana HVAC brand — the serial number formats are identical: 10 digits starting with YYMM."
+				question: "Are Amana and Daikin serial numbers the same as Goodman?",
+				answer: "For most standard residential equipment — especially after Daikin acquired Goodman, and Goodman acquired the Amana HVAC brand — the serial number formats are identical: 10 digits starting with YYMM."
 			},
 			{
-				"question": "Why isn't my older Amana PTAC serial number working?",
-				"answer": "Older Amana and legacy PTAC (Packaged Terminal Air Conditioner) units often used a 10-character format that included letters at the beginning or end (e.g., starting with \"B\" or ending with \"P\"). SerialAge does not currently support decoding these legacy PTAC formats to avoid providing inaccurate dates."
+				question: "Why isn't my older Amana PTAC serial number working?",
+				answer: "Older Amana and legacy PTAC (Packaged Terminal Air Conditioner) units used a 10-character format with letters at the beginning or end (for example, starting with 'B' or ending with 'P'). SerialAge does not currently support these legacy PTAC formats to avoid providing inaccurate dates."
 			},
 			{
-				"question": "My Goodman serial number has only 9 digits. Can it be decoded?",
-				"answer": "Genuine Goodman HVAC serial numbers from 1982 onwards are exactly 10 digits long. If your serial number is 9 digits, double-check the data plate for fading or misreading. Our decoder requires the full 10 digits to guarantee accuracy."
+				question: "My Goodman serial number has only 9 digits. Can it be decoded?",
+				answer: "Goodman HVAC serial numbers from 1982 onwards are exactly 10 digits long. If your serial number is 9 digits, check the data plate for fading or a misread character. The decoder requires the full 10 digits."
 			},
 			{
-				"question": "Does the Goodman serial number indicate the size or capacity?",
-				"answer": "No. The serial number only encodes the manufacture date and production sequence. To find the size, tonnage, or efficiency (SEER rating) of your unit, you must look at the model number, not the serial number."
+				question: "Does the Goodman serial number indicate the size or capacity?",
+				answer: "No. The serial number only encodes the manufacture date and production sequence. To find the tonnage, SEER rating, or product capacity, look at the model number on the same data plate."
 			}
 		]
 	},
@@ -3984,35 +4588,35 @@ var ALL_BRAND_PAGES = [
 			description: "Internal research record."
 		}],
 		supportedFormats: [{
-			"label": "Standard (10-Digit)",
-			"example": "2104123456",
-			"exampleType": "Synthetic",
-			"description": "Used widely on modern equipment. The first two digits are the year, and the next two digits are the month."
+			label: "Standard (10-Digit)",
+			example: "2104123456",
+			exampleType: "Synthetic",
+			description: "Used widely on modern equipment. The first two digits are the year, and the next two digits are the month."
 		}],
 		faqs: [
 			{
-				"question": "Where is the serial number on an Amana unit?",
-				"answer": "On Amana outdoor units, the data plate is typically located on the side of the unit, near where the refrigerant lines connect. On indoor furnaces, it is usually pasted on the inside wall of the blower compartment."
+				question: "Where is the serial number on an Amana unit?",
+				answer: "On Amana outdoor units, the data plate is typically on the side of the unit, near where the refrigerant lines connect. On indoor furnaces, it is usually pasted on the inside wall of the blower compartment."
 			},
 			{
-				"question": "How do I read a modern Amana serial number?",
-				"answer": "Modern Amana units use a highly consistent 10-digit serial number format (YYMMXXXXXX). The first two digits are the year of manufacture, and the next two digits are the month. For example, a serial starting with \"2104\" was built in April 2021."
+				question: "How do I check the age of my Amana air conditioner or furnace?",
+				answer: "Enter the serial number from your unit's data plate into the decoder above with 'Amana' selected. Modern Amana equipment uses the same 10-digit format as its parent company, Goodman, where the first two digits are the year and the next two are the month (YYMMXXXXXX). For example, a serial starting with '2104' was manufactured in April 2021."
 			},
 			{
-				"question": "Why isn't my older Amana PTAC serial number working?",
-				"answer": "Older Amana and legacy PTAC (Packaged Terminal Air Conditioner) units often used a 10-character format that included letters at the beginning or end (e.g., starting with \"B\" or ending with \"P\"). We currently do not support decoding these legacy PTAC formats to avoid providing inaccurate dates."
+				question: "Why isn't my older Amana PTAC serial number working?",
+				answer: "Older Amana and legacy PTAC (Packaged Terminal Air Conditioner) units used a 10-character format with letters at the beginning or end. SerialAge does not currently support these legacy PTAC formats to avoid providing inaccurate dates."
 			},
 			{
-				"question": "Why won't my old Amana serial number with dashes decode?",
-				"answer": "Pre-1997 historical Amana serial numbers (which often contain dashes or spaces, e.g. 96-90391) are poorly documented and not supported. Only modern 10-digit numeric serials are supported."
+				question: "Why won't my old Amana serial number with dashes decode?",
+				answer: "Pre-1997 Amana serial numbers — which often contain dashes or spaces — are poorly documented and are not supported. Only the modern 10-digit numeric format is supported."
 			},
 			{
-				"question": "My Amana serial number has only 9 digits. Can it be decoded?",
-				"answer": "If it follows the modern Goodman format, it must be exactly 10 digits long. If your serial number is 9 digits, double-check the data plate for fading or misreading."
+				question: "My Amana serial number has only 9 digits. Can it be decoded?",
+				answer: "Modern Amana equipment uses the same format as Goodman, which requires exactly 10 digits. If your serial number is 9 digits, check the data plate carefully for a faded or misread character."
 			},
 			{
-				"question": "Does this decoder support Amana water heaters?",
-				"answer": "No. This tool is explicitly scoped to residential HVAC equipment and does not cover water heaters."
+				question: "Does this decoder support Amana water heaters?",
+				answer: "No. This tool is designed for residential HVAC equipment — air conditioners, furnaces, and heat pumps. Water heaters are out of scope."
 			}
 		]
 	},
@@ -4044,39 +4648,39 @@ var ALL_BRAND_PAGES = [
 			description: "Reference for historical formatting trends."
 		}],
 		supportedFormats: [{
-			"label": "Standard (10-Character)",
-			"example": "5806K12345",
-			"exampleType": "Synthetic",
-			"description": "Used from 1974 to present. Positions 3 and 4 encode the year, and position 5 encodes the month (A-M, skipping I)."
+			label: "Standard (10-Character)",
+			example: "5806K12345",
+			exampleType: "Synthetic",
+			description: "Used from 1974 to present. Positions 3 and 4 encode the year, and position 5 encodes the month (A-M, skipping I)."
 		}],
 		faqs: [
 			{
-				"question": "Where do I find the Lennox serial number?",
-				"answer": "On Lennox outdoor units, the data plate is usually on the right side of the unit near the refrigerant line connections. For indoor furnaces, it is typically located on the interior cabinet wall, accessible by removing the top front panel."
+				question: "Where do I find the Lennox serial number?",
+				answer: "On Lennox outdoor units, the data plate is usually on the right side of the unit near the refrigerant line connections. For indoor furnaces, it is typically located on the interior cabinet wall, accessible by removing the top front panel."
 			},
 			{
-				"question": "How do I decode a Lennox serial number?",
-				"answer": "Modern Lennox serial numbers (1974–present) are 10 characters long. The year is encoded at positions 3 and 4, and position 5 is a single letter indicating the month. For example, in \"5806K12345\", \"06\" means 2006, and \"K\" represents October."
+				question: "How do I check the age of my Lennox air conditioner or furnace?",
+				answer: "Enter the serial number from your unit's data plate into the decoder above with 'Lennox' selected. Lennox has used a consistent 10-character format since 1974. Positions 3 and 4 encode the two-digit year, and position 5 is a letter representing the month. For example, in '5806K12345', '06' means 2006 and 'K' represents October."
 			},
 			{
-				"question": "What do the first two characters of a Lennox serial number mean?",
-				"answer": "The first two characters (usually numbers, sometimes letters) represent the factory or plant code where the equipment was manufactured. They do not affect the manufacture date and are not decoded."
+				question: "What do the first two characters of a Lennox serial number mean?",
+				answer: "The first two characters represent the factory or plant code where the equipment was manufactured. They do not affect the manufacture date and are not decoded."
 			},
 			{
-				"question": "Which month does the letter in my Lennox serial represent?",
-				"answer": "Lennox uses letters A through M for months: A=January, B=February, C=March, D=April, E=May, F=June, G=July, H=August, J=September, K=October, L=November, M=December. The letter \"I\" is intentionally skipped to prevent confusion with the number 1. Letters N through Z are not used as month codes."
+				question: "Which month does the letter in my Lennox serial represent?",
+				answer: "Lennox uses letters A through M for months: A=January, B=February, C=March, D=April, E=May, F=June, G=July, H=August, J=September, K=October, L=November, M=December. The letter 'I' is intentionally skipped to prevent confusion with the number 1. Letters N through Z are not used as month codes."
 			},
 			{
-				"question": "Does this work for Ducane and Aire-Flo?",
-				"answer": "Yes. Ducane, Aire-Flo, Armstrong Air, and Concord are allied brands under Lennox International. Most of their equipment manufactured in the last few decades follows the same 10-character serial format as Lennox equipment."
+				question: "Does this work for Ducane and Aire-Flo?",
+				answer: "Yes. Ducane, Aire-Flo, Armstrong Air, and Concord are allied brands under Lennox International. Most of their equipment manufactured in the last few decades follows the same 10-character serial format as Lennox."
 			},
 			{
-				"question": "Can a Lennox unit manufactured in the 1970s have a serial that looks like a 2000s unit?",
-				"answer": "No. The Lennox format began in 1974. A serial number with \"99\" at positions 3–4 means 1999, while \"05\" means 2005. Because the format is continuous and the year is stored as a 2-digit value with a documented century threshold, there is no overlap or ambiguity between decades."
+				question: "Can a Lennox unit manufactured in the 1970s have a serial that looks like a 2000s unit?",
+				answer: "No. The Lennox format began in 1974 and uses a continuous two-digit year. A serial with '99' at positions 3–4 means 1999, while '05' means 2005. There is no repeating cycle or ambiguity between decades."
 			},
 			{
-				"question": "Does this decoder support Lennox water heaters?",
-				"answer": "No. This tool is explicitly scoped to residential HVAC equipment and does not cover water heaters."
+				question: "Does this decoder support Lennox water heaters?",
+				answer: "No. This tool is designed for residential HVAC equipment — air conditioners, furnaces, and heat pumps. Water heaters are out of scope."
 			}
 		]
 	},
@@ -4108,52 +4712,52 @@ var ALL_BRAND_PAGES = [
 		}],
 		supportedFormats: [
 			{
-				"label": "Modern (10-Character)",
-				"example": "11241KADBB",
-				"exampleType": "Synthetic",
-				"description": "Used from 2010 to present. Characters 1-2 encode the year, and characters 3-4 encode the fiscal week."
+				label: "Modern (10-Character)",
+				example: "11241KADBB",
+				exampleType: "Synthetic",
+				description: "Used from 2010 to present. Characters 1-2 encode the year, and characters 3-4 encode the fiscal week."
 			},
 			{
-				"label": "Standard (9-Character)",
-				"example": "814123456",
-				"exampleType": "Synthetic",
-				"description": "Used from 2002 to 2009. Character 1 encodes the last digit of the year, characters 2-3 encode the week."
+				label: "Standard (9-Character)",
+				example: "814123456",
+				exampleType: "Synthetic",
+				description: "Used from 2002 to 2009. Character 1 encodes the last digit of the year, characters 2-3 encode the week."
 			},
 			{
-				"label": "Letter-Prefix (9-Character)",
-				"example": "W04123456",
-				"exampleType": "Synthetic",
-				"description": "Used from 1983 to 2001. Character 1 is a fixed letter corresponding to a specific year. Characters 2-3 encode the week."
+				label: "Letter-Prefix (9-Character)",
+				example: "W04123456",
+				exampleType: "Synthetic",
+				description: "Used from 1983 to 2001. Character 1 is a fixed letter corresponding to a specific year. Characters 2-3 encode the week."
 			}
 		],
 		faqs: [
 			{
-				"question": "Where can I find the Trane serial number?",
-				"answer": "The serial number is printed on the data plate. On outdoor units (AC or heat pump), look on the exterior cabinet near the refrigerant valves. For indoor furnaces, the data plate is typically located inside the front access panel."
+				question: "Where can I find the Trane serial number?",
+				answer: "The serial number is on the data plate. On outdoor units (AC or heat pump), look on the exterior cabinet near the refrigerant valves. For indoor furnaces, the data plate is typically inside the front access panel."
 			},
 			{
-				"question": "How do I read a modern Trane serial number (2010 to Present)?",
-				"answer": "Since 2010, Trane has used a 10-character format where the first two digits indicate the year of manufacture, and the next two digits indicate the fiscal week. For example, a serial starting with \"1124\" was built in the 24th week of 2011."
+				question: "How do I check the age of my Trane air conditioner or furnace?",
+				answer: "Enter the serial number from your unit's data plate into the decoder above with 'Trane' selected. Trane has used three formats: since 2010, a 10-character format where the first two digits are the year and the next two are the fiscal week; from 2002 to 2009, a 9-character format where the first digit indicates the year; and from 1983 to 2001, a 9-character format starting with a letter that maps to a specific year. The decoder identifies the format automatically."
 			},
 			{
-				"question": "What is the Trane format from 2002 to 2009?",
-				"answer": "From 2002 to 2009, Trane used a 9-character format where the very first digit indicates the year. For instance, a serial starting with \"814\" was manufactured in 2008 during the 14th week."
+				question: "How do I read a modern Trane serial number (2010 to present)?",
+				answer: "Since 2010, Trane has used a 10-character format where the first two digits indicate the year and the next two indicate the fiscal week. For example, a serial starting with '1124' was built in the 24th week of 2011."
 			},
 			{
-				"question": "How do older Trane serial numbers work (1983 to 2001)?",
-				"answer": "Between 1983 and 2001, Trane used a 9-character format starting with a specific letter that mapped to a year. For example, \"W\" is 1983, \"X\" is 1984, and \"R\" is 2000. The two digits following the letter indicate the week."
+				question: "What is the Trane format from 2002 to 2009?",
+				answer: "From 2002 to 2009, Trane used a 9-character format where the first digit indicates the last digit of the year. For instance, '814' at the start means week 14 of 2008."
 			},
 			{
-				"question": "Does this decoder work for American Standard?",
-				"answer": "Yes. American Standard and Trane are owned by the same parent company and manufacture identical equipment on the same assembly lines. American Standard serial numbers follow the exact same decoding logic as Trane."
+				question: "How do older Trane serial numbers work (1983 to 2001)?",
+				answer: "Between 1983 and 2001, Trane used a 9-character format starting with a letter that mapped to a specific year. For example, 'W' is 1983, 'X' is 1984, and 'R' is 2000. The two digits following the letter indicate the fiscal week. Several letters are skipped in this sequence."
 			},
 			{
-				"question": "Why does the decoder say my pre-1983 serial number is unsupported?",
-				"answer": "Prior to 1983, Trane used a highly variable system where year indicators were inconsistently placed (e.g., as the 7th character). Rather than guessing and risking an incorrect date, we intentionally trap these legacy formats and advise checking the data plate instead."
+				question: "Does this decoder work for American Standard?",
+				answer: "Yes. American Standard and Trane are owned by the same parent company and manufacture identical equipment on the same assembly lines. American Standard serial numbers follow the exact same decoding logic."
 			},
 			{
-				"question": "Does this decoder support Trane water heaters?",
-				"answer": "No. This tool is explicitly scoped to residential HVAC equipment and does not cover water heaters."
+				question: "Does this decoder support Trane water heaters?",
+				answer: "No. This tool is designed for residential HVAC equipment — air conditioners, furnaces, and heat pumps. Water heaters are out of scope."
 			}
 		]
 	},
@@ -4186,40 +4790,40 @@ var ALL_BRAND_PAGES = [
 			description: "Internal research record."
 		}],
 		supportedFormats: [{
-			"label": "Modern Standard (10-Character)",
-			"example": "W421724596",
-			"exampleType": "Synthetic",
-			"description": "The first character is the plant code, followed by a 2-digit week, and a 2-digit year (e.g. 42nd week of 2017)."
+			label: "Modern Standard (10-Character)",
+			example: "W421724596",
+			exampleType: "Synthetic",
+			description: "The first character is the plant code, followed by a 2-digit week, and a 2-digit year (e.g. 42nd week of 2017)."
 		}, {
-			"label": "Embedded Plant Code",
-			"example": "7351 M2806 16735",
-			"exampleType": "Documented",
-			"description": "Older format where the plant letter (F, M, G, N, or W) appears in the middle of the string, followed by a 2-digit week and 2-digit year."
+			label: "Embedded Plant Code",
+			example: "7351 M2806 16735",
+			exampleType: "Documented",
+			description: "Older format where the plant letter (F, M, G, N, or W) appears in the middle of the string, followed by a 2-digit week and 2-digit year."
 		}],
 		faqs: [
 			{
-				"question": "Where can I find the Rheem serial number?",
-				"answer": "The serial number is printed on the data plate. On outdoor units (AC or heat pump), look on the exterior cabinet. For indoor furnaces, the data plate is typically located inside the front access panel."
+				question: "Where can I find the Rheem serial number?",
+				answer: "The serial number is on the data plate. On outdoor units (AC or heat pump), look on the exterior cabinet. For indoor furnaces, the data plate is typically inside the front access panel."
 			},
 			{
-				"question": "How do I read a modern Rheem serial number?",
-				"answer": "Modern Rheem serial numbers use a 10-character format starting with a letter. The letter is the plant code. The next two digits are the week of manufacture, and the two digits after that are the year. For example, \"W421724596\" means the 42nd week of 2017."
+				question: "How do I check the age of my Rheem air conditioner or furnace?",
+				answer: "Enter the serial number from your unit's data plate into the decoder above with 'Rheem' selected. The standard modern format is 10 characters starting with a plant code letter, followed by a 2-digit week and 2-digit year. For example, 'W421724596' means the 42nd week of 2017. Older units may use an embedded plant code format where the plant letter appears in the middle of the serial."
 			},
 			{
-				"question": "What is the older Rheem embedded plant code format?",
-				"answer": "Older Rheem serial numbers (often 10–17 characters long) embed the plant code letter (F, M, G, N, or W) in the middle of the string. The two digits immediately following the plant letter are the week, and the next two are the year."
+				question: "What is the older Rheem embedded plant code format?",
+				answer: "Older Rheem serial numbers embed the plant code letter (F, M, G, N, or W) in the middle of the string. The two digits immediately following the plant letter are the week, and the next two are the year. The decoder identifies this format automatically when the prefix before the plant letter is mixed alphanumeric."
 			},
 			{
-				"question": "Why did my Rheem serial number fail to decode despite looking valid?",
-				"answer": "For safety, the decoder requires the embedded plant format to have a mixed alphanumeric prefix before the plant code. Pure-alpha or pure-digit prefixes are rejected to prevent accidental decoding of model numbers or garbage data."
+				question: "Why did my Rheem serial number fail to decode despite looking valid?",
+				answer: "For the embedded plant code format, the decoder requires a mixed alphanumeric prefix before the plant code letter. Pure-letter or pure-digit prefixes are rejected to prevent accidental decoding of model numbers or unrelated data. Double-check that you are entering the serial number, not the model number."
 			},
 			{
-				"question": "Are Ruud and Rheem serial formats identical?",
-				"answer": "Yes. Ruud and Rheem are manufactured by the same company and use identical serial number formats and logic."
+				question: "Are Ruud and Rheem serial formats identical?",
+				answer: "Yes. Ruud and Rheem are manufactured by the same company and use identical serial number formats and decoding logic."
 			},
 			{
-				"question": "Does this tool decode Rheem water heater serial numbers?",
-				"answer": "No. This tool is strictly designed for residential HVAC equipment (air conditioners, furnaces, heat pumps). Rheem water heaters, which often use all-numeric 10-digit serials, are out of scope."
+				question: "Does this tool decode Rheem water heater serial numbers?",
+				answer: "No. This tool is designed for residential HVAC equipment. Rheem water heaters, which often use all-numeric 10-digit serials, are out of scope."
 			}
 		]
 	},
@@ -4232,11 +4836,12 @@ var ALL_BRAND_PAGES = [
 			"slug": "rheem-serial-number-decoder"
 		}],
 		category: "HVAC",
-		pageTitle: "Ruud Serial Number Decoder — Find Equipment Age | SerialAge",
-		metaDescription: "Free decoder for Ruud HVAC serial numbers. Find out the age and manufacture date of your Ruud air conditioner, furnace, or heat pump.",
-		headline: "Ruud Serial Number Decoder",
-		shortDescription: "Determine the age and manufacture date of your Ruud HVAC equipment. Ruud operates under Rheem and uses the exact same serial number formats, including the standard 10-character layout and embedded plant code formats.",
-		ratingPlateLocation: "The serial number is located on the manufacturer's data plate (rating plate). For outdoor AC or heat pump units, it is usually on the side or back of the cabinet. For indoor furnaces, look inside the front access panel.",
+		pageTitle: "Ruud Serial Number Decoder — Find HVAC Age | SerialAge",
+		metaDescription: "Free decoder for Ruud HVAC serial numbers. Find out the exact age and manufacture date of your Ruud air conditioner, furnace, or heat pump.",
+		headline: "Ruud Serial Number Decoder: Find Your HVAC Age",
+		shortDescription: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_jsx_runtime.Fragment, { children: "SerialAge helps you decode Ruud HVAC serial numbers to determine the precise manufacture date and age of your equipment. Ruud is part of the Rheem family, and the two brands share substantial serial-number conventions. However, while the decoding rules overlap, this Ruud-specific page ensures you receive accurate context for your Ruud-branded equipment." }),
+		shortDescriptionSchema: "SerialAge helps you decode Ruud HVAC serial numbers to determine the precise manufacture date and age of your equipment. Ruud is part of the Rheem family, and the two brands share substantial serial-number conventions. However, while the decoding rules overlap, this Ruud-specific page ensures you receive accurate context for your Ruud-branded equipment.",
+		ratingPlateLocation: "For Ruud outdoor units (AC or heat pump), the serial number is usually on the rating plate located on the side or back of the exterior cabinet. For Ruud indoor furnaces or air handlers, check inside the front access panel.",
 		limitations: [
 			"Ruud water heater serial numbers (typically 10 all-numeric digits) are not supported by this HVAC decoder.",
 			"Serial numbers less than 10 characters long are not supported.",
@@ -4251,41 +4856,436 @@ var ALL_BRAND_PAGES = [
 			title: "SerialAge Manufacturer Decoding Audit - Rheem/Ruud",
 			description: "Internal research record."
 		}],
-		supportedFormats: [{
-			"label": "Modern Standard (10-Character)",
-			"example": "W421724596",
-			"exampleType": "Synthetic",
-			"description": "The first character is the plant code, followed by a 2-digit week, and a 2-digit year (e.g. 42nd week of 2017)."
-		}, {
-			"label": "Embedded Plant Code",
-			"example": "7351 M2806 16735",
-			"exampleType": "Documented",
-			"description": "Older format where the plant letter (F, M, G, N, or W) appears in the middle of the string, followed by a 2-digit week and 2-digit year."
-		}],
+		headings: {
+			whereToFind: "Where to Find Your Ruud Serial Number",
+			faqs: "Ruud Serial Number FAQs"
+		},
+		customContent: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h2", {
+				className: "s-head",
+				id: "ruud-and-rheem",
+				style: { marginTop: "24px" },
+				children: "Ruud and Rheem: Why the Serial Formats Overlap"
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("p", {
+				className: "re-body-list",
+				style: {
+					marginTop: "16px",
+					marginBottom: "32px"
+				},
+				children: [
+					"Ruud was acquired by Rheem in 1959. Because they operate under the same corporate umbrella, they share manufacturing facilities and engineering designs. As a result, modern Ruud and ",
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_router_dom.Link, {
+						to: "/rheem-serial-number-decoder",
+						style: {
+							color: "var(--primary)",
+							textDecoration: "underline"
+						},
+						children: "Rheem"
+					}),
+					" equipment often share identical serial number structures. While our decoder supports these shared rules, you should always consult the specific data plate on your unit."
+				]
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+				className: "s-eye",
+				children: "Serial Formats"
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h2", {
+				className: "s-head",
+				id: "how-it-works",
+				children: "How Ruud Serial Numbers Work"
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
+				className: "re-body-list",
+				style: { marginTop: "16px" },
+				children: "SerialAge currently supports the documented Ruud HVAC serial patterns implemented by the decoder. SerialAge does not claim to support every historical or non-HVAC Ruud serial convention. Older or specialized Ruud equipment may use different numbering conventions. If your serial does not match a supported HVAC format, check the data plate carefully and consult the manufacturer documentation."
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h3", {
+				style: {
+					fontSize: "18px",
+					fontWeight: 600,
+					color: "var(--ink)",
+					marginTop: "32px",
+					marginBottom: "16px"
+				},
+				children: "1. Modern Standard Format (10-Character)"
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
+				className: "re-body-list",
+				style: { marginBottom: "16px" },
+				children: "The most common modern format is exactly 10 characters long, beginning with a single letter followed by nine digits. The first character acts as the plant or factory identifier. The next two digits represent the production week, and the following two digits represent the production year. The remaining characters contain production sequence information."
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
+				className: "re-body-list",
+				style: { marginBottom: "16px" },
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("em", { children: [
+					"Note: Some post-2012 Ruud units manufactured in Mexico may begin with an \"M\" (for example, ",
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("code", {
+						style: {
+							fontFamily: "var(--font-mono)",
+							background: "var(--surface-card)",
+							padding: "2px 6px",
+							borderRadius: "4px"
+						},
+						children: "M141209135"
+					}),
+					"). This fits the exact same 10-character standard pattern and decodes identically."
+				] })
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h3", {
+				style: {
+					fontSize: "18px",
+					fontWeight: 600,
+					color: "var(--ink)",
+					marginTop: "32px",
+					marginBottom: "16px"
+				},
+				children: "2. Embedded-Plant Code Formats"
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
+				className: "re-body-list",
+				style: { marginBottom: "16px" },
+				children: "Older commercial and residential Ruud units often used an embedded plant-code format. These serial numbers are typically longer (10–17 characters) and can be spaced or continuous. The manufacture date is identified by locating the embedded plant letter (F, M, G, N, or W) in the middle of the string. The two digits immediately following the plant letter are the production week, and the next two are the production year. The surrounding prefix and suffix characters are undocumented product/sequence codes."
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h3", {
+				style: {
+					fontSize: "18px",
+					fontWeight: 600,
+					color: "var(--ink)",
+					marginTop: "32px",
+					marginBottom: "16px"
+				},
+				children: "Example Breakdowns"
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+				style: {
+					overflowX: "auto",
+					marginBottom: "32px"
+				},
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("table", {
+					style: {
+						width: "100%",
+						borderCollapse: "collapse",
+						textAlign: "left",
+						minWidth: "600px"
+					},
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("thead", { children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("tr", {
+						style: {
+							borderBottom: "2px solid var(--hairline)",
+							color: "var(--ink)"
+						},
+						children: [
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("th", {
+								style: {
+									padding: "12px 16px",
+									fontWeight: 600
+								},
+								children: "Example Serial"
+							}),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("th", {
+								style: {
+									padding: "12px 16px",
+									fontWeight: 600
+								},
+								children: "Relevant Date Portion"
+							}),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("th", {
+								style: {
+									padding: "12px 16px",
+									fontWeight: 600
+								},
+								children: "Decoded Manufacture Date"
+							}),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("th", {
+								style: {
+									padding: "12px 16px",
+									fontWeight: 600
+								},
+								children: "Explanation"
+							})
+						]
+					}) }), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("tbody", {
+						style: { color: "var(--mute)" },
+						children: [
+							/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("tr", {
+								style: { borderBottom: "1px solid var(--hairline)" },
+								children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: {
+											padding: "12px 16px",
+											fontFamily: "var(--font-mono)",
+											color: "var(--ink)"
+										},
+										children: "W421724596"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("td", {
+										style: { padding: "12px 16px" },
+										children: ["W", /* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "4217" })]
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: {
+											padding: "12px 16px",
+											fontWeight: 500,
+											color: "var(--ink)"
+										},
+										children: "Week 42, 2017"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("td", {
+										style: {
+											padding: "12px 16px",
+											lineHeight: "1.5"
+										},
+										children: [
+											/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "W" }),
+											" is the plant identifier. ",
+											/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "42" }),
+											" is the production week. ",
+											/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "17" }),
+											" is the production year. ",
+											/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "24596" }),
+											" is the remaining production sequence."
+										]
+									})
+								]
+							}),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("tr", {
+								style: { borderBottom: "1px solid var(--hairline)" },
+								children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: {
+											padding: "12px 16px",
+											fontFamily: "var(--font-mono)",
+											color: "var(--ink)"
+										},
+										children: "CB5D302F099903346"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("td", {
+										style: { padding: "12px 16px" },
+										children: [
+											"...F",
+											/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "0999" }),
+											"..."
+										]
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: {
+											padding: "12px 16px",
+											fontWeight: 500,
+											color: "var(--ink)"
+										},
+										children: "Week 9, 1999"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("td", {
+										style: {
+											padding: "12px 16px",
+											lineHeight: "1.5"
+										},
+										children: [
+											/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "F" }),
+											" is the embedded plant letter. ",
+											/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "09" }),
+											" is the production week. ",
+											/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "99" }),
+											" is the production year. The exact meaning of the surrounding prefix (",
+											/* @__PURE__ */ (0, react_jsx_runtime.jsx)("code", {
+												style: { fontFamily: "var(--font-mono)" },
+												children: "CB5D302"
+											}),
+											") and suffix (",
+											/* @__PURE__ */ (0, react_jsx_runtime.jsx)("code", {
+												style: { fontFamily: "var(--font-mono)" },
+												children: "03346"
+											}),
+											") is uncertain."
+										]
+									})
+								]
+							}),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("tr", {
+								style: { borderBottom: "1px solid var(--hairline)" },
+								children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: {
+											padding: "12px 16px",
+											fontFamily: "var(--font-mono)",
+											color: "var(--ink)"
+										},
+										children: "7351 M2806 16735"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("td", {
+										style: { padding: "12px 16px" },
+										children: [
+											"...M",
+											/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "2806" }),
+											"..."
+										]
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: {
+											padding: "12px 16px",
+											fontWeight: 500,
+											color: "var(--ink)"
+										},
+										children: "Week 28, 2006"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("td", {
+										style: {
+											padding: "12px 16px",
+											lineHeight: "1.5"
+										},
+										children: [
+											/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "M" }),
+											" is the embedded plant letter. ",
+											/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "28" }),
+											" is the production week. ",
+											/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "06" }),
+											" is the production year. The surrounding digits are undocumented sequence codes."
+										]
+									})
+								]
+							})
+						]
+					})]
+				})
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h2", {
+				className: "s-head",
+				id: "model-vs-serial",
+				style: { marginTop: "32px" },
+				children: "Ruud Model Number vs. Serial Number"
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("p", {
+				className: "re-body-list",
+				style: {
+					marginTop: "16px",
+					marginBottom: "16px"
+				},
+				children: [
+					"When trying to determine the age of your equipment, you must use the ",
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "serial number" }),
+					", which identifies your exact, individual unit and contains the manufacture date. The ",
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "model number" }),
+					" identifies the product configuration. The current SerialAge Ruud decoder does NOT decode model numbers, as they do not contain the age of the unit."
+				]
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h3", {
+				style: {
+					fontSize: "18px",
+					fontWeight: 600,
+					color: "var(--ink)",
+					marginTop: "24px",
+					marginBottom: "16px"
+				},
+				children: "Model Number Example: UA1436AJ1NA"
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("p", {
+				className: "re-body-list",
+				style: { marginBottom: "16px" },
+				children: [
+					"On documented modern Ruud air-conditioner model families such as ",
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("code", {
+						style: {
+							fontFamily: "var(--font-mono)",
+							background: "var(--surface-card)",
+							padding: "2px 6px",
+							borderRadius: "4px"
+						},
+						children: "UA14..."
+					}),
+					", the model number includes product type, efficiency, and nominal capacity information. For example, in the model ",
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "UA1436AJ1NA" }),
+					":"
+				]
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("ul", {
+				className: "re-body-list",
+				style: {
+					margin: "0 0 16px 20px",
+					color: "var(--ink)"
+				},
+				children: [
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("li", {
+						style: { marginBottom: "8px" },
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "U" }), " = Ruud brand prefix"]
+					}),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("li", {
+						style: { marginBottom: "8px" },
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "A" }), " = Air-conditioner product type"]
+					}),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("li", {
+						style: { marginBottom: "8px" },
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "14" }), " = Nominal efficiency indicator for that documented model family"]
+					}),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("li", {
+						style: { marginBottom: "8px" },
+						children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "36" }), " = Nominal cooling capacity in thousands of BTUH (36,000 BTUH = 3 nominal tons)"]
+					})
+				]
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
+				className: "re-body-list",
+				style: { marginBottom: "32px" },
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("em", { children: "Note: Ruud model-number conventions vary across product families and generations. This page does not attempt to decode every model-number character. For exact equipment specifications, use the rating plate and manufacturer documentation." })
+			})
+		] }),
+		supportedFormats: [],
 		faqs: [
 			{
-				"question": "Where can I find the Ruud serial number?",
-				"answer": "The serial number is printed on the data plate. On outdoor units (AC or heat pump), look on the exterior cabinet. For indoor furnaces, the data plate is typically located inside the front access panel."
+				question: "How do I decode a Ruud serial number?",
+				answer: "Enter your serial number into the decoder above. Most modern Ruud serial numbers are 10 characters long, starting with a plant letter. The two digits immediately following the letter indicate the week, and the next two indicate the year of manufacture."
 			},
 			{
-				"question": "How do I read a modern Ruud serial number?",
-				"answer": "Modern Ruud serial numbers use a 10-character format starting with a letter. The letter is the plant code. The next two digits are the week of manufacture, and the two digits after that are the year. For example, \"W421724596\" means the 42nd week of 2017."
+				question: "Where can I find my Ruud serial number?",
+				answer: "The serial number is located on the manufacturer's data plate (rating plate). For outdoor AC or heat pump units, look on the side or back of the exterior cabinet. For indoor furnaces or air handlers, check inside the front access panel."
 			},
 			{
-				"question": "What is the older Ruud embedded plant code format?",
-				"answer": "Older Ruud serial numbers (often 10–17 characters long) embed the plant code letter (F, M, G, N, or W) in the middle of the string. The two digits immediately following the plant letter are the week, and the next two are the year."
+				question: "Are Ruud and Rheem serial formats the same?",
+				answer: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
+					"In most modern cases, yes. Because Ruud is owned by ",
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_router_dom.Link, {
+						to: "/rheem-serial-number-decoder",
+						style: {
+							color: "var(--primary)",
+							textDecoration: "underline"
+						},
+						children: "Rheem"
+					}),
+					", their HVAC equipment is often produced in the same factories using identical serial number formats and date codes."
+				] }),
+				answerSchema: "In most modern cases, yes. Because Ruud is owned by Rheem, their HVAC equipment is often produced in the same factories using identical serial number formats and date codes."
 			},
 			{
-				"question": "Why did my Ruud serial number fail to decode despite looking valid?",
-				"answer": "For safety, the decoder requires the embedded plant format to have a mixed alphanumeric prefix before the plant code. Pure-alpha or pure-digit prefixes are rejected to prevent accidental decoding of model numbers or garbage data."
+				question: "What does a Ruud serial number tell me?",
+				answer: "A Ruud serial number encodes the manufacturing plant, the exact week and year the unit was built, and a unique production sequence identifier."
 			},
 			{
-				"question": "Are Ruud and Rheem serial formats identical?",
-				"answer": "Yes. Ruud and Rheem are manufactured by the same company and use identical serial number formats and logic."
+				question: "Does it show manufacture date or installation date?",
+				answer: "The serial number strictly shows the manufacture date—the date the unit left the factory. It does not show the installation date, which is usually when warranty coverage begins."
 			},
 			{
-				"question": "Does this tool decode Ruud water heater serial numbers?",
-				"answer": "No. This tool is strictly designed for residential HVAC equipment (air conditioners, furnaces, heat pumps). Ruud water heaters, which often use all-numeric 10-digit serials, are out of scope."
+				question: "What if my Ruud serial uses an older format?",
+				answer: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
+					"Older commercial or vintage Ruud units may use legacy formats (like numeric-only strings). Our decoder currently focuses on the most reliable modern and embedded-letter formats. For unsupported vintage formats, you may need to consult historical manuals or read our ",
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_router_dom.Link, {
+						to: "/methodology",
+						style: {
+							color: "var(--primary)",
+							textDecoration: "underline"
+						},
+						children: "Methodology page"
+					}),
+					"."
+				] }),
+				answerSchema: "Older commercial or vintage Ruud units may use legacy formats (like numeric-only strings). Our decoder currently focuses on the most reliable modern and embedded-letter formats. For unsupported vintage formats, you may need to consult historical manuals or read our Methodology page."
+			},
+			{
+				question: "What if my Ruud serial number is unreadable?",
+				answer: "If the outdoor data plate is faded from weather exposure, you can often find a secondary barcode sticker inside the electrical control panel. You can also check your original installation invoice or warranty registration paperwork."
+			},
+			{
+				question: "What is the difference between a Ruud model number and serial number?",
+				answer: "The model number identifies the equipment/product configuration. The serial number is used strictly for unit identification and manufacture-date decoding. Our current Ruud decoder does not parse model numbers.",
+				answerSchema: "The model number identifies the equipment/product configuration. The serial number is used strictly for unit identification and manufacture-date decoding. Our current Ruud decoder does not parse model numbers."
 			}
 		]
 	},
@@ -4318,44 +5318,44 @@ var ALL_BRAND_PAGES = [
 			description: "Reference for historical formatting trends."
 		}],
 		supportedFormats: [{
-			"label": "Post-2004 (10-Character)",
-			"example": "W0K5896070",
-			"exampleType": "Verified",
-			"description": "Used from October 2004 to present. Positions 2 and 4 form a 2-digit year code (e.g. 0 and 5 = 2005). Position 3 is a letter representing the month."
+			label: "Post-2004 (10-Character)",
+			example: "W0K5896070",
+			exampleType: "Verified",
+			description: "Used from October 2004 to present. Positions 2 and 4 form a 2-digit year code (e.g. 0 and 5 = 2005). Position 3 is a letter representing the month."
 		}, {
-			"label": "1971-2004 (10-Character)",
-			"example": "WAKM011379",
-			"exampleType": "Verified",
-			"description": "Position 2 is the month letter, Position 3 is the year letter. Letters A-N map to two possible years."
+			label: "1971-2004 (10-Character)",
+			example: "WAKM011379",
+			exampleType: "Verified",
+			description: "Position 2 is the month letter, Position 3 is the year letter. Letters A-N map to two possible years."
 		}],
 		faqs: [
 			{
-				"question": "Where is the serial number on a York unit?",
-				"answer": "The serial number is located on the rating data plate (sticker) found on the interior or exterior of the unit."
+				question: "Where is the serial number on a York unit?",
+				answer: "The serial number is on the data plate (a sticker or stamped plate) on the unit. On outdoor AC and heat pump units, look on the side or back of the cabinet near the refrigerant valves. On indoor furnaces and air handlers, check inside the front access panel."
 			},
 			{
-				"question": "How do I read a post-2004 York serial number?",
-				"answer": "In the modern 10-character format, position 2 and position 4 combine to form a 2-digit year (e.g., '0' and '5' = 2005). Position 3 is a letter representing the month."
+				question: "How do I check the age of my York air conditioner or furnace?",
+				answer: "Enter the serial number from your data plate into the decoder above with 'York' selected. York has used two main 10-character formats. Since October 2004, the year is encoded using digits at positions 2 and 4, and the month using a letter at position 3. For equipment made between 1971 and 2004, letters at positions 2 and 3 encode the month and year — though the result may show two possible years for some units due to a repeating letter cycle."
 			},
 			{
-				"question": "Why does my York serial number return two possible years?",
-				"answer": "Between 1971 and 2004, York used a 21-year letter cycle for the year of manufacture. The letters A through N were used twice. For example, 'A' can mean 1971 or 1992. Our decoder intentionally returns both years to ensure accuracy rather than guessing."
+				question: "Why does my York serial number return two possible years?",
+				answer: "Between 1971 and 2004, York used a repeating 21-year letter cycle for the year of manufacture. The letters A through N each map to two possible years — for example, 'A' can mean 1971 or 1992. SerialAge returns both possible years rather than guessing, since the correct decade cannot be determined from the serial number alone."
 			},
 			{
-				"question": "How do I tell which year is correct for my ambiguous York unit?",
-				"answer": "You can distinguish a 1970s unit from a 1990s unit by looking at the general condition, efficiency ratings, or the type of refrigerant listed on the data plate. Also, checking the ANSI standard date on the plate can often help pinpoint the decade."
+				question: "How do I tell which year is correct for my ambiguous York unit?",
+				answer: "You can often narrow it down by inspecting the unit's physical condition, checking the refrigerant type listed on the data plate (pre-2010 systems often used R-22), or looking for the ANSI standard date on the plate. A 1970s unit and a 1990s unit will have noticeably different refrigerant and efficiency specifications."
 			},
 			{
-				"question": "Does this decoder support older 9-character York formats?",
-				"answer": "No. Older 9-character variations (often missing the leading plant code) are not supported due to high variability and risk of false positives."
+				question: "Does this decoder support older 9-character York formats?",
+				answer: "No. Older 9-character York serial numbers — which are missing the leading plant code — are not supported. These shorter serials carry a significant risk of false positives, so we exclude them to protect accuracy."
 			},
 			{
-				"question": "Does this decoder work for Coleman and Luxaire?",
-				"answer": "Yes. York (acquired by Johnson Controls) shares the modern post-2004 10-character format across its alias brands, including Coleman, Luxaire, Champion, and Evcon."
+				question: "Does this decoder work for Coleman and Luxaire?",
+				answer: "Yes. York (now under Johnson Controls) shares the modern post-2004 10-character format with its related brands, including Coleman, Luxaire, Champion, and Evcon."
 			},
 			{
-				"question": "Does this tool decode York water heater serial numbers?",
-				"answer": "No. This tool is strictly designed for residential HVAC equipment (air conditioners, furnaces, heat pumps). Water heaters are out of scope."
+				question: "Does this tool decode York water heater serial numbers?",
+				answer: "No. This tool is designed for residential HVAC equipment — air conditioners, furnaces, and heat pumps. Water heaters are out of scope."
 			}
 		]
 	}
@@ -4366,15 +5366,7 @@ function getAllBrandPages() {
 //#endregion
 //#region src/pages/BrandPage.tsx
 function BrandPageHeader() {
-	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
-		className: "promo-banner",
-		role: "status",
-		children: [
-			"Free forever — no account, no data stored. ",
-			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "Carrier, Goodman, Lennox & Trane" }),
-			" supported now."
-		]
-	}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("nav", {
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_jsx_runtime.Fragment, { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("nav", {
 		className: "nav",
 		"aria-label": "Main navigation",
 		children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
@@ -4429,7 +5421,7 @@ function BrandPageHeader() {
 				]
 			})]
 		})
-	})] });
+	}) });
 }
 function BrandPageFooter() {
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsx)("footer", {
@@ -4532,7 +5524,7 @@ function BrandPageFooter() {
 function BrandPage({ config }) {
 	const [openFaq, setOpenFaq] = (0, react.useState)(null);
 	const structuredData = [
-		buildWebApplicationSchema(canonicalUrl(`/${config.slug}`), config.headline, config.shortDescription),
+		buildWebApplicationSchema(canonicalUrl(`/${config.slug}`), config.headline, config.shortDescriptionSchema || (typeof config.shortDescription === "string" ? config.shortDescription : "")),
 		buildBreadcrumbSchema(config.displayName, config.slug),
 		...config.faqs.length > 0 ? [buildFaqPageSchema(config.faqs)] : []
 	];
@@ -4627,13 +5619,25 @@ function BrandPage({ config }) {
 							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h2", {
 								className: "s-head",
 								id: "where-to-find",
-								children: "Where to find the serial number"
+								children: config.headings?.whereToFind || "Where to find the serial number"
 							}),
 							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 								className: "s-sub",
 								children: config.ratingPlateLocation
 							})
 						]
+					})
+				}),
+				config.customContent && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("section", {
+					className: "section",
+					"aria-labelledby": "how-it-works",
+					children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+						className: "section-inner",
+						style: {
+							maxWidth: "840px",
+							textAlign: "left"
+						},
+						children: config.customContent
 					})
 				}),
 				config.ambiguity && /* @__PURE__ */ (0, react_jsx_runtime.jsx)("section", {
@@ -4681,7 +5685,7 @@ function BrandPage({ config }) {
 							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h2", {
 								className: "s-head",
 								id: "format-guide",
-								children: "Supported Formats"
+								children: config.headings?.supportedFormats || "Supported Formats"
 							}),
 							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 								style: {
@@ -4790,7 +5794,7 @@ function BrandPage({ config }) {
 							}),
 							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h2", {
 								className: "s-head",
-								children: "Frequently Asked Questions"
+								children: config.headings?.faqs || "Frequently Asked Questions"
 							}),
 							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
 								className: "faq-list",
@@ -4802,6 +5806,7 @@ function BrandPage({ config }) {
 										className: `faq-q ${openFaq === idx ? "open" : ""}`,
 										onClick: () => toggleFaq(idx),
 										"aria-expanded": openFaq === idx,
+										"aria-controls": `faq-ans-brand-${idx}`,
 										children: [faq.question, /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
 											className: "faq-chevron",
 											width: "18",
@@ -4818,6 +5823,7 @@ function BrandPage({ config }) {
 											})
 										})]
 									}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+										id: `faq-ans-brand-${idx}`,
 										className: `faq-a ${openFaq === idx ? "open" : ""}`,
 										role: "region",
 										children: faq.answer
@@ -4975,191 +5981,205 @@ function BrandPage({ config }) {
 }
 //#endregion
 //#region src/pages/NotFoundPage.tsx
-/**
-* NotFoundPage — 404 catch-all.
-*
-* Rendered when no route matches. Does NOT redirect to homepage.
-* Provides a clear message and a link back to the decoder.
-*/
 function NotFoundPage() {
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
-		/* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_helmet_async.Helmet, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("title", { children: "Page Not Found | SerialAge" }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("meta", {
+		/* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_helmet_async.Helmet, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("title", { children: `Page Not Found | ${OG_SITE_NAME}` }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("meta", {
 			name: "robots",
 			content: "noindex"
 		})] }),
-		/* @__PURE__ */ (0, react_jsx_runtime.jsx)("header", {
-			className: "site-header",
-			role: "banner",
+		/* @__PURE__ */ (0, react_jsx_runtime.jsx)("nav", {
+			className: "nav",
+			"aria-label": "Main navigation",
 			children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
-				className: "site-header__inner",
-				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("svg", {
-					className: "site-header__icon",
-					viewBox: "0 0 24 24",
-					fill: "none",
-					stroke: "currentColor",
-					strokeWidth: "1.75",
-					strokeLinecap: "round",
-					strokeLinejoin: "round",
-					"aria-hidden": "true",
-					focusable: "false",
-					children: [
-						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { d: "M3 7V5a2 2 0 0 1 2-2h2" }),
-						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { d: "M17 3h2a2 2 0 0 1 2 2v2" }),
-						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { d: "M21 17v2a2 2 0 0 1-2 2h-2" }),
-						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { d: "M7 21H5a2 2 0 0 1-2-2v-2" }),
-						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("line", {
-							x1: "7",
-							y1: "12",
-							x2: "17",
-							y2: "12"
+				className: "nav-inner",
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("a", {
+					className: "nav-logo",
+					href: "/",
+					"aria-label": `${OG_SITE_NAME} home`,
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+						className: "nav-logo-mark",
+						"aria-hidden": "true",
+						children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
+							width: "18",
+							height: "18",
+							viewBox: "0 0 18 18",
+							fill: "none",
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
+								d: "M9 2v14M2 9h14M4.5 4.5l9 9M13.5 4.5l-9 9",
+								stroke: "#ffffff",
+								strokeWidth: "1.9",
+								strokeLinecap: "round"
+							})
 						})
-					]
-				}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_router_dom.Link, {
-					to: "/",
-					className: "site-header__wordmark",
-					"aria-label": "SerialAge — Home",
-					children: ["Serial", /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
-						className: "site-header__wordmark-accent",
-						children: "Sense"
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+						className: "nav-logo-text",
+						children: OG_SITE_NAME
 					})]
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+					className: "nav-right",
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("a", {
+						className: "nav-link",
+						href: "/",
+						children: "Decoder"
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ThemeToggle, {})]
 				})]
 			})
 		}),
 		/* @__PURE__ */ (0, react_jsx_runtime.jsx)("main", {
-			className: "site-main not-found-main",
 			id: "main-content",
-			children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
-				className: "not-found-content",
-				children: [
-					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
-						className: "not-found-code",
-						"aria-hidden": "true",
-						children: "404"
-					}),
-					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h1", {
-						className: "not-found-heading",
-						children: "Page not found"
-					}),
-					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
-						className: "not-found-body",
-						children: "We couldn’t find the page you were looking for. It may have moved or the URL may be incorrect."
-					}),
-					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_router_dom.Link, {
-						to: "/",
-						className: "btn-decode not-found-cta",
-						children: "Go to the decoder"
-					})
-				]
+			children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("section", {
+				className: "section",
+				style: {
+					paddingTop: "80px",
+					paddingBottom: "80px"
+				},
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+					className: "section-inner",
+					style: { maxWidth: "800px" },
+					children: [
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
+							style: {
+								fontSize: "120px",
+								fontWeight: "bold",
+								margin: "0 0 16px",
+								color: "var(--mute)",
+								opacity: .2,
+								lineHeight: 1
+							},
+							children: "404"
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h1", {
+							className: "hero-h1",
+							style: {
+								fontSize: "48px",
+								marginBottom: "24px"
+							},
+							children: "Page not found"
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
+							className: "hero-sub",
+							style: {
+								textAlign: "center",
+								margin: "0 auto 40px",
+								maxWidth: "100%"
+							},
+							children: "We couldn’t find the page you were looking for. It may have moved or the URL may be incorrect."
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+							className: "article-content",
+							style: {
+								display: "flex",
+								justifyContent: "center"
+							},
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("a", {
+								className: "btn-primary",
+								href: "/",
+								children: "Go to the decoder"
+							})
+						})
+					]
+				})
 			})
 		}),
-		/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("footer", {
-			className: "site-footer",
-			role: "contentinfo",
-			children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", { children: "Results are derived from public manufacturer documentation. Always verify against the physical rating plate before replacing equipment." }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_router_dom.Link, {
-				to: "/privacy",
-				className: "footer-privacy-link",
-				children: "Privacy Policy"
-			}) })]
-		})
+		/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Footer, {})
 	] });
 }
 //#endregion
 //#region src/pages/PrivacyPage.tsx
 function PrivacyPage() {
-	const brandPages = getAllBrandPages();
 	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
 		/* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_helmet_async.Helmet, { children: [
-			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("title", { children: "Privacy Policy | SerialAge" }),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("title", { children: `Privacy Policy | ${OG_SITE_NAME}` }),
 			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("meta", {
 				name: "description",
-				content: "Privacy Policy for SerialAge. We do not store, track, or transmit your serial numbers."
+				content: `Privacy Policy for ${OG_SITE_NAME}. We do not store, track, or transmit your serial numbers.`
 			}),
 			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("link", {
 				rel: "canonical",
-				href: "https://serialage.com/privacy"
+				href: canonicalUrl("/privacy")
 			})
 		] }),
-		/* @__PURE__ */ (0, react_jsx_runtime.jsx)("header", {
-			className: "site-header",
-			role: "banner",
+		/* @__PURE__ */ (0, react_jsx_runtime.jsx)("nav", {
+			className: "nav",
+			"aria-label": "Main navigation",
 			children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
-				className: "site-header__inner",
-				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("svg", {
-					className: "site-header__icon",
-					viewBox: "0 0 24 24",
-					fill: "none",
-					stroke: "currentColor",
-					strokeWidth: "1.75",
-					strokeLinecap: "round",
-					strokeLinejoin: "round",
-					"aria-hidden": "true",
-					focusable: "false",
-					children: [
-						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { d: "M3 7V5a2 2 0 0 1 2-2h2" }),
-						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { d: "M17 3h2a2 2 0 0 1 2 2v2" }),
-						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { d: "M21 17v2a2 2 0 0 1-2 2h-2" }),
-						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", { d: "M7 21H5a2 2 0 0 1-2-2v-2" }),
-						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("line", {
-							x1: "7",
-							y1: "12",
-							x2: "17",
-							y2: "12"
+				className: "nav-inner",
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("a", {
+					className: "nav-logo",
+					href: "/",
+					"aria-label": `${OG_SITE_NAME} home`,
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+						className: "nav-logo-mark",
+						"aria-hidden": "true",
+						children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("svg", {
+							width: "18",
+							height: "18",
+							viewBox: "0 0 18 18",
+							fill: "none",
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("path", {
+								d: "M9 2v14M2 9h14M4.5 4.5l9 9M13.5 4.5l-9 9",
+								stroke: "#ffffff",
+								strokeWidth: "1.9",
+								strokeLinecap: "round"
+							})
 						})
-					]
-				}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_router_dom.Link, {
-					to: "/",
-					className: "site-header__wordmark",
-					"aria-label": "SerialAge — Home",
-					children: ["Serial", /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
-						className: "site-header__wordmark-accent",
-						children: "Sense"
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("span", {
+						className: "nav-logo-text",
+						children: OG_SITE_NAME
 					})]
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+					className: "nav-right",
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("a", {
+						className: "nav-link",
+						href: "/",
+						children: "Decoder"
+					}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)(ThemeToggle, {})]
 				})]
 			})
 		}),
 		/* @__PURE__ */ (0, react_jsx_runtime.jsx)("main", {
-			className: "site-main not-found-main",
 			id: "main-content",
-			children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
-				className: "not-found-content",
-				children: [
-					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h1", {
-						className: "not-found-heading",
-						style: { fontSize: "2rem" },
-						children: "Privacy Policy"
-					}),
-					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
-						className: "not-found-body",
-						children: "All decoding happens on your device. We do not store, track, or transmit your serial numbers."
-					}),
-					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_router_dom.Link, {
-						to: "/",
-						className: "btn-decode not-found-cta",
-						children: "Go to the decoder"
-					})
-				]
+			children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("section", {
+				className: "section",
+				style: {
+					paddingTop: "80px",
+					paddingBottom: "80px"
+				},
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+					className: "section-inner",
+					style: { maxWidth: "800px" },
+					children: [
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h1", {
+							className: "hero-h1",
+							style: {
+								fontSize: "48px",
+								marginBottom: "24px"
+							},
+							children: "Privacy Policy"
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
+							className: "hero-sub",
+							style: {
+								textAlign: "left",
+								margin: "0 0 40px 0",
+								maxWidth: "100%"
+							},
+							children: "All decoding happens on your device. We do not store, track, or transmit your serial numbers."
+						}),
+						/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+							className: "article-content",
+							style: { textAlign: "left" },
+							children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("a", {
+								className: "btn-primary",
+								href: "/",
+								children: "Go to the decoder"
+							})
+						})
+					]
+				})
 			})
 		}),
-		/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("footer", {
-			className: "site-footer",
-			role: "contentinfo",
-			children: [
-				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("nav", {
-					className: "footer-brand-nav",
-					"aria-label": "Brand decoders",
-					children: brandPages.map((b) => /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_router_dom.Link, {
-						to: `/${b.slug}`,
-						children: [b.displayName, " Serial Decoder"]
-					}, b.slug))
-				}),
-				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", { children: "Results are derived from public manufacturer documentation. Always verify against the physical rating plate before replacing equipment." }),
-				/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_router_dom.Link, {
-					to: "/privacy",
-					className: "footer-privacy-link",
-					children: "Privacy Policy"
-				}) })
-			]
-		})
+		/* @__PURE__ */ (0, react_jsx_runtime.jsx)(Footer, {})
 	] });
 }
 //#endregion
@@ -5653,6 +6673,190 @@ function MethodologyPage() {
 	] });
 }
 //#endregion
+//#region src/pages/PayneWarrantyGuidePage.tsx
+function PayneWarrantyGuidePage() {
+	return /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_helmet_async.Helmet, { children: [
+		/* @__PURE__ */ (0, react_jsx_runtime.jsx)("title", { children: "Payne Secondary Heat Exchanger Warranty Guide (1993–2011) | SerialAge" }),
+		/* @__PURE__ */ (0, react_jsx_runtime.jsx)("meta", {
+			name: "description",
+			content: "Information on the Payne and Carrier secondary heat exchanger enhanced warranty program, including verified model families and serial number boundaries."
+		}),
+		/* @__PURE__ */ (0, react_jsx_runtime.jsx)("link", {
+			rel: "canonical",
+			href: "https://serialage.com/payne-secondary-heat-exchanger-warranty"
+		})
+	] }), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("main", {
+		className: "content-page",
+		children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+			className: "container",
+			children: [/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("header", {
+				className: "page-header",
+				style: {
+					textAlign: "center",
+					marginBottom: "40px"
+				},
+				children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h1", {
+					className: "page-title",
+					children: "Payne Secondary Heat Exchanger Warranty Guide (1993–2011)"
+				}), /* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
+					className: "page-subtitle",
+					style: {
+						maxWidth: "800px",
+						margin: "0 auto",
+						color: "var(--slate)"
+					},
+					children: "A factual guide to the documented enhanced warranty program for specific high-efficiency condensing gas furnaces."
+				})]
+			}), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("div", {
+				className: "prose",
+				children: [
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", {
+						className: "guide-section",
+						children: [
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h2", { children: "What is the Enhanced Warranty Program?" }),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", { children: "In 2009 (and later updated), Carrier Corporation issued service bulletins (including DSB 09-0022 and SMB 19-0022) offering enhanced warranty coverage for specific high-efficiency (90%+) condensing gas furnaces due to potential secondary heat exchanger failures. Because Payne is a Carrier brand using identical internal components and serial number logic, certain Payne models were explicitly included in this program." }),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("p", { children: [
+								"This program ",
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "does not" }),
+								" imply that every Payne furnace manufactured between 1993 and 2011 is affected or covered. The published program applies only to ",
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "specific Payne furnace models" }),
+								" and a ",
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "specific serial-number range" }),
+								"."
+							] })
+						]
+					}),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", {
+						className: "guide-section",
+						children: [
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h2", { children: "Verified Eligible Payne Models" }),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", { children: "Based on published documentation, only the following specific Payne model families are included in the enhanced warranty program. To qualify, your exact model number must start with one of these prefixes:" }),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("ul", {
+								style: {
+									background: "var(--surface-sunken)",
+									padding: "24px 48px",
+									borderRadius: "var(--r-lg)",
+									listStyleType: "disc",
+									margin: "24px 0"
+								},
+								children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("li", { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "490A" }) }),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("li", { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "PG9M" }) }),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("li", { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "PG9U" }) })
+								]
+							}),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
+								style: {
+									fontStyle: "italic",
+									color: "var(--slate)"
+								},
+								children: "Note: Models such as the PG8M (80% efficiency) are not part of this specific secondary heat-exchanger bulletin."
+							})
+						]
+					}),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", {
+						className: "guide-section",
+						children: [
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h2", { children: "Verified Serial Number Boundaries" }),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", { children: "In addition to matching a verified model family, your furnace's serial number must fall strictly within the published production boundary:" }),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+								style: {
+									background: "var(--surface-sunken)",
+									padding: "24px",
+									borderRadius: "var(--r-lg)",
+									margin: "24px 0",
+									textAlign: "center"
+								},
+								children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", {
+									style: {
+										fontSize: "18px",
+										color: "var(--text)"
+									},
+									children: "2993A00001 \xA0 to \xA0 5211A99999"
+								})
+							}),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("p", { children: [
+								"This serial number range corresponds to units manufactured between Week 29 of 1993 and Week 52 of 2011. Both the model number and the serial number ",
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "must" }),
+								" be checked to determine if a specific unit falls under the published program guidelines."
+							] })
+						]
+					}),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", {
+						className: "guide-section",
+						children: [
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h2", { children: "Manufacture Date vs. Installation Date" }),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("p", { children: [
+								"The serial number on your Payne furnace strictly encodes the ",
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "manufacture date" }),
+								" (when the unit left the factory). However, warranty program coverage limits (e.g., 20 years from installation) frequently depend on the original ",
+								/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "installation date" }),
+								"."
+							] }),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", { children: "If a unit was installed months after it was manufactured, the installation date documented on original paperwork or warranty registration is the legal baseline for coverage." })
+						]
+					}),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", {
+						className: "guide-section",
+						style: {
+							borderLeft: "4px solid var(--accent-orange)",
+							paddingLeft: "24px",
+							marginTop: "40px",
+							background: "var(--surface-sunken)",
+							padding: "24px"
+						},
+						children: [
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h2", { children: "Professional Verification Required" }),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", { children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "SerialAge cannot confirm legal warranty eligibility and does not diagnose equipment." }) }),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", { children: "A matching model and serial number do not guarantee warranty coverage, nor do they confirm that your specific equipment has failed. All warranty claims and equipment diagnostics must be verified by Payne, Carrier, or an authorized HVAC professional physically inspecting the unit." })
+						]
+					}),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("section", {
+						className: "guide-section",
+						style: {
+							marginTop: "40px",
+							paddingTop: "40px",
+							borderTop: "1px solid var(--border)"
+						},
+						children: [
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h2", { children: "Next Steps & Official Sources" }),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", { children: "If you believe your furnace falls within these parameters, contact an authorized Payne or Carrier dealer to schedule an inspection and verify your coverage options." }),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("ul", {
+								style: { marginBottom: "40px" },
+								children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("li", { children: [
+									"Read more about our research processes on our ",
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_router_dom.Link, {
+										to: "/methodology",
+										children: "Methodology Page"
+									}),
+									"."
+								] })
+							}),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+								style: { textAlign: "center" },
+								children: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_router_dom.Link, {
+									to: "/payne-serial-number-decoder",
+									className: "btn-primary",
+									style: {
+										display: "inline-block",
+										padding: "16px 32px",
+										background: "var(--brand)",
+										color: "white",
+										textDecoration: "none",
+										borderRadius: "var(--r-md)",
+										fontWeight: 600
+									},
+									children: "Return to the Payne Serial Number Decoder"
+								})
+							})
+						]
+					})
+				]
+			})]
+		})
+	})] });
+}
+//#endregion
 //#region src/Router.tsx
 /**
 * Router — all application route definitions.
@@ -5687,6 +6891,10 @@ function AppRouter() {
 		/* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_router_dom.Route, {
 			path: "/methodology",
 			element: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(MethodologyPage, {})
+		}),
+		/* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_router_dom.Route, {
+			path: "/payne-secondary-heat-exchanger-warranty",
+			element: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(PayneWarrantyGuidePage, {})
 		}),
 		/* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_router_dom.Route, {
 			path: "*",

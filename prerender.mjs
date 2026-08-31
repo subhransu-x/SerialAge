@@ -351,7 +351,7 @@ async function main() {
   console.log(`[prerender] Brand routes: ${brandSlugs.map((s) => `/${s}`).join(', ')}`);
 
   // Routes to prerender (404 rendered last — it's not indexable)
-  const publicRoutes = ['/', '/privacy', '/methodology', ...brandSlugs.map((s) => `/${s}`)];
+  const publicRoutes = ['/', '/privacy', '/methodology', '/payne-secondary-heat-exchanger-warranty', ...brandSlugs.map((s) => `/${s}`)];
   const allRoutes = [...publicRoutes, '/404'];
 
   // Read the production index.html template

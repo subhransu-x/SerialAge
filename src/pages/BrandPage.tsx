@@ -18,9 +18,6 @@ import {
 function BrandPageHeader() {
   return (
     <>
-      <div className="promo-banner" role="status">
-        Free forever — no account, no data stored. <strong>Carrier, Goodman, Lennox &amp; Trane</strong> supported now.
-      </div>
       <nav className="nav" aria-label="Main navigation">
         <div className="nav-inner">
           <Link className="nav-logo" to="/" aria-label="SerialAge home">
@@ -107,7 +104,7 @@ export function BrandPage({ config }: BrandPageProps) {
   const pageUrl = canonicalUrl(`/${config.slug}`);
 
   const structuredData = [
-    buildWebApplicationSchema(pageUrl, config.headline, config.shortDescription),
+    buildWebApplicationSchema(pageUrl, config.headline, config.shortDescriptionSchema || (typeof config.shortDescription === 'string' ? config.shortDescription : '')),
     buildBreadcrumbSchema(config.displayName, config.slug),
     ...(config.faqs.length > 0 ? [buildFaqPageSchema(config.faqs)] : []),
   ];
@@ -163,10 +160,19 @@ export function BrandPage({ config }: BrandPageProps) {
         <section className="section section-alt" aria-labelledby="where-to-find">
           <div className="section-inner">
             <div className="s-eye">Data Plate</div>
-            <h2 className="s-head" id="where-to-find">Where to find the serial number</h2>
+            <h2 className="s-head" id="where-to-find">{config.headings?.whereToFind || "Where to find the serial number"}</h2>
             <p className="s-sub">{config.ratingPlateLocation}</p>
           </div>
         </section>
+
+        {/* CUSTOM CONTENT */}
+        {config.customContent && (
+          <section className="section" aria-labelledby="how-it-works">
+            <div className="section-inner" style={{ maxWidth: '840px', textAlign: 'left' }}>
+              {config.customContent}
+            </div>
+          </section>
+        )}
 
         {/* AMBIGUITY WARNING */}
         {config.ambiguity && (
@@ -186,7 +192,7 @@ export function BrandPage({ config }: BrandPageProps) {
           <section className="section" aria-labelledby="format-guide">
             <div className="section-inner">
               <div className="s-eye">Format Guide</div>
-              <h2 className="s-head" id="format-guide">Supported Formats</h2>
+              <h2 className="s-head" id="format-guide">{config.headings?.supportedFormats || "Supported Formats"}</h2>
               
               <div style={{ display: 'grid', gap: '24px', maxWidth: '840px', margin: '32px auto 0', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
                 {config.supportedFormats.map((fmt, i) => (
@@ -234,7 +240,7 @@ export function BrandPage({ config }: BrandPageProps) {
           <section className="section" id="faq">
             <div className="section-inner" style={{ maxWidth: '840px' }}>
               <div className="s-eye">FAQ</div>
-              <h2 className="s-head">Frequently Asked Questions</h2>
+              <h2 className="s-head">{config.headings?.faqs || "Frequently Asked Questions"}</h2>
               <div className="faq-list" role="list">
                 {config.faqs.map((faq, idx) => (
                   <div className="faq-item" role="listitem" key={idx}>
@@ -242,13 +248,14 @@ export function BrandPage({ config }: BrandPageProps) {
                       className={`faq-q ${openFaq === idx ? 'open' : ''}`} 
                       onClick={() => toggleFaq(idx)} 
                       aria-expanded={openFaq === idx}
+                      aria-controls={`faq-ans-brand-${idx}`}
                     >
                       {faq.question}
                       <svg className="faq-chevron" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
                         <path d="M4.5 6.75L9 11.25l4.5-4.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                     </button>
-                    <div className={`faq-a ${openFaq === idx ? 'open' : ''}`} role="region">
+                    <div id={`faq-ans-brand-${idx}`} className={`faq-a ${openFaq === idx ? 'open' : ''}`} role="region">
                       {faq.answer}
                     </div>
                   </div>

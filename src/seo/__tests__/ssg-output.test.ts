@@ -122,6 +122,73 @@ describe('SSG Raw HTML Output', () => {
         }
       });
 
+      // Phase 9D: FAQ schema sync tests
+      if (route === '/') {
+        it('homepage renders exactly 6 FAQ items in static HTML', () => {
+          const appRoot = rootNode.querySelector('#root');
+          expect(appRoot).toBeDefined();
+          const faqButtons = appRoot.querySelectorAll('.faq-q');
+          expect(faqButtons.length).toBe(6);
+        });
+      }
+
+      if (route !== '/' && route !== '/methodology' && route !== '/privacy') {
+        it('FAQPage JSON-LD mainEntity count matches visible FAQ item count', () => {
+          const head = rootNode.querySelector('head');
+          const jsonLdScripts = head.querySelectorAll('script[type="application/ld+json"]');
+          
+          let faqPageSchema: { '@type': string; mainEntity?: unknown[] } | null = null;
+          for (const script of jsonLdScripts) {
+            const parsed = JSON.parse(script.textContent);
+            if (parsed['@type'] === 'FAQPage') {
+              faqPageSchema = parsed;
+              break;
+            }
+          }
+          
+          // All brand pages must have a FAQPage schema
+          expect(faqPageSchema).not.toBeNull();
+          const schemaCount = faqPageSchema?.mainEntity?.length ?? 0;
+          expect(schemaCount).toBeGreaterThan(0);
+          
+          // The visible FAQ button count must match the schema question count
+          const appRoot = rootNode.querySelector('#root');
+          const faqButtons = appRoot.querySelectorAll('.faq-q');
+          expect(faqButtons.length).toBe(schemaCount);
+        });
+
+        it('FAQPage JSON-LD question names appear in visible FAQ content', () => {
+          const head = rootNode.querySelector('head');
+          const jsonLdScripts = head.querySelectorAll('script[type="application/ld+json"]');
+          
+          let faqPageSchema: { '@type': string; mainEntity?: Array<{ name: string }> } | null = null;
+          for (const script of jsonLdScripts) {
+            const parsed = JSON.parse(script.textContent);
+            if (parsed['@type'] === 'FAQPage') {
+              faqPageSchema = parsed;
+              break;
+            }
+          }
+          
+          if (!faqPageSchema?.mainEntity) return;
+          
+          const appRoot = rootNode.querySelector('#root');
+          const faqButtons = appRoot.querySelectorAll('.faq-q');
+          const visibleTexts: string[] = Array.from(faqButtons).map(
+            (btn: unknown) => (btn as { textContent: string }).textContent.trim().replace(/\s+/g, ' ')
+          );
+          
+          for (const entity of faqPageSchema.mainEntity) {
+            const questionName = entity.name.trim();
+            const found = visibleTexts.some((t) => t.includes(questionName));
+            expect(
+              found,
+              `Schema question not found in visible FAQ buttons: "${questionName}"`
+            ).toBe(true);
+          }
+        });
+      }
+
       it('has no SEO metadata incorrectly leaked inside #root', () => {
         const appRoot = rootNode.querySelector('#root');
         expect(appRoot).toBeDefined();
@@ -176,6 +243,30 @@ describe('SSG Raw HTML Output', () => {
           }
         });
       }
+
+      // UI Verification for Payne Model Number Input (Step 5)
+      // Only run on routes that actually contain the DecoderWidget (homepage and brand pages)
+      if (route === '/' || route.endsWith('-serial-number-decoder')) {
+        it('conditionally renders Model Number input only for Payne', () => {
+          const appRoot = rootNode.querySelector('#root');
+          expect(appRoot).toBeDefined();
+
+          const modelInput = appRoot.querySelector('input#inp-model');
+          const serialInput = appRoot.querySelector('input#inp-serial');
+          
+          // Serial number input MUST always exist
+          expect(serialInput).not.toBeNull();
+
+          if (route === '/payne-serial-number-decoder') {
+            // Payne must have the model input
+            expect(modelInput).not.toBeNull();
+          } else {
+            // Other manufacturers must NOT have the model input
+            expect(modelInput).toBeNull();
+          }
+        });
+      }
+        
     });
   }
 });

@@ -13,24 +13,28 @@ export default function App() {
 
   const faqs = [
     {
-      q: "What is an HVAC serial number?",
-      a: "A serial number is a unique string of letters and numbers assigned by the manufacturer at the factory. Unlike a model number, which describes what the unit is, a serial number encodes when and where it was built — making it the key to finding the manufacture date."
+      q: "How old is my HVAC unit by serial number?",
+      a: "SerialAge decodes the manufacture date embedded in your unit's serial number. Each manufacturer encodes the date differently — once decoded, the age is calculated from today. Select your manufacturer above, enter the serial number from your data plate, and you'll see the manufacture date and current age instantly."
     },
     {
-      q: "Where can I find the serial number on my equipment?",
-      a: "It is printed on the data plate (a metal or foil sticker). On outdoor air conditioners and heat pumps, look on the side or back of the unit near the refrigerant pipes. On indoor furnaces and air handlers, check inside the front panel door. The data plate also shows the model number — make sure you enter the serial number, not the model number."
+      q: "Where can I find the serial number on my HVAC equipment?",
+      a: "The serial number is printed on the data plate — a metal or foil sticker on the unit. On outdoor air conditioners and heat pumps, look on the side or back of the cabinet near the refrigerant pipes. On indoor furnaces and air handlers, check inside the front panel door. The data plate also shows the model number — make sure you enter the serial number, not the model number."
     },
     {
-      q: "Can I use my model number to find the age?",
-      a: "No. Model numbers identify the product family, size, and efficiency rating of the unit, but they do not encode a manufacture date. You must use the serial number."
+      q: "What is the difference between a serial number and a model number?",
+      a: "The model number describes what the unit is — its product family, capacity, and efficiency rating. The serial number identifies the specific unit and encodes when it was manufactured. Both appear on the same data plate, usually labeled 'Model No.' and 'Serial No.' To find the age of your equipment, you need the serial number."
+    },
+    {
+      q: "How do I read an HVAC serial number?",
+      a: "There is no single universal format — each manufacturer encodes the date differently. For example, Carrier encodes week and year in the first four digits (WWYY), while Goodman uses year and month (YYMM). SerialAge handles these differences automatically: select your manufacturer and enter your serial number exactly as printed."
     },
     {
       q: "Is the manufacture date the same as the installation date?",
-      a: "No. The manufacture date is when the unit was built at the factory. Equipment may sit in a warehouse or distributor inventory for weeks or months before being installed. Warranty coverage may depend on the installation date, registration, and manufacturer terms — check the manufacturer's documentation for details."
+      a: "No. The manufacture date is when the unit left the factory. Equipment can sit in a warehouse or distributor inventory for weeks or months before being installed. Warranty terms may depend on the installation date and registration — check the manufacturer's documentation for details."
     },
     {
-      q: "Does the serial number contain my personal information?",
-      a: "No. Serial numbers only contain factory data: manufacture date, plant code, and a production sequence number. They do not contain homeowner names, addresses, or any personal registration data."
+      q: "What if SerialAge cannot decode my serial number?",
+      a: "If the result is unsupported or unrecognized, the serial number format either predates the documented era for that manufacturer, uses a variation we have not verified, or may have been entered with a typo. We will not guess — if we cannot decode it reliably, we say so. Check the data plate carefully and re-enter the serial exactly as printed. For older equipment, the data plate sometimes includes a printed manufacture date you can use directly."
     }
   ];
 
@@ -120,28 +124,7 @@ export default function App() {
           <h2 className="s-head">Common questions</h2>
           <p className="s-sub">Straightforward answers about how the decoder works and what the results mean.</p>
           <div className="faq-list" role="list">
-            {[
-              {
-                q: "What is an HVAC serial number?",
-                a: "A serial number is a unique string of letters and numbers assigned by the manufacturer at the factory. Unlike a model number, which describes what the unit is, a serial number encodes when and where it was built — making it the key to finding the manufacture date."
-              },
-              {
-                q: "Where can I find the serial number on my equipment?",
-                a: "It is printed on the data plate (a metal or foil sticker). On outdoor air conditioners and heat pumps, look on the side or back of the unit near the refrigerant pipes. On indoor furnaces and air handlers, check inside the front panel door. The data plate also shows the model number — make sure you enter the serial number, not the model number."
-              },
-              {
-                q: "Can I use my model number to find the age?",
-                a: "No. Model numbers identify the product family, size, and efficiency rating of the unit, but they do not encode a manufacture date. You must use the serial number."
-              },
-              {
-                q: "Is the manufacture date the same as the installation date?",
-                a: "No. The manufacture date is when the unit was built at the factory. Equipment may sit in a warehouse or distributor inventory for weeks or months before being installed. Warranty coverage may depend on the installation date, registration, and manufacturer terms — check the manufacturer's documentation for details."
-              },
-              {
-                q: "Does the serial number contain my personal information?",
-                a: "No. Serial numbers only contain factory data: manufacture date, plant code, and a production sequence number. They do not contain homeowner names, addresses, or any personal registration data."
-              }
-            ].map((faq, idx) => (
+            {faqs.map((faq, idx) => (
               <div className="faq-item" role="listitem" key={idx}>
                 <button 
                   className={`faq-q ${openFaq === idx ? 'open' : ''}`} 

@@ -160,9 +160,9 @@ describe('Brand page configs', () => {
         expect(config!.pageTitle).toContain('SerialAge');
       });
 
-      it('pageTitle matches spec pattern "[Brand] Serial Number Decoder — Find Equipment Age | SerialAge"', () => {
+      it('pageTitle matches spec pattern "[Brand] Serial Number Decoder — Find (Equipment|HVAC) Age | SerialAge"', () => {
         expect(config!.pageTitle).toMatch(
-          /Serial Number Decoder — Find Equipment Age \| SerialAge$/,
+          /Serial Number Decoder — Find (Equipment|HVAC) Age \| SerialAge$/,
         );
       });
 
@@ -194,10 +194,11 @@ describe('Brand page configs', () => {
         }
       });
 
-      it('all FAQ answers are non-empty strings', () => {
+      it('all FAQ answers are non-empty', () => {
         for (const faq of config!.faqs) {
-          expect(typeof faq.answer).toBe('string');
-          expect(faq.answer.length).toBeGreaterThan(0);
+          const content = faq.answerSchema || (typeof faq.answer === 'string' ? faq.answer : null);
+          expect(typeof content).toBe('string');
+          expect(content!.length).toBeGreaterThan(0);
         }
       });
 

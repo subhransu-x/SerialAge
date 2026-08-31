@@ -5,6 +5,7 @@ import { ResultView } from './ResultView';
 import { ErrorView } from './ErrorView';
 import { RatingPlateHelp } from './RatingPlateHelp';
 import { trackEvent } from '../utils/analytics';
+import { evaluateEnhancedWarranty } from '../decoder/engine/warranty';
 
 const REGISTERED_MANUFACTURERS = getAllManufacturers();
 
@@ -26,8 +27,10 @@ export function DecoderWidget({ defaultManufacturerId }: DecoderWidgetProps = {}
   });
 
   const [serial, setSerial] = useState('');
+  const [modelNumber, setModelNumber] = useState('');
   const [validationMsg, setValidationMsg] = useState<string | null>(null);
   const [view, setView] = useState<ViewState>({ kind: 'idle' });
+  const [warrantyResult, setWarrantyResult] = useState<any>(null);
   const [showHelp, setShowHelp] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -81,6 +84,13 @@ export function DecoderWidget({ defaultManufacturerId }: DecoderWidgetProps = {}
         trackEvent('decode_error', { brand: manufacturerId, error_type: result.status });
       }
 
+      let warning = null;
+      if (manufacturerId === 'payne') {
+        const normalizedModel = modelNumber.trim().toUpperCase().replace(/[\s\-_]/g, '');
+        warning = evaluateEnhancedWarranty(manufacturerId, trimmed, normalizedModel || undefined);
+      }
+      setWarrantyResult(warning);
+
       setView({ kind: 'result', result, rawInput: trimmed });
 
       setTimeout(() => {
@@ -93,6 +103,8 @@ export function DecoderWidget({ defaultManufacturerId }: DecoderWidgetProps = {}
   function handleDecodeAnother() {
     setView({ kind: 'idle' });
     setSerial('');
+    setModelNumber('');
+    setWarrantyResult(null);
     setValidationMsg(null);
     requestAnimationFrame(() => inputRef.current?.focus());
   }
@@ -108,7 +120,7 @@ export function DecoderWidget({ defaultManufacturerId }: DecoderWidgetProps = {}
 
 
   return (
-    <div className="decoder-wrap">
+    <div className="decoder-wrap" data-warranty={warrantyResult?.kind || 'none'}>
       <div className="decoder-card">
         <div className="dc-header">
           <span className="dc-label">Serial Number Decoder</span>
@@ -138,6 +150,32 @@ export function DecoderWidget({ defaultManufacturerId }: DecoderWidgetProps = {}
               </select>
             </div>
           </div>
+          {manufacturerId === 'payne' && (
+            <div className="form-group">
+              <label className="form-label" htmlFor="inp-model">Model Number <span style={{ fontSize: '13px', color: 'var(--slate)', fontWeight: 'normal' }}>(Optional)</span></label>
+              <input
+                className="form-input"
+                id="inp-model"
+                type="text"
+                placeholder="e.g. PG9MAA048080"
+                autoCapitalize="characters"
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck="false"
+                aria-label="Enter model number"
+                value={modelNumber}
+                onChange={(e) => {
+                  setModelNumber(e.target.value);
+                  if (validationMsg) setValidationMsg(null);
+                }}
+                onKeyDown={handleKeyDown}
+                disabled={view.kind === 'scanning'}
+              />
+              <div style={{ fontSize: '12px', marginTop: '6px', color: 'var(--slate)' }}>
+                Model number — usually shown on the same equipment data plate as the serial number.
+              </div>
+            </div>
+          )}
           <div className="form-group">
             <label className="form-label" htmlFor="inp-serial">Serial Number</label>
             <div style={{ position: 'relative', borderRadius: 'var(--r-xl)', overflow: 'hidden' }}>
@@ -215,6 +253,7 @@ export function DecoderWidget({ defaultManufacturerId }: DecoderWidgetProps = {}
           isSuccessResult(view.result) ? (
             <ResultView
               result={view.result}
+              warrantyResult={warrantyResult}
               onDecodeAnother={handleDecodeAnother}
             />
           ) : (

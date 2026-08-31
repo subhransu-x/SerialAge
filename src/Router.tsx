@@ -20,6 +20,7 @@ import { BrandPage } from './pages/BrandPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { PrivacyPage } from './pages/PrivacyPage';
 import { MethodologyPage } from './pages/MethodologyPage';
+import { PayneWarrantyGuidePage } from './pages/PayneWarrantyGuidePage';
 import { getAllBrandPages } from './data/brandPages';
 
 export function AppRouter() {
@@ -43,6 +44,7 @@ export function AppRouter() {
       {/* Privacy Policy */}
       <Route path="/privacy" element={<PrivacyPage />} />
       <Route path="/methodology" element={<MethodologyPage />} />
+      <Route path="/payne-secondary-heat-exchanger-warranty" element={<PayneWarrantyGuidePage />} />
 
       {/* 404 catch-all — must be the last route */}
       <Route path="*" element={<NotFoundPage />} />
