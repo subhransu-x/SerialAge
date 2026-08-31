@@ -15,7 +15,7 @@ import { canonicalUrl, HOMEPAGE_SEO, SITE_ORIGIN, OG_SITE_NAME } from '../../seo
 import {
   getBrandPageBySlug,
   getAllBrandPages,
-} from '../../data/brandPages';
+} from '../../data/brandPagesConfig';
 import {
   buildWebSiteSchema,
   buildWebApplicationSchema,

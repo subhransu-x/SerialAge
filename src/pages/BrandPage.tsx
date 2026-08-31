@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { DecoderWidget } from '../components/DecoderWidget';
 import { ThemeToggle } from '../components/ThemeToggle';
-import { getAllBrandPages } from '../data/brandPages';
-import type { BrandPageConfig } from '../data/brandPages';
+import { getAllBrandPages } from '../data/brandPagesConfig';
+import type { BrandPageConfig } from '../data/brandPagesConfig';
 import { SEO } from '../seo/SEO';
 import { canonicalUrl } from '../seo/config';
 import {

@@ -22,7 +22,7 @@ import { HelmetProvider, type HelmetServerState } from 'react-helmet-async';
 import { AppRouter } from './Router';
 
 // Re-export so prerender.mjs can derive the route list without hard-coding manufacturers
-export { getAllBrandPages } from './data/brandPages';
+export { getAllBrandPages } from './data/brandPagesConfig';
 
 export interface HelmetContext {
   helmet?: HelmetServerState;

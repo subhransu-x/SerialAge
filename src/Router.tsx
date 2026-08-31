@@ -21,7 +21,7 @@ import { NotFoundPage } from './pages/NotFoundPage';
 import { PrivacyPage } from './pages/PrivacyPage';
 import { MethodologyPage } from './pages/MethodologyPage';
 import { PayneWarrantyGuidePage } from './pages/PayneWarrantyGuidePage';
-import { getAllBrandPages } from './data/brandPages';
+import { getAllBrandPages } from './data/brandPagesConfig';
 
 export function AppRouter() {
   const brandPages = getAllBrandPages();

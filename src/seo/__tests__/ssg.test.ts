@@ -21,7 +21,7 @@ import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { getAllBrandPages, getBrandPageBySlug } from '../../data/brandPages';
+import { getAllBrandPages, getBrandPageBySlug } from '../../data/brandPagesConfig';
 import { SITE_ORIGIN, canonicalUrl } from '../../seo/config';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));

@@ -16,7 +16,7 @@
  */
 
 import { SITE_ORIGIN, OG_SITE_NAME, canonicalUrl } from './config';
-import type { FaqItem } from '../data/brandPages';
+import type { FaqItem } from '../data/brandPagesConfig';
 
 // ---------------------------------------------------------------------------
 // WebSite — homepage only
