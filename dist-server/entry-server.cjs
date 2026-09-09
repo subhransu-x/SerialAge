@@ -291,6 +291,26 @@ var LEGACY_UNSUPPORTED_SOURCES = [{
 	notes: "Confirms existence of 1970s and early 1980s letter-digit formats.",
 	confidence: "verified"
 }];
+var STYLE3_SOURCES = [{
+	name: "Building Intelligence Center",
+	url: "https://building-center.org",
+	dateReviewed: "2026-09-09",
+	notes: "Documents Style 3 format for Carrier/BDP family (1980–1984). US example: W4D14008. Canadian example: 4WD14008. Confirmed skipping O and U. W=September, X=October.",
+	confidence: "verified"
+}, {
+	name: "HeatingPartsCanada.ca",
+	url: "https://heatingpartscanada.ca",
+	dateReviewed: "2026-09-09",
+	notes: "Confirms Style 3 month letter mapping and Canadian format reversal.",
+	confidence: "probable"
+}];
+var STYLE4_SOURCES = [{
+	name: "Building Intelligence Center",
+	url: "https://building-center.org",
+	dateReviewed: "2026-09-09",
+	notes: "Documents Style 4 format for Carrier (Jan 1, 1969 – Dec 31, 1979). A=Jan through L=Dec. Year digit 9=1969 or 1979 (ambiguous). Example: A167890 = Jan 1971.",
+	confidence: "verified"
+}];
 //#endregion
 //#region src/decoder/manufacturers/carrier/formats.ts
 /** Structural regex for WWYY format: 4 digits + 1 letter + 5 digits = 10 chars */
@@ -298,173 +318,454 @@ var WWYY_PATTERN = /^\d{4}[A-Z]\d{5}$/;
 /** Structural regex for YYMM format: 9 digits = 9 chars */
 var YYMM_PATTERN = /^\d{9}$/;
 /**
-* Structural patterns for known unsupported legacy Carrier formats.
-* These match Styles 3, 4, 5, and 6 as documented in the specification.
-*
-* Style 3 (1980–1984): 8 chars, letter-digit or digit-letter start pattern
-*   US format: letter + digit + 6 alphanumeric (e.g., W4D14008)
-*   Canadian: digit + letter + 6 alphanumeric (e.g., 4WD14008)
-*
-* Style 4 (1970s): 7 chars, letter + 6 digits (e.g., A167890)
-*
-* Style 5 (1960s): 7 chars, digit + 6 digits (e.g., 6123456) — ambiguous
-*   with Style 4 length, but all-digit.
-*
-* Style 6 (1960s–1970s): digit(s) + letter + digits (e.g., 46U152456)
-*   Pattern: 1-2 digits + letter + remaining digits, ~9 chars total
+* Style 3 US:  Month letter (M,N,P,Q,R,S,T,V,W,X,Y,Z) + year digit (0-4) + 6 alphanumeric = 8 chars
+* Letters O and U are skipped.
 */
-/** Style 4: letter (A-M, skipping I, used as month code) + digit + 5 digits = 7 chars */
-var STYLE_4_PATTERN = /^[A-M]\d{6}$/;
-/** Style 3 US: letter (M-Z, month code) + digit (0-4, year) + 6 alphanumeric = 8 chars */
-var STYLE_3_US_PATTERN = /^[M-Z]\d[A-Z0-9]{6}$/;
-/** Style 3 Canadian: digit (0-4) + letter (M-Z) + 6 alphanumeric = 8 chars */
-var STYLE_3_CA_PATTERN = /^\d[M-Z][A-Z0-9]{6}$/;
-/** Style 6: 1-2 digits + letter + remaining digits, total 7-10 chars. */
+var STYLE_3_US_PATTERN = /^[MNPQRSTVWXYZ]\d[A-Z0-9]{6}$/;
+/**
+* Style 3 CA:  year digit (0-4) + month letter (M,N,P,Q,R,S,T,V,W,X,Y,Z) + 6 alphanumeric = 8 chars
+*/
+var STYLE_3_CA_PATTERN = /^\d[MNPQRSTVWXYZ][A-Z0-9]{6}$/;
+/**
+* Style 4: Month letter (A-L) + year digit (0-9) + 5 digits = 7 chars
+* A-L = January-December. M belongs to Style 3 — must NOT overlap.
+* Year digit 9 is ambiguous (1969 or 1979). All other digits are unambiguous.
+*/
+var STYLE_4_PATTERN = /^[A-L]\d{6}$/;
+/** Style 6: 1-2 digits + letter + remaining digits — NOT safe to decode, kept as unsupported trap */
 var STYLE_6_PATTERN = /^\d{1,2}[A-Z]\d{4,7}$/;
-/** The unsupported format explanation per the specification. */
-var LEGACY_UNSUPPORTED_EXPLANATION$1 = "Pre-1985 serial numbers cannot be reliably decoded. Check the data plate for a printed manufacture date.";
+/** The unsupported format explanation for Style 6 */
+var STYLE_6_UNSUPPORTED_EXPLANATION = "This serial number matches the Style 6 pattern (1960s–1970s week + letter year code). This format cannot be reliably decoded due to insufficient verified examples and pattern collision risk. Check the data plate for a printed manufacture date.";
 /**
 * Century resolution for 2-digit years in WWYY format.
 *
-* Per carrier_specification.md:
-* - YY >= 85 → 1985–1999 (1900 + YY)
-* - YY < 85  → 2000–2084 (2000 + YY)
+* Updated per Phase 2 research (2026-09-09):
+* - YY >= 80 → 1980–1999 (1900 + YY)
+* - YY <  80 → 2000–2079 (2000 + YY)
 *
-* This threshold is based on the documented fact that Carrier did not
-* use this format before ~1985. Do NOT change without evidence.
+* Sources confirm WWYY format in use from ~1980. The previous threshold of 85
+* was an unsubstantiated internal assumption that caused 1980–1984 serials to
+* decode to 2080–2084 (incorrect). Threshold lowered to 80.
 */
-var WWYY_CENTURY_THRESHOLD = 85;
+var WWYY_CENTURY_THRESHOLD = 80;
 var MIN_WEEK = 1;
 var MAX_WEEK = 52;
 var YYMM_MIN_YEAR_2DIGIT = 80;
 var YYMM_MAX_YEAR_2DIGIT = 89;
-var TRANSITIONAL_ERA_START = 1985;
-var TRANSITIONAL_ERA_END = 1989;
-var TRANSITIONAL_ERA_WARNING = "Transitional era (1980s). Format is highly likely, but verify with the printed data plate if possible.";
+var TRANSITIONAL_ERA_START = 1980;
+var TRANSITIONAL_ERA_END = 1984;
+var TRANSITIONAL_ERA_WARNING = "Transitional era (1980–1984). The WWYY format was being adopted alongside older formats. Verify with the printed data plate if possible.";
 var YYMM_WARNING = "Older Carrier units (1980s) — manufacture date may be approximate. Verify with data plate.";
+/**
+* Style 3 month letter map.
+* Verified from BIC: Letters O and U are skipped.
+*
+* M=Jan, N=Feb, P=Mar, Q=Apr, R=May, S=Jun, T=Jul, V=Aug, W=Sep, X=Oct, Y=Nov, Z=Dec
+*/
+var STYLE_3_MONTH_MAP = {
+	M: 1,
+	N: 2,
+	P: 3,
+	Q: 4,
+	R: 5,
+	S: 6,
+	T: 7,
+	V: 8,
+	W: 9,
+	X: 10,
+	Y: 11,
+	Z: 12
+};
+/**
+* Style 4 month letter map (1969–1979).
+* A=January through L=December. Letters I is not used for month-ambiguity reasons.
+* Standard documented mapping from BIC: A=Jan, B=Feb, C=Mar, D=Apr, E=May, F=Jun,
+* G=Jul, H=Aug, I=Sep, J=Oct, K=Nov, L=Dec.
+*
+* Note: BIC does not explicitly state I is skipped. The format A-L = 12 letters maps
+* cleanly to 12 months, so all of A–L are included.
+*/
+var STYLE_4_MONTH_MAP = {
+	A: 1,
+	B: 2,
+	C: 3,
+	D: 4,
+	E: 5,
+	F: 6,
+	G: 7,
+	H: 8,
+	I: 9,
+	J: 10,
+	K: 11,
+	L: 12
+};
+var carrierWwyyStandard = {
+	id: "carrier-wwyy-standard",
+	name: "Carrier WWYY Standard",
+	description: "Standard Carrier/Bryant/Payne serial number format (~1980–present). 10-character format: WWYYAXXXXX where WW=week, YY=year, A=plant code, XXXXX=sequence.",
+	yearRange: [1980, null],
+	productTypes: [],
+	sources: WWYY_SOURCES,
+	matches(input) {
+		return WWYY_PATTERN.test(input.normalized);
+	},
+	decode(input) {
+		const s = input.normalized;
+		const weekDigits = s.substring(0, 2);
+		const yearDigits = s.substring(2, 4);
+		const week = parseInt(weekDigits, 10);
+		const yearTwoDigit = parseInt(yearDigits, 10);
+		if (week < MIN_WEEK || week > MAX_WEEK) return null;
+		const fullYear = yearTwoDigit >= WWYY_CENTURY_THRESHOLD ? 1900 + yearTwoDigit : 2e3 + yearTwoDigit;
+		const warnings = [];
+		if (fullYear >= TRANSITIONAL_ERA_START && fullYear <= TRANSITIONAL_ERA_END) warnings.push(TRANSITIONAL_ERA_WARNING);
+		if (fullYear >= 1985 && fullYear <= 1989) warnings.push("Transitional era (1985–1989). Format is highly likely, but verify with the printed data plate if possible.");
+		const plantCode = s.charAt(4);
+		return {
+			year: fullYear,
+			month: null,
+			week,
+			day: null,
+			productType: "unknown",
+			explanation: "Positions 1-2 indicate the week of manufacture. Positions 3-4 indicate the year of manufacture. Position 5 is a plant code.",
+			warnings,
+			segments: [
+				{
+					startIndex: 0,
+					endIndex: 2,
+					field: "Week",
+					value: weekDigits,
+					description: `Week ${week} of manufacture`
+				},
+				{
+					startIndex: 2,
+					endIndex: 4,
+					field: "Year",
+					value: yearDigits,
+					description: `Year ${fullYear} of manufacture`
+				},
+				{
+					startIndex: 4,
+					endIndex: 5,
+					field: "Plant Code",
+					value: plantCode,
+					description: "Manufacturing plant identifier"
+				}
+			],
+			metadata: {
+				plantCode,
+				sequenceNumber: s.substring(5, 10)
+			}
+		};
+	}
+};
+var carrierYymmLegacy = {
+	id: "carrier-yymm-legacy",
+	name: "Carrier YYMM Legacy",
+	description: "Legacy Carrier serial number format (~1980–1989). 9-character all-digit format: YYMMXXXXX where YY=year (80–89), MM=month (01–12).",
+	yearRange: [1980, 1989],
+	productTypes: [],
+	sources: YYMM_SOURCES,
+	matches(input) {
+		return YYMM_PATTERN.test(input.normalized);
+	},
+	decode(input) {
+		const s = input.normalized;
+		const yearDigits = s.substring(0, 2);
+		const monthDigits = s.substring(2, 4);
+		const yearTwoDigit = parseInt(yearDigits, 10);
+		const month = parseInt(monthDigits, 10);
+		if (yearTwoDigit < YYMM_MIN_YEAR_2DIGIT || yearTwoDigit > YYMM_MAX_YEAR_2DIGIT) return null;
+		if (month < 1 || month > 12) return null;
+		const fullYear = 1900 + yearTwoDigit;
+		return {
+			year: fullYear,
+			month,
+			week: null,
+			day: null,
+			productType: "unknown",
+			explanation: "Positions 1-2 indicate the year of manufacture. Positions 3-4 indicate the month of manufacture.",
+			warnings: [YYMM_WARNING],
+			segments: [{
+				startIndex: 0,
+				endIndex: 2,
+				field: "Year",
+				value: yearDigits,
+				description: `Year ${fullYear} of manufacture`
+			}, {
+				startIndex: 2,
+				endIndex: 4,
+				field: "Month",
+				value: monthDigits,
+				description: `Month ${month} of manufacture`
+			}],
+			metadata: { sequenceNumber: s.substring(4, 9) }
+		};
+	}
+};
+var STYLE3_WARNING = "Style 3 serial (1980–1984). Older format — verify with the printed data plate if possible.";
+var carrierStyle3Us = {
+	id: "carrier-style3-us",
+	name: "Carrier Style 3 US",
+	description: "Carrier/BDP serial number format (1980–1984, US units). 8-character format: [MonthLetter][YearDigit][6 alphanumeric]. Month letter M–Z (excluding O and U): M=Jan, N=Feb, P=Mar, Q=Apr, R=May, S=Jun, T=Jul, V=Aug, W=Sep, X=Oct, Y=Nov, Z=Dec. Year digit 0–4 = 1980–1984.",
+	yearRange: [1980, 1984],
+	productTypes: [],
+	sources: STYLE3_SOURCES,
+	matches(input) {
+		const s = input.normalized;
+		if (s.length !== 8) return false;
+		if (!STYLE_3_US_PATTERN.test(s)) return false;
+		const yearDigit = parseInt(s[1], 10);
+		return yearDigit >= 0 && yearDigit <= 4;
+	},
+	decode(input) {
+		const s = input.normalized;
+		const monthLetter = s[0];
+		const yearDigit = parseInt(s[1], 10);
+		const month = STYLE_3_MONTH_MAP[monthLetter];
+		if (month === void 0) return null;
+		if (yearDigit < 0 || yearDigit > 4) return null;
+		const fullYear = 1980 + yearDigit;
+		return {
+			year: fullYear,
+			month,
+			week: null,
+			day: null,
+			productType: "unknown",
+			explanation: "Position 1 is the month letter code (M–Z, excluding O and U). Position 2 is the year digit (0=1980, 1=1981, 2=1982, 3=1983, 4=1984).",
+			warnings: [STYLE3_WARNING],
+			segments: [{
+				startIndex: 0,
+				endIndex: 1,
+				field: "Month",
+				value: monthLetter,
+				description: `Month ${month} of manufacture (letter code)`
+			}, {
+				startIndex: 1,
+				endIndex: 2,
+				field: "Year",
+				value: String(yearDigit),
+				description: `Year ${fullYear} of manufacture`
+			}],
+			metadata: {
+				sequence: s.substring(2),
+				region: "US"
+			}
+		};
+	}
+};
+var carrierStyle3Ca = {
+	id: "carrier-style3-ca",
+	name: "Carrier Style 3 Canada",
+	description: "Carrier/BDP serial number format (1980–1984, Canadian units). 8-character format: [YearDigit][MonthLetter][6 alphanumeric]. Month letter M–Z (excluding O and U): M=Jan, N=Feb, P=Mar, Q=Apr, R=May, S=Jun, T=Jul, V=Aug, W=Sep, X=Oct, Y=Nov, Z=Dec. Year digit 0–4 = 1980–1984.",
+	yearRange: [1980, 1984],
+	productTypes: [],
+	sources: STYLE3_SOURCES,
+	matches(input) {
+		const s = input.normalized;
+		if (s.length !== 8) return false;
+		if (!STYLE_3_CA_PATTERN.test(s)) return false;
+		const yearDigit = parseInt(s[0], 10);
+		return yearDigit >= 0 && yearDigit <= 4;
+	},
+	decode(input) {
+		const s = input.normalized;
+		const yearDigit = parseInt(s[0], 10);
+		const monthLetter = s[1];
+		const month = STYLE_3_MONTH_MAP[monthLetter];
+		if (month === void 0) return null;
+		if (yearDigit < 0 || yearDigit > 4) return null;
+		const fullYear = 1980 + yearDigit;
+		return {
+			year: fullYear,
+			month,
+			week: null,
+			day: null,
+			productType: "unknown",
+			explanation: "Position 1 is the year digit (0=1980, 1=1981, 2=1982, 3=1983, 4=1984). Position 2 is the month letter code (M–Z, excluding O and U). This is the Canadian format — the US version reverses the year and month positions.",
+			warnings: [STYLE3_WARNING],
+			segments: [{
+				startIndex: 0,
+				endIndex: 1,
+				field: "Year",
+				value: String(yearDigit),
+				description: `Year ${fullYear} of manufacture`
+			}, {
+				startIndex: 1,
+				endIndex: 2,
+				field: "Month",
+				value: monthLetter,
+				description: `Month ${month} of manufacture (letter code)`
+			}],
+			metadata: {
+				sequence: s.substring(2),
+				region: "CA"
+			}
+		};
+	}
+};
+var STYLE4_WARNING = "Style 4 serial (1969–1979). Older format — verify with the printed data plate if possible.";
+var carrierStyle4Unambiguous = {
+	id: "carrier-style4-unambiguous",
+	name: "Carrier Style 4 (1970–1978)",
+	description: "Carrier serial number format (1969–1979). 7-character format: [MonthLetter][YearDigit][5 digits]. Month letter A–L: A=Jan, B=Feb, C=Mar, D=Apr, E=May, F=Jun, G=Jul, H=Aug, I=Sep, J=Oct, K=Nov, L=Dec. Year digit 0–8 maps unambiguously to 1970–1978. Year digit 9 is handled by carrier-style4-1969 and carrier-style4-1979 (ambiguous).",
+	yearRange: [1970, 1978],
+	productTypes: [],
+	sources: STYLE4_SOURCES,
+	matches(input) {
+		const s = input.normalized;
+		if (s.length !== 7) return false;
+		if (!STYLE_4_PATTERN.test(s)) return false;
+		const yearDigit = parseInt(s[1], 10);
+		return yearDigit >= 0 && yearDigit <= 8;
+	},
+	decode(input) {
+		const s = input.normalized;
+		const monthLetter = s[0];
+		const yearDigit = parseInt(s[1], 10);
+		const month = STYLE_4_MONTH_MAP[monthLetter];
+		if (month === void 0) return null;
+		const fullYear = 1970 + yearDigit;
+		return {
+			year: fullYear,
+			month,
+			week: null,
+			day: null,
+			productType: "unknown",
+			explanation: "Position 1 is the month letter code (A–L). Position 2 is the year digit (0=1970, 1=1971 … 8=1978).",
+			warnings: [STYLE4_WARNING],
+			segments: [{
+				startIndex: 0,
+				endIndex: 1,
+				field: "Month",
+				value: monthLetter,
+				description: `Month ${month} of manufacture (letter code)`
+			}, {
+				startIndex: 1,
+				endIndex: 2,
+				field: "Year",
+				value: String(yearDigit),
+				description: `Year ${fullYear} of manufacture`
+			}],
+			metadata: { sequence: s.substring(2) }
+		};
+	}
+};
+var STYLE4_AMBIGUOUS_WARNING = "This Style 4 serial has year digit \"9\", which represents either 1969 or 1979. The serial itself cannot distinguish between these two years. Check the unit's ANSI certification date or the home construction year to determine the correct decade.";
 var formats$4 = [
+	carrierWwyyStandard,
+	carrierYymmLegacy,
+	carrierStyle3Us,
+	carrierStyle3Ca,
+	carrierStyle4Unambiguous,
 	{
-		id: "carrier-wwyy-standard",
-		name: "Carrier WWYY Standard",
-		description: "Standard Carrier/Bryant/Payne serial number format (~1985–present). 10-character format: WWYYAXXXXX where WW=week, YY=year, A=plant code, XXXXX=sequence.",
-		yearRange: [1985, null],
+		id: "carrier-style4-1969",
+		name: "Carrier Style 4 (1969 candidate)",
+		description: "Carrier Style 4 serial with year digit 9 — 1969 interpretation. Year digit 9 is shared between 1969 and 1979. This rule and carrier-style4-1979 both match, causing the pipeline to return status=ambiguous.",
+		yearRange: [1969, 1969],
 		productTypes: [],
-		sources: WWYY_SOURCES,
+		sources: STYLE4_SOURCES,
 		matches(input) {
-			return WWYY_PATTERN.test(input.normalized);
+			const s = input.normalized;
+			if (s.length !== 7) return false;
+			if (!STYLE_4_PATTERN.test(s)) return false;
+			return parseInt(s[1], 10) === 9;
 		},
 		decode(input) {
 			const s = input.normalized;
-			const weekDigits = s.substring(0, 2);
-			const yearDigits = s.substring(2, 4);
-			const week = parseInt(weekDigits, 10);
-			const yearTwoDigit = parseInt(yearDigits, 10);
-			if (week < MIN_WEEK || week > MAX_WEEK) return null;
-			const fullYear = yearTwoDigit >= WWYY_CENTURY_THRESHOLD ? 1900 + yearTwoDigit : 2e3 + yearTwoDigit;
-			const warnings = [];
-			if (fullYear >= TRANSITIONAL_ERA_START && fullYear <= TRANSITIONAL_ERA_END) warnings.push(TRANSITIONAL_ERA_WARNING);
-			const plantCode = s.charAt(4);
+			const monthLetter = s[0];
+			const month = STYLE_4_MONTH_MAP[monthLetter];
+			if (month === void 0) return null;
 			return {
-				year: fullYear,
-				month: null,
-				week,
+				year: 1969,
+				month,
+				week: null,
 				day: null,
 				productType: "unknown",
-				explanation: "Positions 1-2 indicate the week of manufacture. Positions 3-4 indicate the year of manufacture. Position 5 is a plant code.",
-				warnings,
-				segments: [
-					{
-						startIndex: 0,
-						endIndex: 2,
-						field: "Week",
-						value: weekDigits,
-						description: `Week ${week} of manufacture`
-					},
-					{
-						startIndex: 2,
-						endIndex: 4,
-						field: "Year",
-						value: yearDigits,
-						description: `Year ${fullYear} of manufacture`
-					},
-					{
-						startIndex: 4,
-						endIndex: 5,
-						field: "Plant Code",
-						value: plantCode,
-						description: "Manufacturing plant identifier"
-					}
-				],
+				explanation: "Position 1 is the month letter code (A–L). Position 2 is year digit \"9\". In Style 4, \"9\" represents either 1969 (the first year of this format) or 1979.",
+				warnings: [STYLE4_WARNING, STYLE4_AMBIGUOUS_WARNING],
+				segments: [{
+					startIndex: 0,
+					endIndex: 1,
+					field: "Month",
+					value: monthLetter,
+					description: `Month ${month} of manufacture (letter code)`
+				}, {
+					startIndex: 1,
+					endIndex: 2,
+					field: "Year (ambiguous)",
+					value: "9",
+					description: "Year digit 9 — ambiguous between 1969 and 1979"
+				}],
 				metadata: {
-					plantCode,
-					sequenceNumber: s.substring(5, 10)
+					sequence: s.substring(2),
+					yearAmbiguity: "1969 or 1979"
 				}
 			};
 		}
 	},
 	{
-		id: "carrier-yymm-legacy",
-		name: "Carrier YYMM Legacy",
-		description: "Legacy Carrier serial number format (~1980–1989). 9-character all-digit format: YYMMXXXXX where YY=year (80–89), MM=month (01–12).",
-		yearRange: [1980, 1989],
+		id: "carrier-style4-1979",
+		name: "Carrier Style 4 (1979 candidate)",
+		description: "Carrier Style 4 serial with year digit 9 — 1979 interpretation. Year digit 9 is shared between 1969 and 1979. This rule and carrier-style4-1969 both match, causing the pipeline to return status=ambiguous.",
+		yearRange: [1979, 1979],
 		productTypes: [],
-		sources: YYMM_SOURCES,
+		sources: STYLE4_SOURCES,
 		matches(input) {
-			return YYMM_PATTERN.test(input.normalized);
+			const s = input.normalized;
+			if (s.length !== 7) return false;
+			if (!STYLE_4_PATTERN.test(s)) return false;
+			return parseInt(s[1], 10) === 9;
 		},
 		decode(input) {
 			const s = input.normalized;
-			const yearDigits = s.substring(0, 2);
-			const monthDigits = s.substring(2, 4);
-			const yearTwoDigit = parseInt(yearDigits, 10);
-			const month = parseInt(monthDigits, 10);
-			if (yearTwoDigit < YYMM_MIN_YEAR_2DIGIT || yearTwoDigit > YYMM_MAX_YEAR_2DIGIT) return null;
-			if (month < 1 || month > 12) return null;
-			const fullYear = 1900 + yearTwoDigit;
+			const monthLetter = s[0];
+			const month = STYLE_4_MONTH_MAP[monthLetter];
+			if (month === void 0) return null;
 			return {
-				year: fullYear,
+				year: 1979,
 				month,
 				week: null,
 				day: null,
 				productType: "unknown",
-				explanation: "Positions 1-2 indicate the year of manufacture. Positions 3-4 indicate the month of manufacture.",
-				warnings: [YYMM_WARNING],
+				explanation: "Position 1 is the month letter code (A–L). Position 2 is year digit \"9\". In Style 4, \"9\" represents either 1969 (the first year of this format) or 1979.",
+				warnings: [STYLE4_WARNING, STYLE4_AMBIGUOUS_WARNING],
 				segments: [{
 					startIndex: 0,
-					endIndex: 2,
-					field: "Year",
-					value: yearDigits,
-					description: `Year ${fullYear} of manufacture`
-				}, {
-					startIndex: 2,
-					endIndex: 4,
+					endIndex: 1,
 					field: "Month",
-					value: monthDigits,
-					description: `Month ${month} of manufacture`
+					value: monthLetter,
+					description: `Month ${month} of manufacture (letter code)`
+				}, {
+					startIndex: 1,
+					endIndex: 2,
+					field: "Year (ambiguous)",
+					value: "9",
+					description: "Year digit 9 — ambiguous between 1969 and 1979"
 				}],
-				metadata: { sequenceNumber: s.substring(4, 9) }
+				metadata: {
+					sequence: s.substring(2),
+					yearAmbiguity: "1969 or 1979"
+				}
 			};
 		}
 	},
 	{
 		id: "carrier-legacy-unsupported",
-		name: "Carrier Pre-1985 Legacy Formats",
-		description: "Matches documented pre-1985 Carrier serial formats (Styles 3, 4, 5, 6) that cannot be reliably decoded due to decade ambiguity, conflicting documentation, or insufficient verified examples.",
-		yearRange: [1960, 1984],
+		name: "Carrier Style 6 (Unsupported)",
+		description: "Matches the Style 6 pattern (1960s–1970s, week + letter-year code) that cannot be reliably decoded due to pattern collision risk and insufficient verified examples.",
+		yearRange: [1960, 1979],
 		productTypes: [],
 		sources: LEGACY_UNSUPPORTED_SOURCES,
 		matches(input) {
 			const s = input.normalized;
-			if (STYLE_4_PATTERN.test(s)) return true;
-			if (STYLE_3_US_PATTERN.test(s)) return true;
-			if (STYLE_3_CA_PATTERN.test(s)) return true;
 			if (STYLE_6_PATTERN.test(s) && !WWYY_PATTERN.test(s)) return true;
 			return false;
 		},
 		decode(_input) {
 			return {
 				error: "unsupported",
-				explanation: LEGACY_UNSUPPORTED_EXPLANATION$1
+				explanation: STYLE_6_UNSUPPORTED_EXPLANATION
 			};
 		}
 	}
@@ -1337,21 +1638,32 @@ var YORK_1971_2004_SOURCES = [BIC_SOURCE, HOW_TO_LOOK_AT_A_HOUSE_SOURCE];
 //#endregion
 //#region src/decoder/manufacturers/york/formats.ts
 /**
+* Strips an optional "(S)" prefix from the serial number.
+* A bare leading "S" is a legitimate plant code and is preserved.
+*/
+function stripYorkPrefix(normalized) {
+	if (normalized.startsWith("(S)")) return normalized.substring(3);
+	return normalized;
+}
+/**
 * Format 1: york-post-2004
 * Regex: ^[A-Z][0-9][A-HK-N][0-9]\d{6}$
 * Structure: Letter, Digit, Letter (Month, excluding I,J,O,Q,U,Z), Digit, 6 Digits
 */
 var POST_2004_PATTERN = /^[A-Z][0-9][A-HK-N][0-9]\d{6}$/;
 /**
-* Format 2: york-1971-2004
+* Format 2: york-1980-2004
 * Regex: ^[A-Z][A-HK-N][A-HJ-NPR-Y][A-Z]\d{6}$
 * Structure: Letter, Letter (Month), Letter (Year, excluding I,O,Q,U,Z), Letter, 6 Digits
 */
 var LEGACY_PATTERN = /^[A-Z][A-HK-N][A-HJ-NPR-Y][A-Z]\d{6}$/;
 /**
-* Month mapping for both formats.
+* Format 3: york-two-letter (1960-1979)
+*/
+var TWO_LETTER_LEGACY_PATTERN = /^(KO|LO|MO|NO|PO|RO|SO|TO|VO|WO|XO|AO|BO|CO|CM|DM|EM|FM|GM|HM|JM)\d{5,9}$/;
+/**
+* Month mapping for post-2004 and four-letter legacy formats.
 * A=1, B=2, C=3, D=4, E=5, F=6, G=7, H=8, K=9, L=10, M=11, N=12
-* Note: J is omitted in the contract map. If J is encountered, it maps to null.
 */
 var MONTH_MAP = {
 	A: 1,
@@ -1368,18 +1680,9 @@ var MONTH_MAP = {
 	N: 12
 };
 /**
-* Year mapping for york-1971-2004 (Cycle 1: 1971-1991)
+* Year mapping for york-1980-1991 (Cycle 1)
 */
 var LEGACY_YEAR_MAP_CYCLE1 = {
-	A: 1971,
-	B: 1972,
-	C: 1973,
-	D: 1974,
-	E: 1975,
-	F: 1976,
-	G: 1977,
-	H: 1978,
-	J: 1979,
 	K: 1980,
 	L: 1981,
 	M: 1982,
@@ -1394,8 +1697,7 @@ var LEGACY_YEAR_MAP_CYCLE1 = {
 	Y: 1991
 };
 /**
-* Year mapping for york-1971-2004 (Cycle 2: 1992-2004)
-* Only goes up to N (2004). P-Y are not included because the format transitioned.
+* Year mapping for york-1992-2004 (Cycle 2)
 */
 var LEGACY_YEAR_MAP_CYCLE2 = {
 	A: 1992,
@@ -1411,6 +1713,32 @@ var LEGACY_YEAR_MAP_CYCLE2 = {
 	L: 2002,
 	M: 2003,
 	N: 2004
+};
+/**
+* Year mapping for york-two-letter (1960-1979)
+*/
+var TWO_LETTER_YEAR_MAP = {
+	KO: 1960,
+	LO: 1961,
+	MO: 1962,
+	NO: 1963,
+	PO: 1964,
+	RO: 1965,
+	SO: 1966,
+	TO: 1967,
+	VO: 1968,
+	WO: 1969,
+	XO: 1970,
+	AO: 1971,
+	BO: 1972,
+	CO: 1973,
+	CM: 1973,
+	DM: 1974,
+	EM: 1975,
+	FM: 1976,
+	GM: 1977,
+	HM: 1978,
+	JM: 1979
 };
 //#endregion
 //#region src/decoder/manufacturers/york/index.ts
@@ -1435,10 +1763,11 @@ registerManufacturer({
 			productTypes: [],
 			sources: YORK_POST_2004_SOURCES,
 			matches(input) {
-				return input.normalized.length === 10 && POST_2004_PATTERN.test(input.normalized);
+				const s = stripYorkPrefix(input.normalized);
+				return s.length === 10 && POST_2004_PATTERN.test(s);
 			},
 			decode(input) {
-				const s = input.normalized;
+				const s = stripYorkPrefix(input.normalized);
 				if (!s.match(POST_2004_PATTERN)) return null;
 				const plantCode = s[0];
 				const digit1 = parseInt(s[1], 10);
@@ -1489,17 +1818,18 @@ registerManufacturer({
 			}
 		},
 		{
-			id: "york-1971-2004-cycle2",
-			name: "York 1971-2004 Format (1990s/2000s)",
+			id: "york-1992-2004-cycle2",
+			name: "York 1980-2004 Format (1990s/2000s)",
 			description: "10-character legacy York format. The 2nd character encodes the month and the 3rd character encodes the year using a 21-year cycle. This represents the 1992-2004 cycle.",
 			yearRange: [1992, 2004],
 			productTypes: [],
 			sources: YORK_1971_2004_SOURCES,
 			matches(input) {
-				return input.normalized.length === 10 && LEGACY_PATTERN.test(input.normalized);
+				const s = stripYorkPrefix(input.normalized);
+				return s.length === 10 && LEGACY_PATTERN.test(s);
 			},
 			decode(input) {
-				const s = input.normalized;
+				const s = stripYorkPrefix(input.normalized);
 				if (!LEGACY_PATTERN.test(s)) return null;
 				const plantCode = s[0];
 				const monthLetter = s[1];
@@ -1509,9 +1839,12 @@ registerManufacturer({
 				const year = LEGACY_YEAR_MAP_CYCLE2[yearLetter];
 				if (year === void 0) return null;
 				const month = MONTH_MAP[monthLetter] ?? null;
+				if (year === 2004 && (monthLetter === "M" || monthLetter === "N")) return null;
 				let explanation = `The 3rd character ("${yearLetter}") maps to year ${year} in the 1992-2004 cycle. `;
 				if (month !== null) explanation += `The 2nd character ("${monthLetter}") indicates month ${month}.`;
 				else explanation += `The 2nd character ("${monthLetter}") is not a standard month code.`;
+				const warnings = [];
+				if (year === 2004 && monthLetter === "L") warnings.push("October 2004 was a transition month. If manufactured after Oct 5, 2004, it would use the newer format. This may be 1983 or early Oct 2004.");
 				return {
 					year,
 					month,
@@ -1519,7 +1852,7 @@ registerManufacturer({
 					day: null,
 					productType: "unknown",
 					explanation,
-					warnings: [],
+					warnings,
 					segments: [{
 						startIndex: 1,
 						endIndex: 2,
@@ -1542,17 +1875,18 @@ registerManufacturer({
 			}
 		},
 		{
-			id: "york-1971-2004-cycle1",
-			name: "York 1971-2004 Format (1970s/1980s)",
-			description: "10-character legacy York format. The 2nd character encodes the month and the 3rd character encodes the year using a 21-year cycle. This represents the 1971-1991 cycle.",
-			yearRange: [1971, 1991],
+			id: "york-1980-1991-cycle1",
+			name: "York 1980-2004 Format (1980s)",
+			description: "10-character legacy York format. The 2nd character encodes the month and the 3rd character encodes the year using a 21-year cycle. This represents the 1980-1991 cycle.",
+			yearRange: [1980, 1991],
 			productTypes: [],
 			sources: YORK_1971_2004_SOURCES,
 			matches(input) {
-				return input.normalized.length === 10 && LEGACY_PATTERN.test(input.normalized);
+				const s = stripYorkPrefix(input.normalized);
+				return s.length === 10 && LEGACY_PATTERN.test(s);
 			},
 			decode(input) {
-				const s = input.normalized;
+				const s = stripYorkPrefix(input.normalized);
 				if (!LEGACY_PATTERN.test(s)) return null;
 				const plantCode = s[0];
 				const monthLetter = s[1];
@@ -1562,7 +1896,7 @@ registerManufacturer({
 				const year = LEGACY_YEAR_MAP_CYCLE1[yearLetter];
 				if (year === void 0) return null;
 				const month = MONTH_MAP[monthLetter] ?? null;
-				let explanation = `The 3rd character ("${yearLetter}") maps to year ${year} in the 1971-1991 cycle. `;
+				let explanation = `The 3rd character ("${yearLetter}") maps to year ${year} in the 1980-1991 cycle. `;
 				if (month !== null) explanation += `The 2nd character ("${monthLetter}") indicates month ${month}.`;
 				else explanation += `The 2nd character ("${monthLetter}") is not a standard month code.`;
 				return {
@@ -1584,13 +1918,50 @@ registerManufacturer({
 						endIndex: 3,
 						field: "Year Code",
 						value: yearLetter,
-						description: `Letter "${yearLetter}" maps to year ${year} (1971–1991 cycle)`
+						description: `Letter "${yearLetter}" maps to year ${year} (1980–1991 cycle)`
 					}],
 					metadata: {
 						plantCode,
 						typeCode,
 						sequence
 					}
+				};
+			}
+		},
+		{
+			id: "york-two-letter-legacy",
+			name: "York Two-Letter Format (1960-1979)",
+			description: "Historical York format utilizing specific two-letter prefixes to indicate the year.",
+			yearRange: [1960, 1979],
+			productTypes: [],
+			sources: YORK_1971_2004_SOURCES,
+			matches(input) {
+				const s = stripYorkPrefix(input.normalized);
+				return TWO_LETTER_LEGACY_PATTERN.test(s);
+			},
+			decode(input) {
+				const s = stripYorkPrefix(input.normalized);
+				const match = s.match(TWO_LETTER_LEGACY_PATTERN);
+				if (!match) return null;
+				const prefix = match[1];
+				const year = TWO_LETTER_YEAR_MAP[prefix];
+				if (year === void 0) return null;
+				return {
+					year,
+					month: null,
+					week: null,
+					day: null,
+					productType: "unknown",
+					explanation: `The two-letter prefix "${prefix}" indicates the year ${year}.`,
+					warnings: [],
+					segments: [{
+						startIndex: 0,
+						endIndex: 2,
+						field: "Year Prefix",
+						value: prefix,
+						description: `Prefix "${prefix}" maps to year ${year}`
+					}],
+					metadata: { sequence: s.substring(2) }
 				};
 			}
 		}
@@ -3203,10 +3574,13 @@ function DecoderWidget({ defaultManufacturerId } = {}) {
 //#endregion
 //#region src/components/ThemeToggle.tsx
 function ThemeToggle() {
-	const [isDark, setIsDark] = (0, react.useState)(() => {
-		if (typeof document !== "undefined") return document.documentElement.classList.contains("dark") || localStorage.getItem("theme") === "dark";
-		return false;
-	});
+	const [isDark, setIsDark] = (0, react.useState)(false);
+	(0, react.useEffect)(() => {
+		if (typeof document !== "undefined") {
+			const isActuallyDark = document.documentElement.classList.contains("dark") || localStorage.getItem("theme") === "dark";
+			setIsDark(isActuallyDark);
+		}
+	}, []);
 	const toggleTheme = (e) => {
 		const nextIsDark = !isDark;
 		const x = e.clientX;
@@ -3387,7 +3761,7 @@ var SITE_ORIGIN = ({
 */
 function canonicalUrl(path) {
 	const cleanPath = path.split("?")[0].split("#")[0];
-	return `${SITE_ORIGIN}${cleanPath === "/" ? "/" : cleanPath.replace(/\/$/, "")}`;
+	return `${SITE_ORIGIN}${cleanPath === "/" ? "/" : cleanPath.replace(/\/$/, "") + "/"}`;
 }
 /** Site name for og:site_name */
 var OG_SITE_NAME = "SerialAge";
@@ -5298,15 +5672,15 @@ var ALL_BRAND_PAGES = [
 		pageTitle: "York Serial Number Decoder — Find Equipment Age | SerialAge",
 		metaDescription: "Free decoder for York HVAC serial numbers. Find out the age and manufacture date of your York air conditioner, furnace, or heat pump.",
 		headline: "York Serial Number Decoder",
-		shortDescription: "Determine the age and manufacture date of your York HVAC equipment. York's historical serial numbering incorporates a notoriously complex 21-year repeating letter cycle which can result in intentional ambiguity.",
+		shortDescription: "Determine the age and manufacture date of your York HVAC equipment. York's historical serial numbering incorporates a complex repeating letter cycle between the 1980s and 2000s which can result in intentional ambiguity.",
 		ratingPlateLocation: "The serial number is located on the manufacturer's data plate (rating plate). For outdoor AC or heat pump units, it is usually on the side or back of the cabinet above the refrigerant valves. For indoor furnaces or air handlers, check inside the front access panel.",
 		limitations: [
-			"The 1971-2004 format repeats the year letter every 21 years (e.g., A = 1971 OR 1992). The decoder will correctly identify this as ambiguous and provide both years for letters A through N.",
-			"Serial numbers indicating manufacture before 1971 are highly inconsistent and not supported.",
+			"The 1980-2004 format repeats the year letters K, L, M, and N in both the 1980s and early 2000s. The decoder will correctly identify this as ambiguous and provide both years for those specific letters.",
+			"The 1970s format utilizes specific two-letter prefixes. Prefixes not on the strict manufacturer whitelist are not supported.",
 			"9-character legacy variations (missing the leading plant code) are intentionally rejected to prevent false positives.",
 			"Water heater serial numbers are out of scope."
 		],
-		ambiguity: "York used a repeating 21-year letter cycle from 1971 to 2004. Serial numbers with year letters A through N could belong to either the 1971-1983 cycle or the 1992-2004 cycle. Our decoder intentionally returns both possible years when it detects this ambiguity. You must visually inspect the unit's condition and refrigerant type to determine the correct era.",
+		ambiguity: "York used a repeating letter cycle between the 1980s and 2000s. Serial numbers with year letters K, L, M, or N could belong to either the 1980-1991 cycle or the 1992-2004 cycle. Our decoder intentionally returns both possible years when it detects this ambiguity. You must visually inspect the unit's condition and refrigerant type to determine the correct era.",
 		sources: [{
 			type: "internal",
 			title: "York Implementation Contract",
@@ -5317,17 +5691,26 @@ var ALL_BRAND_PAGES = [
 			publisher: "Building Intelligence Center",
 			description: "Reference for historical formatting trends."
 		}],
-		supportedFormats: [{
-			label: "Post-2004 (10-Character)",
-			example: "W0K5896070",
-			exampleType: "Verified",
-			description: "Used from October 2004 to present. Positions 2 and 4 form a 2-digit year code (e.g. 0 and 5 = 2005). Position 3 is a letter representing the month."
-		}, {
-			label: "1971-2004 (10-Character)",
-			example: "WAKM011379",
-			exampleType: "Verified",
-			description: "Position 2 is the month letter, Position 3 is the year letter. Letters A-N map to two possible years."
-		}],
+		supportedFormats: [
+			{
+				label: "Post-2004 (10-Character)",
+				example: "W0K5896070",
+				exampleType: "Verified",
+				description: "Used from October 2004 to present. Positions 2 and 4 form a 2-digit year code (e.g. 0 and 5 = 2005). Position 3 is a letter representing the month."
+			},
+			{
+				label: "1980-2004 (10-Character)",
+				example: "WAPM123456",
+				exampleType: "Verified",
+				description: "Position 2 is the month letter, Position 3 is the year letter. Letters K, L, M, and N map to two possible years."
+			},
+			{
+				label: "1960-1979 (Two-Letter Prefix)",
+				example: "KO12345",
+				exampleType: "Documented",
+				description: "Older units used a specific two-letter prefix (like KO, AO, etc.) to indicate the manufacture year."
+			}
+		],
 		faqs: [
 			{
 				question: "Where is the serial number on a York unit?",
@@ -5335,19 +5718,19 @@ var ALL_BRAND_PAGES = [
 			},
 			{
 				question: "How do I check the age of my York air conditioner or furnace?",
-				answer: "Enter the serial number from your data plate into the decoder above with 'York' selected. York has used two main 10-character formats. Since October 2004, the year is encoded using digits at positions 2 and 4, and the month using a letter at position 3. For equipment made between 1971 and 2004, letters at positions 2 and 3 encode the month and year — though the result may show two possible years for some units due to a repeating letter cycle."
+				answer: "Enter the serial number from your data plate into the decoder above with 'York' selected. York has used several main formats. Since October 2004, the year is encoded using digits at positions 2 and 4, and the month using a letter at position 3. For equipment made between 1980 and 2004, letters at positions 2 and 3 encode the month and year — though the result may show two possible years for some units due to a repeating letter cycle. In the 1960s and 1970s, specific two-letter prefixes were used."
 			},
 			{
 				question: "Why does my York serial number return two possible years?",
-				answer: "Between 1971 and 2004, York used a repeating 21-year letter cycle for the year of manufacture. The letters A through N each map to two possible years — for example, 'A' can mean 1971 or 1992. SerialAge returns both possible years rather than guessing, since the correct decade cannot be determined from the serial number alone."
+				answer: "Between 1980 and 2004, York used a repeating letter cycle for the year of manufacture. The letters K, L, M, and N each map to two possible years — for example, 'K' can mean 1980 or 2001. SerialAge returns both possible years rather than guessing, since the correct decade cannot be determined from the serial number alone."
 			},
 			{
 				question: "How do I tell which year is correct for my ambiguous York unit?",
-				answer: "You can often narrow it down by inspecting the unit's physical condition, checking the refrigerant type listed on the data plate (pre-2010 systems often used R-22), or looking for the ANSI standard date on the plate. A 1970s unit and a 1990s unit will have noticeably different refrigerant and efficiency specifications."
+				answer: "You can often narrow it down by inspecting the unit's physical condition, checking the refrigerant type listed on the data plate (pre-2010 systems often used R-22), or looking for the ANSI standard date on the plate. A 1980s unit and a 2000s unit will have noticeably different refrigerant and efficiency specifications."
 			},
 			{
 				question: "Does this decoder support older 9-character York formats?",
-				answer: "No. Older 9-character York serial numbers — which are missing the leading plant code — are not supported. These shorter serials carry a significant risk of false positives, so we exclude them to protect accuracy."
+				answer: "We support the 1960s and 1970s formats that use a strict whitelist of two-letter prefixes. However, other older 9-character York serial numbers — which are missing the leading plant code — are not supported. These shorter serials carry a significant risk of false positives, so we exclude them to protect accuracy."
 			},
 			{
 				question: "Does this decoder work for Coleman and Luxaire?",

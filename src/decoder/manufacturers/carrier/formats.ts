@@ -37,15 +37,15 @@ const WWYY_PATTERN = /^\d{4}[A-Z]\d{5}$/;
 const YYMM_PATTERN = /^\d{9}$/;
 
 /**
- * Style 3 US:  Month letter (M,N,P,Q,R,S,T,U,V,W,Y,Z) + year digit (0-4) + 6 alphanumeric = 8 chars
- * Letters O and X are skipped (confirmed: W=October, Y=November, Z=December per BIC).
+ * Style 3 US:  Month letter (M,N,P,Q,R,S,T,V,W,X,Y,Z) + year digit (0-4) + 6 alphanumeric = 8 chars
+ * Letters O and U are skipped.
  */
-const STYLE_3_US_PATTERN = /^[MNPQRSTUVWYZ]\d[A-Z0-9]{6}$/;
+const STYLE_3_US_PATTERN = /^[MNPQRSTVWXYZ]\d[A-Z0-9]{6}$/;
 
 /**
- * Style 3 CA:  year digit (0-4) + month letter (M,N,P,Q,R,S,T,U,V,W,Y,Z) + 6 alphanumeric = 8 chars
+ * Style 3 CA:  year digit (0-4) + month letter (M,N,P,Q,R,S,T,V,W,X,Y,Z) + 6 alphanumeric = 8 chars
  */
-const STYLE_3_CA_PATTERN = /^\d[MNPQRSTUVWYZ][A-Z0-9]{6}$/;
+const STYLE_3_CA_PATTERN = /^\d[MNPQRSTVWXYZ][A-Z0-9]{6}$/;
 
 /**
  * Style 4: Month letter (A-L) + year digit (0-9) + 5 digits = 7 chars
@@ -114,13 +114,12 @@ const YYMM_WARNING =
 
 /**
  * Style 3 month letter map.
- * Verified from BIC: W=October, Y=November, Z=December.
- * Letters O and X are skipped (not assigned to any month).
+ * Verified from BIC: Letters O and U are skipped.
  *
- * M=Jan, N=Feb, P=Mar, Q=Apr, R=May, S=Jun, T=Jul, U=Aug, V=Sep, W=Oct, Y=Nov, Z=Dec
+ * M=Jan, N=Feb, P=Mar, Q=Apr, R=May, S=Jun, T=Jul, V=Aug, W=Sep, X=Oct, Y=Nov, Z=Dec
  */
 const STYLE_3_MONTH_MAP: Record<string, number> = {
-  M: 1, N: 2, P: 3, Q: 4, R: 5, S: 6, T: 7, U: 8, V: 9, W: 10, Y: 11, Z: 12,
+  M: 1, N: 2, P: 3, Q: 4, R: 5, S: 6, T: 7, V: 8, W: 9, X: 10, Y: 11, Z: 12,
 };
 
 // ---------------------------------------------------------------------------
@@ -322,8 +321,8 @@ const carrierStyle3Us: FormatRule = {
   description:
     'Carrier/BDP serial number format (1980–1984, US units). ' +
     '8-character format: [MonthLetter][YearDigit][6 alphanumeric]. ' +
-    'Month letter M–Z (excluding O and X): M=Jan, N=Feb, P=Mar, Q=Apr, R=May, S=Jun, ' +
-    'T=Jul, U=Aug, V=Sep, W=Oct, Y=Nov, Z=Dec. Year digit 0–4 = 1980–1984.',
+    'Month letter M–Z (excluding O and U): M=Jan, N=Feb, P=Mar, Q=Apr, R=May, S=Jun, ' +
+    'T=Jul, V=Aug, W=Sep, X=Oct, Y=Nov, Z=Dec. Year digit 0–4 = 1980–1984.',
   yearRange: [1980, 1984],
   productTypes: [],
   sources: STYLE3_SOURCES,
@@ -357,7 +356,7 @@ const carrierStyle3Us: FormatRule = {
       day: null,
       productType: 'unknown',
       explanation:
-        'Position 1 is the month letter code (M–Z, excluding O and X). ' +
+        'Position 1 is the month letter code (M–Z, excluding O and U). ' +
         'Position 2 is the year digit (0=1980, 1=1981, 2=1982, 3=1983, 4=1984).',
       warnings: [STYLE3_WARNING],
       segments: [
@@ -394,8 +393,8 @@ const carrierStyle3Ca: FormatRule = {
   description:
     'Carrier/BDP serial number format (1980–1984, Canadian units). ' +
     '8-character format: [YearDigit][MonthLetter][6 alphanumeric]. ' +
-    'Month letter M–Z (excluding O and X): M=Jan, N=Feb, P=Mar, Q=Apr, R=May, S=Jun, ' +
-    'T=Jul, U=Aug, V=Sep, W=Oct, Y=Nov, Z=Dec. Year digit 0–4 = 1980–1984.',
+    'Month letter M–Z (excluding O and U): M=Jan, N=Feb, P=Mar, Q=Apr, R=May, S=Jun, ' +
+    'T=Jul, V=Aug, W=Sep, X=Oct, Y=Nov, Z=Dec. Year digit 0–4 = 1980–1984.',
   yearRange: [1980, 1984],
   productTypes: [],
   sources: STYLE3_SOURCES,
@@ -430,7 +429,7 @@ const carrierStyle3Ca: FormatRule = {
       productType: 'unknown',
       explanation:
         'Position 1 is the year digit (0=1980, 1=1981, 2=1982, 3=1983, 4=1984). ' +
-        'Position 2 is the month letter code (M–Z, excluding O and X). ' +
+        'Position 2 is the month letter code (M–Z, excluding O and U). ' +
         'This is the Canadian format — the US version reverses the year and month positions.',
       warnings: [STYLE3_WARNING],
       segments: [

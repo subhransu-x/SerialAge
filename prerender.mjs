@@ -125,7 +125,9 @@ function loadBrandSlugs(serverModule) {
  */
 function splitAppHtml(appHtml) {
   // Head-only tag names. Anything else signals the start of the body.
-  const HEAD_TAGS = new Set(['title', 'meta', 'link', 'script']);
+  // We leave <script> tags in the body to avoid React 19 hydration mismatches,
+  // as React 19 keeps inline JSON-LD scripts in the component tree.
+  const HEAD_TAGS = new Set(['title', 'meta', 'link']);
 
   const headLines = [];
   let cursor = 0;
@@ -178,17 +180,6 @@ function splitAppHtml(appHtml) {
       // Self-closing — collect the full opening tag
       headLines.push(appHtml.substring(tagStart, tagEnd + 1));
       cursor = tagEnd + 1;
-    } else if (tagName === 'script') {
-      // Collect JSON-LD scripts for the <head>
-      const closeTag = '</script>';
-      const closeIdx = appHtml.indexOf(closeTag, tagEnd);
-      if (closeIdx !== -1) {
-        headLines.push(appHtml.substring(tagStart, closeIdx + closeTag.length));
-        cursor = closeIdx + closeTag.length;
-      } else {
-        headLines.push(appHtml.substring(tagStart, tagEnd + 1));
-        cursor = tagEnd + 1;
-      }
     } else {
       cursor = tagEnd + 1;
     }
@@ -382,7 +373,6 @@ async function main() {
     ${helmet.title.toString()}
     ${helmet.meta.toString()}
     ${helmet.link.toString()}
-    ${helmet.script.toString()}
       `.trim();
     }
 

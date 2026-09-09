@@ -134,7 +134,7 @@ export const STYLE3_SOURCES: readonly SourceReference[] = [
     dateReviewed: '2026-09-09',
     notes:
       'Documents Style 3 format for Carrier/BDP family (1980–1984). US example: W4D14008. '
-      + 'Canadian example: 4WD14008. Confirmed W=October, Y=November, Z=December.',
+      + 'Canadian example: 4WD14008. Confirmed skipping O and U. W=September, X=October.',
     confidence: 'verified',
   },
   {

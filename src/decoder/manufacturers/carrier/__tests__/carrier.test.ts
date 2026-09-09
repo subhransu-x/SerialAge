@@ -175,7 +175,7 @@ describe('Carrier Decoder', () => {
       expect(result.status).toBe('success');
       expect(result.formatUsed?.id).toBe('carrier-style3-us');
       expect(result.manufactureDate?.year).toBe(1984);
-      expect(result.manufactureDate?.month).toBe(10);
+      expect(result.manufactureDate?.month).toBe(9);
     });
 
     it('C-UNS-03: Week 53 serial does not decode as WWYY', () => {
@@ -635,20 +635,20 @@ describe('Carrier Decoder', () => {
   // P. Style 3 (1980–1984)
   // -----------------------------------------------------------------------
   describe('Style 3 (1980–1984)', () => {
-    it('W4D14008 → October 1984 (US format, BIC verified)', () => {
+    it('W4D14008 → September 1984 (US format, BIC verified)', () => {
       const result = decode('carrier', 'W4D14008', { referenceDate: REFERENCE_DATE });
       expect(result.status).toBe('success');
       expect(result.formatUsed?.id).toBe('carrier-style3-us');
       expect(result.manufactureDate?.year).toBe(1984);
-      expect(result.manufactureDate?.month).toBe(10);
+      expect(result.manufactureDate?.month).toBe(9);
     });
 
-    it('4WD14008 → October 1984 (Canadian format, BIC verified)', () => {
+    it('4WD14008 → September 1984 (Canadian format, BIC verified)', () => {
       const result = decode('carrier', '4WD14008', { referenceDate: REFERENCE_DATE });
       expect(result.status).toBe('success');
       expect(result.formatUsed?.id).toBe('carrier-style3-ca');
       expect(result.manufactureDate?.year).toBe(1984);
-      expect(result.manufactureDate?.month).toBe(10);
+      expect(result.manufactureDate?.month).toBe(9);
     });
 
     it('M0A12345 → January 1980 (earliest Style 3)', () => {
@@ -678,9 +678,9 @@ describe('Carrier Decoder', () => {
       expect(result.status).toBe('unsupported');
     });
 
-    it('Style 3 letter X is not a valid month letter', () => {
-      // X is skipped — serial starting with X should not match Style 3
-      const result = decode('carrier', 'X4A12345', { referenceDate: REFERENCE_DATE });
+    it('Style 3 letter U is not a valid month letter', () => {
+      // U is skipped — serial starting with U should not match Style 3
+      const result = decode('carrier', 'U4A12345', { referenceDate: REFERENCE_DATE });
       expect(result.status).toBe('unsupported');
     });
 

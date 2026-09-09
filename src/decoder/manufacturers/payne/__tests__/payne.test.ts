@@ -38,11 +38,11 @@ describe('Payne Serial Number Decoder', () => {
   describe('carrier-style3-us (via Carrier formats)', () => {
     it('decodes synthetic Style 3 (W4D14008) — Payne shares Style 3 decoding with Carrier', () => {
       const result = decode('payne', 'W4D14008');
-      // Style 3 is now decoded (October 1984), not unsupported
+      // Style 3 is now decoded (September 1984), not unsupported
       expect(result.status).toBe('success');
       expect(result.formatUsed?.id).toBe('carrier-style3-us');
       expect(result.manufactureDate?.year).toBe(1984);
-      expect(result.manufactureDate?.month).toBe(10);
+      expect(result.manufactureDate?.month).toBe(9);
     });
   });
 });

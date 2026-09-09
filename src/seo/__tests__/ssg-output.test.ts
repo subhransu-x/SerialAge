@@ -104,9 +104,9 @@ describe('SSG Raw HTML Output', () => {
         }
       });
 
-      it('has JSON-LD script(s) inside <head>', () => {
-        const head = rootNode.querySelector('head');
-        const jsonLdScripts = head.querySelectorAll('script[type="application/ld+json"]');
+      it('has JSON-LD script(s) inside <body>', () => {
+        const body = rootNode.querySelector('body');
+        const jsonLdScripts = body.querySelectorAll('script[type="application/ld+json"]');
         
         // Homepage and brand pages should have JSON-LD
         if (route !== '/methodology' && route !== '/privacy') {
@@ -134,8 +134,8 @@ describe('SSG Raw HTML Output', () => {
 
       if (route !== '/' && route !== '/methodology' && route !== '/privacy') {
         it('FAQPage JSON-LD mainEntity count matches visible FAQ item count', () => {
-          const head = rootNode.querySelector('head');
-          const jsonLdScripts = head.querySelectorAll('script[type="application/ld+json"]');
+          const body = rootNode.querySelector('body');
+          const jsonLdScripts = body.querySelectorAll('script[type="application/ld+json"]');
           
           let faqPageSchema: { '@type': string; mainEntity?: unknown[] } | null = null;
           for (const script of jsonLdScripts) {
@@ -158,8 +158,8 @@ describe('SSG Raw HTML Output', () => {
         });
 
         it('FAQPage JSON-LD question names appear in visible FAQ content', () => {
-          const head = rootNode.querySelector('head');
-          const jsonLdScripts = head.querySelectorAll('script[type="application/ld+json"]');
+          const body = rootNode.querySelector('body');
+          const jsonLdScripts = body.querySelectorAll('script[type="application/ld+json"]');
           
           let faqPageSchema: { '@type': string; mainEntity?: Array<{ name: string }> } | null = null;
           for (const script of jsonLdScripts) {

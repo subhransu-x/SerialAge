@@ -1,14 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 
 export function ThemeToggle() {
-  const [isDark, setIsDark] = useState(() => {
+  const [isDark, setIsDark] = useState(false);
+
+  // Sync state with DOM after hydration to prevent SSR mismatch
+  useEffect(() => {
     if (typeof document !== 'undefined') {
-      return document.documentElement.classList.contains('dark') || 
-             localStorage.getItem('theme') === 'dark';
+      const isActuallyDark = document.documentElement.classList.contains('dark') || 
+                             localStorage.getItem('theme') === 'dark';
+      setIsDark(isActuallyDark);
     }
-    return false;
-  });
+  }, []);
 
   const toggleTheme = (e: React.MouseEvent) => {
     const isDarkNow = isDark;
