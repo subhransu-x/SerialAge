@@ -32,27 +32,27 @@ describe('canonicalUrl', () => {
     expect(canonicalUrl('/')).toBe(`${SITE_ORIGIN}/`);
   });
 
-  it('builds brand page canonical without trailing slash', () => {
+  it('builds brand page canonical with trailing slash', () => {
     expect(canonicalUrl('/carrier-serial-number-decoder')).toBe(
-      `${SITE_ORIGIN}/carrier-serial-number-decoder`,
+      `${SITE_ORIGIN}/carrier-serial-number-decoder/`,
     );
   });
 
   it('strips query parameters from path', () => {
     expect(canonicalUrl('/carrier-serial-number-decoder?serial=12345')).toBe(
-      `${SITE_ORIGIN}/carrier-serial-number-decoder`,
+      `${SITE_ORIGIN}/carrier-serial-number-decoder/`,
     );
   });
 
   it('strips fragment from path', () => {
     expect(canonicalUrl('/carrier-serial-number-decoder#faq')).toBe(
-      `${SITE_ORIGIN}/carrier-serial-number-decoder`,
+      `${SITE_ORIGIN}/carrier-serial-number-decoder/`,
     );
   });
 
-  it('removes trailing slash from non-root paths', () => {
+  it('preserves trailing slash from non-root paths', () => {
     expect(canonicalUrl('/goodman-serial-number-decoder/')).toBe(
-      `${SITE_ORIGIN}/goodman-serial-number-decoder`,
+      `${SITE_ORIGIN}/goodman-serial-number-decoder/`,
     );
   });
 
@@ -304,13 +304,13 @@ describe('buildBreadcrumbSchema', () => {
   it('second item is the brand page', () => {
     const items = schema['itemListElement'] as Record<string, unknown>[];
     expect(items[1]['position']).toBe(2);
-    expect(items[1]['item']).toBe(`${SITE_ORIGIN}/carrier-serial-number-decoder`);
+    expect(items[1]['item']).toBe(`${SITE_ORIGIN}/carrier-serial-number-decoder/`);
     expect(items[1]['name']).toBe('Carrier Serial Number Decoder');
   });
 
-  it('brand page URL does not have trailing slash', () => {
+  it('brand page URL has trailing slash', () => {
     const items = schema['itemListElement'] as Record<string, unknown>[];
-    expect(items[1]['item'] as string).not.toMatch(/\/$/);
+    expect(items[1]['item'] as string).toMatch(/\/$/);
   });
 });
 

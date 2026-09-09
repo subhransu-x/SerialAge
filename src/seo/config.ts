@@ -41,8 +41,8 @@ export const SITE_ORIGIN: string = RAW_SITE_URL.toLowerCase().replace(/\/$/, '')
 export function canonicalUrl(path: string): string {
   // Strip query strings and fragments from path (safety guard)
   const cleanPath = path.split('?')[0].split('#')[0];
-  // Remove trailing slash unless it IS the root
-  const normPath = cleanPath === '/' ? '/' : cleanPath.replace(/\/$/, '');
+  // Enforce trailing slash unless it IS the root (which already has one)
+  const normPath = cleanPath === '/' ? '/' : cleanPath.replace(/\/$/, '') + '/';
   return `${SITE_ORIGIN}${normPath}`;
 }
 

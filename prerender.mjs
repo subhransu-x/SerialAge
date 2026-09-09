@@ -271,7 +271,7 @@ function generateSitemap(brandSlugs) {
   const indexableRoutes = ['/', ...brandSlugs.map((s) => `/${s}`)];
 
   const urls = indexableRoutes.map((routePath) => {
-    const loc = routePath === '/' ? `${SITE_URL}/` : `${SITE_URL}${routePath}`;
+    const loc = routePath === '/' ? `${SITE_URL}/` : `${SITE_URL}${routePath}/`;
     return `  <url>\n    <loc>${loc}</loc>\n  </url>`;
   });
 

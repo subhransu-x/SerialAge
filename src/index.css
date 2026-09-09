@@ -5,8 +5,7 @@
    All original content & functionality unchanged.
 ============================================================ */
 
-/* ── Google Fonts import (Inter — closest open substitute for Pin Sans) ── */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/* ── Google Fonts import removed in favor of local woff2 ── */
 
 /* ============================================================
    DESIGN TOKENS

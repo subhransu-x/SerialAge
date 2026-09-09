@@ -100,7 +100,7 @@ describe('SSG Raw HTML Output', () => {
         if (route === '/') {
           expect(href).toBe('https://serialage.com/');
         } else {
-          expect(href).toBe(`https://serialage.com${route}`);
+          expect(href).toBe(`https://serialage.com${route}/`);
         }
       });
 
