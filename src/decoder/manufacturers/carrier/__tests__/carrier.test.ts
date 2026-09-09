@@ -162,17 +162,20 @@ describe('Carrier Decoder', () => {
       });
     }
 
-    it('C-UNS-01: Style 4 (A167890) has specific unsupported explanation', () => {
+    it('C-UNS-01 (MOVED): Style 4 (A167890) now decodes as success (Style 4 implemented)', () => {
       const result = decode('carrier', 'A167890', { referenceDate: REFERENCE_DATE });
-      expect(result.status).toBe('unsupported');
-      expect(result.explanation).toContain('Pre-1985');
-      expect(result.explanation).toContain('data plate');
+      expect(result.status).toBe('success');
+      expect(result.formatUsed?.id).toBe('carrier-style4-unambiguous');
+      expect(result.manufactureDate?.year).toBe(1971);
+      expect(result.manufactureDate?.month).toBe(1);
     });
 
-    it('C-UNS-02: Style 3 (W4D14008) has specific unsupported explanation', () => {
+    it('C-UNS-02 (MOVED): Style 3 (W4D14008) now decodes as success (Style 3 implemented)', () => {
       const result = decode('carrier', 'W4D14008', { referenceDate: REFERENCE_DATE });
-      expect(result.status).toBe('unsupported');
-      expect(result.explanation).toContain('Pre-1985');
+      expect(result.status).toBe('success');
+      expect(result.formatUsed?.id).toBe('carrier-style3-us');
+      expect(result.manufactureDate?.year).toBe(1984);
+      expect(result.manufactureDate?.month).toBe(10);
     });
 
     it('C-UNS-03: Week 53 serial does not decode as WWYY', () => {
@@ -311,10 +314,11 @@ describe('Carrier Decoder', () => {
       expect(result.explanation).toContain('month of manufacture');
     });
 
-    it('unsupported legacy format includes source references', () => {
+    it('Style 4 format (A167890) includes source references', () => {
       const result = decode('carrier', 'A167890', { referenceDate: REFERENCE_DATE });
-      expect(result.status).toBe('unsupported');
+      expect(result.status).toBe('success');
       expect(result.sources.length).toBeGreaterThan(0);
+      expect(result.sources.some(s => s.name.includes('Building Intelligence Center'))).toBe(true);
     });
   });
 
@@ -511,11 +515,11 @@ describe('Carrier Decoder', () => {
       expect(result.status).toBe('unsupported');
     });
 
-    it('year 84 → 2084 (below threshold, rejected as implausibly future)', () => {
-      // 84 < 85, so century threshold maps it to 2000 + 84 = 2084
-      // The date validator correctly rejects 2084 as more than 2 years in the future
+    it('year 84 → 1984 (threshold=80: 84 >= 80 → 1900+84=1984)', () => {
+      // With WWYY_CENTURY_THRESHOLD=80: YY=84 >= 80 → 1900+84 = 1984 (valid past year)
       const result = decode('carrier', '0184A00001', { referenceDate: REFERENCE_DATE });
-      expect(result.status).toBe('unsupported');
+      expect(result.status).toBe('success');
+      expect(result.manufactureDate?.year).toBe(1984);
     });
 
     it('year 85 → 1985 (at threshold)', () => {
@@ -586,6 +590,177 @@ describe('Carrier Decoder', () => {
       const result = decode('carrier', '85030409', { referenceDate: REFERENCE_DATE });
       // May match unsupported legacy or fall through
       expect(result.status).toBe('unsupported');
+    });
+  });
+
+  // -----------------------------------------------------------------------
+  // O. WWYY 1980–1984 era (century threshold fix)
+  // -----------------------------------------------------------------------
+  describe('WWYY 1980–1984 era (fixed century threshold)', () => {
+    it('0180A12345 → Week 1, 1980 (not 2080)', () => {
+      const result = decode('carrier', '0180A12345', { referenceDate: REFERENCE_DATE });
+      expect(result.status).toBe('success');
+      expect(result.formatUsed?.id).toBe('carrier-wwyy-standard');
+      expect(result.manufactureDate?.year).toBe(1980);
+      expect(result.manufactureDate?.week).toBe(1);
+    });
+
+    it('0280A12345 → Week 2, 1980', () => {
+      const result = decode('carrier', '0280A12345', { referenceDate: REFERENCE_DATE });
+      expect(result.status).toBe('success');
+      expect(result.manufactureDate?.year).toBe(1980);
+      expect(result.manufactureDate?.week).toBe(2);
+    });
+
+    it('0381A12345 → Week 3, 1981', () => {
+      const result = decode('carrier', '0381A12345', { referenceDate: REFERENCE_DATE });
+      expect(result.status).toBe('success');
+      expect(result.manufactureDate?.year).toBe(1981);
+    });
+
+    it('5284Z99999 → Week 52, 1984', () => {
+      const result = decode('carrier', '5284Z99999', { referenceDate: REFERENCE_DATE });
+      expect(result.status).toBe('success');
+      expect(result.manufactureDate?.year).toBe(1984);
+      expect(result.manufactureDate?.week).toBe(52);
+    });
+
+    it('1980–1984 WWYY serials trigger transitional era warning', () => {
+      const result = decode('carrier', '0180A12345', { referenceDate: REFERENCE_DATE });
+      expect(result.warnings.some(w => w.includes('Transitional era'))).toBe(true);
+    });
+  });
+
+  // -----------------------------------------------------------------------
+  // P. Style 3 (1980–1984)
+  // -----------------------------------------------------------------------
+  describe('Style 3 (1980–1984)', () => {
+    it('W4D14008 → October 1984 (US format, BIC verified)', () => {
+      const result = decode('carrier', 'W4D14008', { referenceDate: REFERENCE_DATE });
+      expect(result.status).toBe('success');
+      expect(result.formatUsed?.id).toBe('carrier-style3-us');
+      expect(result.manufactureDate?.year).toBe(1984);
+      expect(result.manufactureDate?.month).toBe(10);
+    });
+
+    it('4WD14008 → October 1984 (Canadian format, BIC verified)', () => {
+      const result = decode('carrier', '4WD14008', { referenceDate: REFERENCE_DATE });
+      expect(result.status).toBe('success');
+      expect(result.formatUsed?.id).toBe('carrier-style3-ca');
+      expect(result.manufactureDate?.year).toBe(1984);
+      expect(result.manufactureDate?.month).toBe(10);
+    });
+
+    it('M0A12345 → January 1980 (earliest Style 3)', () => {
+      const result = decode('carrier', 'M0A12345', { referenceDate: REFERENCE_DATE });
+      expect(result.status).toBe('success');
+      expect(result.formatUsed?.id).toBe('carrier-style3-us');
+      expect(result.manufactureDate?.year).toBe(1980);
+      expect(result.manufactureDate?.month).toBe(1);
+    });
+
+    it('Z4A12345 → December 1984 (latest Style 3)', () => {
+      const result = decode('carrier', 'Z4A12345', { referenceDate: REFERENCE_DATE });
+      expect(result.status).toBe('success');
+      expect(result.formatUsed?.id).toBe('carrier-style3-us');
+      expect(result.manufactureDate?.year).toBe(1984);
+      expect(result.manufactureDate?.month).toBe(12);
+    });
+
+    it('Style 3 with year digit 5 is unsupported (out of range)', () => {
+      const result = decode('carrier', 'W5D14008', { referenceDate: REFERENCE_DATE });
+      expect(result.status).toBe('unsupported');
+    });
+
+    it('Style 3 letter O is not a valid month letter', () => {
+      // O is skipped — serial starting with O should not match Style 3
+      const result = decode('carrier', 'O4A12345', { referenceDate: REFERENCE_DATE });
+      expect(result.status).toBe('unsupported');
+    });
+
+    it('Style 3 letter X is not a valid month letter', () => {
+      // X is skipped — serial starting with X should not match Style 3
+      const result = decode('carrier', 'X4A12345', { referenceDate: REFERENCE_DATE });
+      expect(result.status).toBe('unsupported');
+    });
+
+    it('Style 3 Y=November', () => {
+      const result = decode('carrier', 'Y2A12345', { referenceDate: REFERENCE_DATE });
+      expect(result.status).toBe('success');
+      expect(result.manufactureDate?.month).toBe(11);
+      expect(result.manufactureDate?.year).toBe(1982);
+    });
+
+    it('Style 3 includes source references', () => {
+      const result = decode('carrier', 'W4D14008', { referenceDate: REFERENCE_DATE });
+      expect(result.sources.length).toBeGreaterThan(0);
+      expect(result.sources.some(s => s.name.includes('Building Intelligence Center'))).toBe(true);
+    });
+  });
+
+  // -----------------------------------------------------------------------
+  // Q. Style 4 (1969–1979)
+  // -----------------------------------------------------------------------
+  describe('Style 4 (1969–1979)', () => {
+    it('A167890 → January 1971 (BIC verified, unambiguous)', () => {
+      const result = decode('carrier', 'A167890', { referenceDate: REFERENCE_DATE });
+      expect(result.status).toBe('success');
+      expect(result.formatUsed?.id).toBe('carrier-style4-unambiguous');
+      expect(result.manufactureDate?.year).toBe(1971);
+      expect(result.manufactureDate?.month).toBe(1);
+    });
+
+    it('L812345 → December 1978 (year digit 8)', () => {
+      const result = decode('carrier', 'L812345', { referenceDate: REFERENCE_DATE });
+      expect(result.status).toBe('success');
+      expect(result.formatUsed?.id).toBe('carrier-style4-unambiguous');
+      expect(result.manufactureDate?.year).toBe(1978);
+      expect(result.manufactureDate?.month).toBe(12);
+    });
+
+    it('B012345 → February 1970 (year digit 0)', () => {
+      const result = decode('carrier', 'B012345', { referenceDate: REFERENCE_DATE });
+      expect(result.status).toBe('success');
+      expect(result.formatUsed?.id).toBe('carrier-style4-unambiguous');
+      expect(result.manufactureDate?.year).toBe(1970);
+      expect(result.manufactureDate?.month).toBe(2);
+    });
+
+    it('A912345 → ambiguous (1969 or 1979) for year digit 9', () => {
+      const result = decode('carrier', 'A912345', { referenceDate: REFERENCE_DATE });
+      expect(result.status).toBe('ambiguous');
+      expect(result.candidates).toHaveLength(2);
+      const years = result.candidates.map(c => c.manufactureDate.year).sort();
+      expect(years).toEqual([1969, 1979]);
+    });
+
+    it('L912345 → ambiguous (December 1969 or December 1979)', () => {
+      const result = decode('carrier', 'L912345', { referenceDate: REFERENCE_DATE });
+      expect(result.status).toBe('ambiguous');
+      const months = result.candidates.map(c => c.manufactureDate.month);
+      expect(months.every(m => m === 12)).toBe(true);
+    });
+
+    it('Style 4 ambiguous result has warning about 1969/1979', () => {
+      const result = decode('carrier', 'A912345', { referenceDate: REFERENCE_DATE });
+      expect(result.status).toBe('ambiguous');
+      // Warning should appear in at least one candidate
+      const allWarnings = result.candidates.flatMap(c => c.warnings);
+      expect(allWarnings.some(w => w.includes('1969') && w.includes('1979'))).toBe(true);
+    });
+
+    it('Style 4 letter M is not valid (M belongs to Style 3)', () => {
+      // M = Style 3 month code, must NOT be decoded as Style 4
+      // A 7-char serial starting with M would not match STYLE_4_PATTERN (A-L only)
+      const result = decode('carrier', 'M167890', { referenceDate: REFERENCE_DATE });
+      // M7... as 7 chars: M is outside A-L range so Style 4 rejects, Style 3 needs 8 chars → unsupported
+      expect(result.status).toBe('unsupported');
+    });
+
+    it('Style 4 includes source references', () => {
+      const result = decode('carrier', 'A167890', { referenceDate: REFERENCE_DATE });
+      expect(result.sources.length).toBeGreaterThan(0);
+      expect(result.sources.some(s => s.name.includes('Building Intelligence Center'))).toBe(true);
     });
   });
 });

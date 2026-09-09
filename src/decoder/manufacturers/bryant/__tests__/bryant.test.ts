@@ -9,7 +9,7 @@ describe('Bryant Serial Number Decoder', () => {
   it('has the correct manufacturer definition', () => {
     expect(bryant.id).toBe('bryant');
     expect(bryant.name).toBe('Bryant');
-    expect(bryant.formats.length).toBe(3); // Same as Carrier (WWYY, YYMM, Legacy)
+    expect(bryant.formats.length).toBe(8); // Now matches Carrier (WWYY, YYMM, Style3-US, Style3-CA, Style4-unambiguous, Style4-1969, Style4-1979, Style6-unsupported)
   });
 
   describe('carrier-wwyy-standard', () => {
@@ -42,12 +42,13 @@ describe('Bryant Serial Number Decoder', () => {
     });
   });
 
-  describe('legacy-unsupported', () => {
-    it('rejects synthetic Style 4 legacy and uses Bryant metadata', () => {
+  describe('carrier-style4-unambiguous (via Carrier formats)', () => {
+    it('decodes synthetic Style 4 (A167890) — Bryant shares Style 4 decoding with Carrier', () => {
       const result = decode('bryant', 'A167890');
-      expect(result.status).toBe('unsupported');
-      expect(result.explanation).toContain('cannot be reliably decoded');
-      expect(result.sources?.[0]?.notes).toContain('Bryant documentation showing highly varied legacy formats');
+      // Style 4 is now decoded (January 1971), not unsupported
+      expect(result.status).toBe('success');
+      expect(result.formatUsed?.id).toBe('carrier-style4-unambiguous');
+      expect(result.manufactureDate?.year).toBe(1971);
     });
   });
 });

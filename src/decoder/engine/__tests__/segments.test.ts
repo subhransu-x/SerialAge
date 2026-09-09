@@ -487,10 +487,11 @@ describe('Segments: Amana (Goodman-inherited)', () => {
 describe('Segments: Unsupported/Invalid results have no segments', () => {
   beforeEach(() => { _resetRegistryForTesting(); registerCarrier(); registerTrane(); });
 
-  it('carrier pre-1985 legacy (Style 4) returns empty segments', () => {
+  it('carrier Style 4 (A167890) now decodes and populates segments', () => {
     const result = decode('carrier', 'A167890', { referenceDate: REF }); // 7-char Style 4
-    expect(result.status).toBe('unsupported');
-    expect(result.segments).toHaveLength(0);
+    // Style 4 is now implemented — returns success with Month and Year segments
+    expect(result.status).toBe('success');
+    expect(result.segments.length).toBeGreaterThan(0);
   });
 
   it('invalid-input returns empty segments', () => {

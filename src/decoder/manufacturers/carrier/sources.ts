@@ -122,3 +122,43 @@ export const LEGACY_UNSUPPORTED_SOURCES: readonly SourceReference[] = [
     confidence: 'verified',
   },
 ] as const;
+
+// ---------------------------------------------------------------------------
+// Style 3 (1980–1984) sources
+// ---------------------------------------------------------------------------
+
+export const STYLE3_SOURCES: readonly SourceReference[] = [
+  {
+    name: 'Building Intelligence Center',
+    url: 'https://building-center.org',
+    dateReviewed: '2026-09-09',
+    notes:
+      'Documents Style 3 format for Carrier/BDP family (1980–1984). US example: W4D14008. '
+      + 'Canadian example: 4WD14008. Confirmed W=October, Y=November, Z=December.',
+    confidence: 'verified',
+  },
+  {
+    name: 'HeatingPartsCanada.ca',
+    url: 'https://heatingpartscanada.ca',
+    dateReviewed: '2026-09-09',
+    notes:
+      'Confirms Style 3 month letter mapping and Canadian format reversal.',
+    confidence: 'probable',
+  },
+] as const;
+
+// ---------------------------------------------------------------------------
+// Style 4 (1969–1979) sources
+// ---------------------------------------------------------------------------
+
+export const STYLE4_SOURCES: readonly SourceReference[] = [
+  {
+    name: 'Building Intelligence Center',
+    url: 'https://building-center.org',
+    dateReviewed: '2026-09-09',
+    notes:
+      'Documents Style 4 format for Carrier (Jan 1, 1969 – Dec 31, 1979). '
+      + 'A=Jan through L=Dec. Year digit 9=1969 or 1979 (ambiguous). Example: A167890 = Jan 1971.',
+    confidence: 'verified',
+  },
+] as const;

@@ -9,7 +9,7 @@ describe('Payne Serial Number Decoder', () => {
   it('has the correct manufacturer definition', () => {
     expect(payne.id).toBe('payne');
     expect(payne.name).toBe('Payne');
-    expect(payne.formats.length).toBe(3); // Same as Carrier (WWYY, YYMM, Legacy)
+    expect(payne.formats.length).toBe(8); // Now matches Carrier (WWYY, YYMM, Style3-US, Style3-CA, Style4-unambiguous, Style4-1969, Style4-1979, Style6-unsupported)
   });
 
   describe('carrier-wwyy-standard', () => {
@@ -35,12 +35,14 @@ describe('Payne Serial Number Decoder', () => {
     });
   });
 
-  describe('legacy-unsupported', () => {
-    it('rejects synthetic Style 3 legacy and uses Payne metadata', () => {
+  describe('carrier-style3-us (via Carrier formats)', () => {
+    it('decodes synthetic Style 3 (W4D14008) — Payne shares Style 3 decoding with Carrier', () => {
       const result = decode('payne', 'W4D14008');
-      expect(result.status).toBe('unsupported');
-      expect(result.explanation).toContain('cannot be reliably decoded');
-      expect(result.sources?.[0]?.notes).toContain('Payne documentation showing highly varied legacy formats');
+      // Style 3 is now decoded (October 1984), not unsupported
+      expect(result.status).toBe('success');
+      expect(result.formatUsed?.id).toBe('carrier-style3-us');
+      expect(result.manufactureDate?.year).toBe(1984);
+      expect(result.manufactureDate?.month).toBe(10);
     });
   });
 });

@@ -1,8 +1,7 @@
 /**
  * Golden test fixtures for Carrier serial number decoder.
  *
- * Source of truth: claude_handoff.md Section 3 — Golden Test Dataset
- * Also references: carrier_specification.md (test fixture tables)
+ * Source of truth: Phase 1 & 2 research (2026-09-09)
  *
  * IMPORTANT:
  * - Verified real-world examples come from documented sources.
@@ -75,6 +74,63 @@ export const CARRIER_VERIFIED_FIXTURES: readonly DecoderTestCase[] = [
     },
     notes: 'Primary verified YYMM example from BIC.',
   },
+  {
+    description: 'C-STYLE3-R1: Style 3 US — October 1984 (BIC example W4D14008)',
+    manufacturerId: 'carrier',
+    serialNumber: 'W4D14008',
+    expectedStatus: 'success',
+    expectedFormatId: 'carrier-style3-us',
+    expectedYear: 1984,
+    expectedMonth: 10,
+    expectedConfidence: 'high',
+    expectedProductType: 'unknown',
+    source: {
+      name: 'Building Intelligence Center',
+      url: 'https://building-center.org',
+      dateReviewed: '2026-09-09',
+      notes: 'Style 3 US example. W=October, 4=1984.',
+      confidence: 'verified',
+    },
+    notes: 'Real BIC Style 3 US example. W=October per verified BIC mapping.',
+  },
+  {
+    description: 'C-STYLE3-R2: Style 3 Canada — October 1984 (BIC example 4WD14008)',
+    manufacturerId: 'carrier',
+    serialNumber: '4WD14008',
+    expectedStatus: 'success',
+    expectedFormatId: 'carrier-style3-ca',
+    expectedYear: 1984,
+    expectedMonth: 10,
+    expectedConfidence: 'high',
+    expectedProductType: 'unknown',
+    source: {
+      name: 'Building Intelligence Center',
+      url: 'https://building-center.org',
+      dateReviewed: '2026-09-09',
+      notes: 'Style 3 CA example. 4=1984, W=October.',
+      confidence: 'verified',
+    },
+    notes: 'Real BIC Style 3 CA example. Canadian format reverses year and month positions.',
+  },
+  {
+    description: 'C-STYLE4-R1: Style 4 — January 1971 (BIC example A167890)',
+    manufacturerId: 'carrier',
+    serialNumber: 'A167890',
+    expectedStatus: 'success',
+    expectedFormatId: 'carrier-style4-unambiguous',
+    expectedYear: 1971,
+    expectedMonth: 1,
+    expectedConfidence: 'high',
+    expectedProductType: 'unknown',
+    source: {
+      name: 'Building Intelligence Center',
+      url: 'https://building-center.org',
+      dateReviewed: '2026-09-09',
+      notes: 'Style 4 example. A=January, 1=1971.',
+      confidence: 'verified',
+    },
+    notes: 'Real BIC Style 4 example. Unambiguous year digit 1=1971.',
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -93,7 +149,7 @@ export const CARRIER_SYNTHETIC_FIXTURES: readonly DecoderTestCase[] = [
     expectedConfidence: 'high',
     expectedProductType: 'unknown',
     source: null,
-    notes: 'Synthetic boundary test. Earliest plausible WWYY serial. Should trigger transitional era warning.',
+    notes: 'Synthetic boundary test. Should trigger transitional era warning.',
   },
   {
     description: 'C-WWYY-S2: Latest plausible WWYY — Week 52, 2024',
@@ -133,6 +189,113 @@ export const CARRIER_SYNTHETIC_FIXTURES: readonly DecoderTestCase[] = [
     expectedProductType: 'unknown',
     source: null,
     notes: 'Synthetic boundary test. Latest plausible YYMM serial.',
+  },
+  // --- WWYY 1980–1984 era (previously broken, now fixed) ---
+  {
+    description: 'C-WWYY-1980-S1: Week 01, 1980 — tests fixed century threshold',
+    manufacturerId: 'carrier',
+    serialNumber: '0180A12345',
+    expectedStatus: 'success',
+    expectedFormatId: 'carrier-wwyy-standard',
+    expectedYear: 1980,
+    expectedMonth: null,
+    expectedConfidence: 'high',
+    expectedProductType: 'unknown',
+    source: null,
+    notes: 'Synthetic. Verifies WWYY_CENTURY_THRESHOLD=80. Previously decoded as 2080.',
+  },
+  {
+    description: 'C-WWYY-1980-S2: Week 02, 1980',
+    manufacturerId: 'carrier',
+    serialNumber: '0280A12345',
+    expectedStatus: 'success',
+    expectedFormatId: 'carrier-wwyy-standard',
+    expectedYear: 1980,
+    expectedMonth: null,
+    expectedConfidence: 'high',
+    expectedProductType: 'unknown',
+    source: null,
+    notes: 'Synthetic. Tests 1980 WWYY decode.',
+  },
+  {
+    description: 'C-WWYY-1981-S1: Week 03, 1981',
+    manufacturerId: 'carrier',
+    serialNumber: '0381A12345',
+    expectedStatus: 'success',
+    expectedFormatId: 'carrier-wwyy-standard',
+    expectedYear: 1981,
+    expectedMonth: null,
+    expectedConfidence: 'high',
+    expectedProductType: 'unknown',
+    source: null,
+    notes: 'Synthetic. Tests 1981 WWYY decode.',
+  },
+  {
+    description: 'C-WWYY-1984-S1: Week 52, 1984',
+    manufacturerId: 'carrier',
+    serialNumber: '5284Z99999',
+    expectedStatus: 'success',
+    expectedFormatId: 'carrier-wwyy-standard',
+    expectedYear: 1984,
+    expectedMonth: null,
+    expectedConfidence: 'high',
+    expectedProductType: 'unknown',
+    source: null,
+    notes: 'Synthetic. Tests 1984 WWYY decode (last year of transitional era).',
+  },
+  // --- Style 3 boundary tests ---
+  {
+    description: 'C-STYLE3-S1: Style 3 US — January 1980 (earliest)',
+    manufacturerId: 'carrier',
+    serialNumber: 'M0A12345',
+    expectedStatus: 'success',
+    expectedFormatId: 'carrier-style3-us',
+    expectedYear: 1980,
+    expectedMonth: 1,
+    expectedConfidence: 'high',
+    expectedProductType: 'unknown',
+    source: null,
+    notes: 'Synthetic. M=January, 0=1980.',
+  },
+  {
+    description: 'C-STYLE3-S2: Style 3 US — December 1984 (latest)',
+    manufacturerId: 'carrier',
+    serialNumber: 'Z4A12345',
+    expectedStatus: 'success',
+    expectedFormatId: 'carrier-style3-us',
+    expectedYear: 1984,
+    expectedMonth: 12,
+    expectedConfidence: 'high',
+    expectedProductType: 'unknown',
+    source: null,
+    notes: 'Synthetic. Z=December, 4=1984.',
+  },
+  // --- Style 4 boundary tests ---
+  {
+    description: 'C-STYLE4-S1: Style 4 — December 1978 (year digit 8)',
+    manufacturerId: 'carrier',
+    serialNumber: 'L812345',
+    expectedStatus: 'success',
+    expectedFormatId: 'carrier-style4-unambiguous',
+    expectedYear: 1978,
+    expectedMonth: 12,
+    expectedConfidence: 'high',
+    expectedProductType: 'unknown',
+    source: null,
+    notes: 'Synthetic. L=December, 8=1978.',
+  },
+  {
+    description: 'C-STYLE4-S2-moved: See CARRIER_AMBIGUOUS_FIXTURES for digit-9 ambiguity test',
+    manufacturerId: 'carrier',
+    serialNumber: 'A167890',
+    expectedStatus: 'success',
+    expectedFormatId: 'carrier-style4-unambiguous',
+    expectedYear: 1971,
+    expectedMonth: 1,
+    expectedConfidence: 'high',
+    expectedProductType: 'unknown',
+    source: null,
+    notes: 'Synthetic. Verifies non-ambiguous Style 4 decode. Digit-9 ambiguity tested separately in CARRIER_AMBIGUOUS_FIXTURES.',
   },
 ];
 
@@ -188,9 +351,9 @@ export const CARRIER_INVALID_FIXTURES: readonly DecoderTestCase[] = [
 
 export const CARRIER_UNSUPPORTED_FIXTURES: readonly DecoderTestCase[] = [
   {
-    description: 'C-UNS-01: Style 4 (1970s) — A167890',
+    description: 'C-UNS-01: Style 6 (1960s/70s week+letter year) — 46U152456',
     manufacturerId: 'carrier',
-    serialNumber: 'A167890',
+    serialNumber: '46U152456',
     expectedStatus: 'unsupported',
     expectedFormatId: null,
     expectedYear: null,
@@ -200,33 +363,14 @@ export const CARRIER_UNSUPPORTED_FIXTURES: readonly DecoderTestCase[] = [
     source: {
       name: 'Building Intelligence Center',
       url: 'https://building-center.org',
-      dateReviewed: '2026-08-22',
-      notes: 'Style 4 example — not implemented',
+      dateReviewed: '2026-09-09',
+      notes: 'Style 6 example — not implemented due to pattern collision risk',
       confidence: 'verified',
     },
-    notes: 'Real BIC Style 4 example. Must trigger explicit unsupported, not generic no-match.',
+    notes: 'Style 6 format remains unsupported. Must trigger explicit unsupported, not generic no-match.',
   },
   {
-    description: 'C-UNS-02: Style 3 (1980-84) — W4D14008',
-    manufacturerId: 'carrier',
-    serialNumber: 'W4D14008',
-    expectedStatus: 'unsupported',
-    expectedFormatId: null,
-    expectedYear: null,
-    expectedMonth: null,
-    expectedConfidence: null,
-    expectedProductType: null,
-    source: {
-      name: 'Building Intelligence Center',
-      url: 'https://building-center.org',
-      dateReviewed: '2026-08-22',
-      notes: 'Style 3 US example — not implemented',
-      confidence: 'verified',
-    },
-    notes: 'Real BIC Style 3 example. Must trigger explicit unsupported.',
-  },
-  {
-    description: 'C-UNS-03: WWYY with invalid week 53 — 5320A12345',
+    description: 'C-UNS-02: WWYY with invalid week 53 — 5320A12345',
     manufacturerId: 'carrier',
     serialNumber: '5320A12345',
     expectedStatus: 'unsupported',
@@ -239,7 +383,7 @@ export const CARRIER_UNSUPPORTED_FIXTURES: readonly DecoderTestCase[] = [
     notes: 'Synthetic. Week 53 exceeds maximum valid week (52). Structural match for WWYY but week validation should reject it.',
   },
   {
-    description: 'C-UNS-04: YYMM with invalid month 13 — 831300001',
+    description: 'C-UNS-03: YYMM with invalid month 13 — 831300001',
     manufacturerId: 'carrier',
     serialNumber: '831300001',
     expectedStatus: 'unsupported',
@@ -251,6 +395,19 @@ export const CARRIER_UNSUPPORTED_FIXTURES: readonly DecoderTestCase[] = [
     source: null,
     notes: 'Synthetic. Month 13 is invalid. YYMM structural match but month validation should reject it.',
   },
+  {
+    description: 'C-UNS-04: Style 3 with year digit 5 (out of range) — W5D14008',
+    manufacturerId: 'carrier',
+    serialNumber: 'W5D14008',
+    expectedStatus: 'unsupported',
+    expectedFormatId: null,
+    expectedYear: null,
+    expectedMonth: null,
+    expectedConfidence: null,
+    expectedProductType: null,
+    source: null,
+    notes: 'Synthetic. Year digit 5 is outside valid range 0-4 for Style 3.',
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -259,7 +416,7 @@ export const CARRIER_UNSUPPORTED_FIXTURES: readonly DecoderTestCase[] = [
 
 export const CARRIER_AMBIGUOUS_FIXTURES: readonly DecoderTestCase[] = [
   {
-    description: 'C-AMB-01: Structurally matches WWYY but week 85 is invalid. Contains letter so not YYMM.',
+    description: 'C-AMB-01: Structurally matches WWYY but wrong length. No 8-char format matches digits-only.',
     manufacturerId: 'carrier',
     serialNumber: '8503A4091',
     expectedStatus: 'unsupported',
@@ -271,10 +428,23 @@ export const CARRIER_AMBIGUOUS_FIXTURES: readonly DecoderTestCase[] = [
     source: null,
     notes: 'Synthetic. 9 chars with letter at position 5 — does not match WWYY (length 10 required), does not match YYMM (not all digits). Falls through as unsupported.',
   },
+  {
+    description: 'C-AMB-02: Style 4 digit 9 — ambiguous (1969 or 1979)',
+    manufacturerId: 'carrier',
+    serialNumber: 'A912345',
+    expectedStatus: 'ambiguous',
+    expectedFormatId: null,
+    expectedYear: null,
+    expectedMonth: null,
+    expectedConfidence: null,
+    expectedProductType: null,
+    source: null,
+    notes: 'Synthetic. A=January, 9=ambiguous (1969 or 1979). Must report two candidates.',
+  },
 ];
 
 // ---------------------------------------------------------------------------
-// F. Edge Case / Boundary Fixtures (from carrier_specification.md)
+// F. Edge Case / Boundary Fixtures
 // ---------------------------------------------------------------------------
 
 export const CARRIER_EDGE_FIXTURES: readonly DecoderTestCase[] = [
@@ -353,7 +523,7 @@ export const CARRIER_NORMALIZATION_FIXTURES: readonly DecoderTestCase[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// H. Adversarial / Threat Fixtures (from claude_handoff.md Section 4)
+// H. Adversarial / Threat Fixtures
 // ---------------------------------------------------------------------------
 
 export const CARRIER_ADVERSARIAL_FIXTURES: readonly DecoderTestCase[] = [
@@ -381,7 +551,7 @@ export const CARRIER_ADVERSARIAL_FIXTURES: readonly DecoderTestCase[] = [
     expectedConfidence: 'high',
     expectedProductType: 'unknown',
     source: null,
-    notes: 'Synthetic adversarial. Tests century threshold: YY=05 < 85 → 2005.',
+    notes: 'Synthetic adversarial. Tests century threshold: YY=05 < 80 → 2005.',
   },
 ];
 
