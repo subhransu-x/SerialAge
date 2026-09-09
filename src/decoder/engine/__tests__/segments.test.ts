@@ -407,14 +407,14 @@ describe('Segments: York Ambiguous', () => {
   beforeEach(() => { _resetRegistryForTesting(); registerYork(); });
 
   it('ambiguous top-level result has empty segments', () => {
-    // AADZ123456 — D in both cycles: Cycle1=1974, Cycle2=1995
-    const result = decode('york', 'AADZ123456', { referenceDate: REF });
+    // WAKM011379 — K in both cycles: Cycle1=1980, Cycle2=2001
+    const result = decode('york', 'WAKM011379', { referenceDate: REF });
     expect(result.status).toBe('ambiguous');
     expect(result.segments).toHaveLength(0);
   });
 
   it('each ambiguous candidate carries its own segments', () => {
-    const result = decode('york', 'AADZ123456', { referenceDate: REF });
+    const result = decode('york', 'WAKM011379', { referenceDate: REF });
     expect(result.status).toBe('ambiguous');
     expect(result.candidates.length).toBeGreaterThan(1);
     for (const candidate of result.candidates) {

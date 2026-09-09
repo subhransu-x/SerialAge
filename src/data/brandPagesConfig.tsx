@@ -798,15 +798,15 @@ const york: BrandPageConfig = {
   pageTitle: 'York Serial Number Decoder — Find Equipment Age | SerialAge',
   metaDescription: 'Free decoder for York HVAC serial numbers. Find out the age and manufacture date of your York air conditioner, furnace, or heat pump.',
   headline: 'York Serial Number Decoder',
-  shortDescription: "Determine the age and manufacture date of your York HVAC equipment. York's historical serial numbering incorporates a notoriously complex 21-year repeating letter cycle which can result in intentional ambiguity.",
+  shortDescription: "Determine the age and manufacture date of your York HVAC equipment. York's historical serial numbering incorporates a complex repeating letter cycle between the 1980s and 2000s which can result in intentional ambiguity.",
   ratingPlateLocation: "The serial number is located on the manufacturer's data plate (rating plate). For outdoor AC or heat pump units, it is usually on the side or back of the cabinet above the refrigerant valves. For indoor furnaces or air handlers, check inside the front access panel.",
   limitations: [
-    "The 1971-2004 format repeats the year letter every 21 years (e.g., A = 1971 OR 1992). The decoder will correctly identify this as ambiguous and provide both years for letters A through N.",
-    "Serial numbers indicating manufacture before 1971 are highly inconsistent and not supported.",
+    "The 1980-2004 format repeats the year letters K, L, M, and N in both the 1980s and early 2000s. The decoder will correctly identify this as ambiguous and provide both years for those specific letters.",
+    "The 1970s format utilizes specific two-letter prefixes. Prefixes not on the strict manufacturer whitelist are not supported.",
     "9-character legacy variations (missing the leading plant code) are intentionally rejected to prevent false positives.",
     "Water heater serial numbers are out of scope."
   ],
-  ambiguity: "York used a repeating 21-year letter cycle from 1971 to 2004. Serial numbers with year letters A through N could belong to either the 1971-1983 cycle or the 1992-2004 cycle. Our decoder intentionally returns both possible years when it detects this ambiguity. You must visually inspect the unit's condition and refrigerant type to determine the correct era.",
+  ambiguity: "York used a repeating letter cycle between the 1980s and 2000s. Serial numbers with year letters K, L, M, or N could belong to either the 1980-1991 cycle or the 1992-2004 cycle. Our decoder intentionally returns both possible years when it detects this ambiguity. You must visually inspect the unit's condition and refrigerant type to determine the correct era.",
   sources: [
     { type: 'internal', title: 'York Implementation Contract', description: 'Implementation audit.' },
     { type: 'external', title: 'Building Intelligence Center - York', publisher: 'Building Intelligence Center', description: 'Reference for historical formatting trends.' }
@@ -819,10 +819,16 @@ const york: BrandPageConfig = {
       description: "Used from October 2004 to present. Positions 2 and 4 form a 2-digit year code (e.g. 0 and 5 = 2005). Position 3 is a letter representing the month."
     },
     {
-      label: "1971-2004 (10-Character)",
-      example: "WAKM011379",
+      label: "1980-2004 (10-Character)",
+      example: "WAPM123456",
       exampleType: "Verified",
-      description: "Position 2 is the month letter, Position 3 is the year letter. Letters A-N map to two possible years."
+      description: "Position 2 is the month letter, Position 3 is the year letter. Letters K, L, M, and N map to two possible years."
+    },
+    {
+      label: "1960-1979 (Two-Letter Prefix)",
+      example: "KO12345",
+      exampleType: "Documented",
+      description: "Older units used a specific two-letter prefix (like KO, AO, etc.) to indicate the manufacture year."
     }
   ],
   faqs: [
@@ -832,19 +838,19 @@ const york: BrandPageConfig = {
     },
     {
       question: "How do I check the age of my York air conditioner or furnace?",
-      answer: "Enter the serial number from your data plate into the decoder above with 'York' selected. York has used two main 10-character formats. Since October 2004, the year is encoded using digits at positions 2 and 4, and the month using a letter at position 3. For equipment made between 1971 and 2004, letters at positions 2 and 3 encode the month and year — though the result may show two possible years for some units due to a repeating letter cycle."
+      answer: "Enter the serial number from your data plate into the decoder above with 'York' selected. York has used several main formats. Since October 2004, the year is encoded using digits at positions 2 and 4, and the month using a letter at position 3. For equipment made between 1980 and 2004, letters at positions 2 and 3 encode the month and year — though the result may show two possible years for some units due to a repeating letter cycle. In the 1960s and 1970s, specific two-letter prefixes were used."
     },
     {
       question: "Why does my York serial number return two possible years?",
-      answer: "Between 1971 and 2004, York used a repeating 21-year letter cycle for the year of manufacture. The letters A through N each map to two possible years — for example, 'A' can mean 1971 or 1992. SerialAge returns both possible years rather than guessing, since the correct decade cannot be determined from the serial number alone."
+      answer: "Between 1980 and 2004, York used a repeating letter cycle for the year of manufacture. The letters K, L, M, and N each map to two possible years — for example, 'K' can mean 1980 or 2001. SerialAge returns both possible years rather than guessing, since the correct decade cannot be determined from the serial number alone."
     },
     {
       question: "How do I tell which year is correct for my ambiguous York unit?",
-      answer: "You can often narrow it down by inspecting the unit's physical condition, checking the refrigerant type listed on the data plate (pre-2010 systems often used R-22), or looking for the ANSI standard date on the plate. A 1970s unit and a 1990s unit will have noticeably different refrigerant and efficiency specifications."
+      answer: "You can often narrow it down by inspecting the unit's physical condition, checking the refrigerant type listed on the data plate (pre-2010 systems often used R-22), or looking for the ANSI standard date on the plate. A 1980s unit and a 2000s unit will have noticeably different refrigerant and efficiency specifications."
     },
     {
       question: "Does this decoder support older 9-character York formats?",
-      answer: "No. Older 9-character York serial numbers — which are missing the leading plant code — are not supported. These shorter serials carry a significant risk of false positives, so we exclude them to protect accuracy."
+      answer: "We support the 1960s and 1970s formats that use a strict whitelist of two-letter prefixes. However, other older 9-character York serial numbers — which are missing the leading plant code — are not supported. These shorter serials carry a significant risk of false positives, so we exclude them to protect accuracy."
     },
     {
       question: "Does this decoder work for Coleman and Luxaire?",
