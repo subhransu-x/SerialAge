@@ -98,7 +98,7 @@ var LEGACY_PTAC_SOURCES = [{
 //#endregion
 //#region src/decoder/manufacturers/goodman/formats.ts
 /** Standard 10-digit numeric format: YYMMXXXXXX */
-var STANDARD_10_PATTERN$2 = /^\d{10}$/;
+var STANDARD_10_PATTERN = /^\d{10}$/;
 /** Legacy PTAC format: Ends in P or D, contains letters in prefix */
 var LEGACY_PTAC_PATTERN = /^.?[A-Z].*[PD]$/;
 /** The unsupported format explanation */
@@ -113,7 +113,7 @@ var formats$5 = [{
 	productTypes: [],
 	sources: STANDARD_10_SOURCES,
 	matches(input) {
-		return STANDARD_10_PATTERN$2.test(input.normalized);
+		return STANDARD_10_PATTERN.test(input.normalized);
 	},
 	decode(input) {
 		const s = input.normalized;
@@ -954,86 +954,24 @@ registerManufacturer({
 		};
 	})
 });
-//#endregion
-//#region src/decoder/manufacturers/rheem/sources.ts
-/**
-* Building Intelligence Center — primary authority for both formats.
-* Documents Style 1 (10-char) and Style 2/3 (embedded plant code).
-*/
-var BIC_SOURCE$3 = {
+var RHEEM_STRUCTURAL_SOURCES = [{
 	name: "Building Intelligence Center",
 	url: "https://www.building-center.org/rheem-hvac-age/",
 	dateReviewed: "2026-08-27",
-	notes: "Industry reference database for HVAC age identification. Documents Rheem serial formats including the modern 10-character format (Style 1: plant letter + week + year + sequence) and the older embedded plant-code format (Style 2/3: prefix + plant letter F/M/G/N + week + year).",
+	notes: "Industry reference database for HVAC age identification. Documents Rheem modern structural serial formats.",
 	confidence: "verified"
-};
-/** Sources for rheem-standard-10 (modern 10-character format) */
-var RHEEM_STANDARD_10_SOURCES = [BIC_SOURCE$3, {
+}, {
 	name: "PickHVAC.com",
 	url: "https://pickhvac.com",
 	dateReviewed: "2026-08-27",
-	notes: "HVAC technician guide. Corroborates the 10-character modern Rheem format (letter + week + year + 5 sequence digits). Validates the week and year position rules.",
+	notes: "HVAC technician guide. Corroborates the modern Rheem format rules.",
 	confidence: "verified"
 }];
-/** Sources for rheem-embedded-plant (older embedded plant-code formats) */
-var RHEEM_EMBEDDED_PLANT_SOURCES = [BIC_SOURCE$3];
 //#endregion
 //#region src/decoder/manufacturers/rheem/formats.ts
-/**
-* Format 1: rheem-standard-10
-* Structure: 1 Letter + 2-digit week + 2-digit year + 5-digit sequence (total 10 chars).
-* Regex from contract: ^[A-Z](0[1-9]|[1-4][0-9]|5[0-3])([0-9]{2})[0-9]{5}$
-*
-* Length: exactly 10.
-*/
-var STANDARD_10_PATTERN$1 = /^[A-Z](0[1-9]|[1-4][0-9]|5[0-3])([0-9]{2})[0-9]{5}$/;
-/**
-* Format 2: rheem-embedded-plant
-*
-* Phase 8F safety fix — the original contract regex had no ^ anchor, allowing ANY
-* substring containing a plant letter + valid week+year to match, including garbage.
-* Adversarial analysis (Phase 8F) identified 9 real-user false-positive patterns:
-*   - All-alpha prefixes (MODEL, SN, AC, ABC, W)
-*   - All-digit prefixes (1234567, 9999999)
-*   - Long arbitrary strings (RANDOMSTRING...)
-*   - Typos adding extra chars to a Format 1 serial (WW421724596)
-*   - Multi-segment strings with multiple plant candidates
-*
-* FIX: Two-pattern approach:
-*
-* PATTERN A — Anchored mixed-prefix format:
-*   ^[A-Z0-9\s]{2,9}[FMGNW](week)(yr)[0-9\s]{0,6}$
-*   PLUS a code-level check that the prefix contains BOTH at least one letter
-*   AND at least one digit (mixed alphanumeric prefix, as seen in the goldens
-*   CB5D302 and AB6D307). This eliminates pure-alpha and pure-digit false positives.
-*
-* PATTERN B — Spaced 3-part format:
-*   ^\d{4}\s[FMGNW](week)(yr)\s\d{5}$
-*   Covers the documented '7351 M2806 16735' style exactly.
-*   This is more restrictive than Pattern A and avoids ambiguity.
-*
-* All 5 contract golden examples are preserved:
-*   CB5D302F099903346  -> PATTERN A (mixed prefix)
-*   7351 M2806 16735   -> PATTERN B (spaced 3-part)
-*   AB6D307-M-0999     -> PATTERN A (mixed prefix, hyphens stripped)
-*/
-/** Format 2A: anchored, mixed-alphanumeric prefix (2–9 chars), optional trailing seq */
-var EMBEDDED_PLANT_PATTERN_A$1 = /^[A-Z0-9\s]{2,9}[FMGNW](0[1-9]|[1-4][0-9]|5[0-3])([0-9]{2})[0-9\s]{0,6}$/;
-/** Format 2B: spaced 3-part format exactly — DDDD PLANT_WWYY DDDDD */
-var EMBEDDED_PLANT_PATTERN_B$1 = /^\d{4}\s[FMGNW](0[1-9]|[1-4][0-9]|5[0-3])([0-9]{2})\s\d{5}$/;
-/** Return true if str contains at least one [A-Z] AND at least one [0-9]. */
-function isMixedAlphanumeric$1(s) {
-	return /[A-Z]/.test(s) && /[0-9]/.test(s);
-}
+var STRUCTURAL_PATTERN$1 = /([A-Z])(0[1-9]|[1-4][0-9]|5[0-3])([0-9]{2})([0-9]{4,})$/i;
 /**
 * Resolve a 2-digit year to a 4-digit year using a 50-year sliding window.
-*
-* Contract Section 1 (Format 1, Format 2):
-* "Use a 50-year sliding window based on the current year."
-*
-* Example (current year 2026):
-*   2-digit 17 → threshold = 2026 - 50 = 1976 → 2017 (within 50 yrs of current)
-*   2-digit 99 → 1999 (not within 50 yrs of 2026 if we used 2099, so → 1999)
 */
 function resolveYear$1(twoDigit) {
 	const currentYear = (/* @__PURE__ */ new Date()).getFullYear();
@@ -1057,172 +995,64 @@ registerManufacturer({
 	id: "rheem",
 	name: "Rheem",
 	formats: [{
-		id: "rheem-standard-10",
-		name: "Rheem Standard 10-Character Format",
-		description: "10-character format used by modern Rheem and Ruud HVAC equipment. Character 1 is the manufacturing plant identification code. Characters 2-3 encode the week of manufacture (01–53). Characters 4-5 encode the 2-digit year. Characters 6-10 are the production sequence number.",
-		yearRange: [1980, null],
+		id: "rheem-modern-structural",
+		name: "Rheem Structural Format",
+		description: "Modern Rheem and Ruud HVAC equipment format. Extracts the manufacture date structurally by identifying the plant letter immediately preceding the week and year digits, followed by a purely numeric terminal sequence.",
+		yearRange: [1975, null],
 		productTypes: [],
-		sources: RHEEM_STANDARD_10_SOURCES,
+		sources: RHEEM_STRUCTURAL_SOURCES,
 		matches(input) {
-			return input.normalized.length === 10 && STANDARD_10_PATTERN$1.test(input.normalized);
+			const cleanStr = input.normalized.replace(/[\s-]/g, "");
+			return STRUCTURAL_PATTERN$1.test(cleanStr);
 		},
 		decode(input) {
-			const match = input.normalized.match(STANDARD_10_PATTERN$1);
+			const cleanStr = input.normalized.replace(/[\s-]/g, "");
+			const match = cleanStr.match(STRUCTURAL_PATTERN$1);
 			if (!match) return null;
-			const plantCode = input.normalized[0];
-			const week = parseInt(match[1], 10);
-			const fullYear = resolveYear$1(parseInt(match[2], 10));
-			return {
-				year: fullYear,
-				month: null,
-				week,
-				day: null,
-				productType: "unknown",
-				explanation: `Character 1 is the plant code ("${plantCode}"). Characters 2-3 indicate the week of manufacture (week ${week}). Characters 4-5 indicate the year of manufacture (${match[2]} = ${fullYear}).`,
-				warnings: [],
-				segments: [
-					{
-						startIndex: 0,
-						endIndex: 1,
-						field: "Plant Code",
-						value: plantCode,
-						description: "Manufacturing plant identifier"
-					},
-					{
-						startIndex: 1,
-						endIndex: 3,
-						field: "Week",
-						value: match[1],
-						description: `Week ${week} of manufacture`
-					},
-					{
-						startIndex: 3,
-						endIndex: 5,
-						field: "Year",
-						value: match[2],
-						description: `Year ${fullYear} of manufacture`
-					}
-				],
-				metadata: {
-					plantCode,
-					sequence: input.normalized.substring(5)
-				}
-			};
-		}
-	}, {
-		id: "rheem-embedded-plant",
-		name: "Rheem Embedded Plant Code Format (Styles 2/3)",
-		description: "Older Rheem and Ruud serial number format (typically 10–17 characters) where the manufacture date is encoded following a plant letter (F, M, G, N, or W) embedded within the string. The two digits immediately after the plant letter encode the week of manufacture (01–53), and the next two digits encode the 2-digit year. Used in commercial and older residential equipment.",
-		yearRange: [1975, 2010],
-		productTypes: [],
-		sources: RHEEM_EMBEDDED_PLANT_SOURCES,
-		matches(input) {
-			if (input.withoutHyphens.length < 10) return false;
-			if (STANDARD_10_PATTERN$1.test(input.withoutHyphens)) return false;
-			const w = input.withoutHyphens;
-			if (EMBEDDED_PLANT_PATTERN_B$1.test(w)) return true;
-			if (!w.match(EMBEDDED_PLANT_PATTERN_A$1)) return false;
-			const plantPatternPos = w.search(/[FMGNW](0[1-9]|[1-4][0-9]|5[0-3])[0-9]{2}[0-9\s]{0,6}$/);
-			if (plantPatternPos < 0) return false;
-			return isMixedAlphanumeric$1(w.slice(0, plantPatternPos));
-		},
-		decode(input) {
-			const w = input.withoutHyphens;
-			const matchB = w.match(EMBEDDED_PLANT_PATTERN_B$1);
-			if (matchB) {
-				const week = parseInt(matchB[1], 10);
-				const fullYear = resolveYear$1(parseInt(matchB[2], 10));
-				const plantLetter = w[5];
-				return {
-					year: fullYear,
-					month: null,
-					week,
-					day: null,
-					productType: "unknown",
-					explanation: `Plant code letter "${plantLetter}" is followed by the week (${matchB[1]} = week ${week}) and year (${matchB[2]} = ${fullYear}) of manufacture.`,
-					warnings: ["Format 2 date extraction is based on the embedded plant letter position. Verify against the unit data plate if the date appears incorrect."],
-					metadata: { plantLetter }
-				};
+			const plantLetter = match[1].toUpperCase();
+			const week = parseInt(match[2], 10);
+			const fullYear = resolveYear$1(parseInt(match[3], 10));
+			const sequence = match[4];
+			const warnings = [];
+			let productType = "unknown";
+			if (/^[A-Z][0-9]{9}$/i.test(cleanStr)) {
+				productType = "unknown";
+				warnings.push("This 10-character format is shared between Rheem HVAC equipment and Rheem Water Heaters. This date decode is valid for both, but this tool specializes in HVAC.");
 			}
-			const matchA = w.match(EMBEDDED_PLANT_PATTERN_A$1);
-			if (!matchA) return null;
-			const week = parseInt(matchA[1], 10);
-			const fullYear = resolveYear$1(parseInt(matchA[2], 10));
-			const matchedSubstring = matchA[0];
-			const weekStr = matchA[1];
-			const weekStartInMatch = matchedSubstring.indexOf(weekStr);
-			const plantLetter = weekStartInMatch > 0 ? matchedSubstring[weekStartInMatch - 1] : "?";
 			return {
 				year: fullYear,
 				month: null,
 				week,
 				day: null,
-				productType: "unknown",
-				explanation: `Plant code letter "${plantLetter}" is followed by the week (${matchA[1]} = week ${week}) and year (${matchA[2]} = ${fullYear}) of manufacture.`,
-				warnings: ["Format 2 date extraction is based on the embedded plant letter position. Verify against the unit data plate if the date appears incorrect."],
-				metadata: { plantLetter }
+				productType,
+				explanation: `Plant code letter "${plantLetter}" is followed by the week (${match[2]} = week ${week}) and year (${match[3]} = ${fullYear}) of manufacture.`,
+				warnings,
+				metadata: {
+					plantLetter,
+					sequence
+				}
 			};
 		}
 	}]
 });
-//#endregion
-//#region src/decoder/manufacturers/ruud/sources.ts
-/**
-* Building Intelligence Center — primary authority for both formats.
-* Documents Style 1 (10-char) and Style 2/3 (embedded plant code).
-*/
-var BIC_SOURCE$2 = {
+var ruud_STRUCTURAL_SOURCES = [{
 	name: "Building Intelligence Center",
-	url: "https://www.building-center.org/rheem-hvac-age/",
+	url: "https://www.building-center.org/ruud-hvac-age/",
 	dateReviewed: "2026-08-27",
-	notes: "Industry reference database for HVAC age identification. Documents Ruud (Rheem) serial formats including the modern 10-character format (Style 1: plant letter + week + year + sequence) and the older embedded plant-code format (Style 2/3: prefix + plant letter F/M/G/N + week + year).",
+	notes: "Industry reference database for HVAC age identification. Documents ruud modern structural serial formats.",
 	confidence: "verified"
-};
-/** Sources for ruud-standard-10 (modern 10-character format) */
-var RUUD_STANDARD_10_SOURCES = [BIC_SOURCE$2, {
+}, {
 	name: "PickHVAC.com",
 	url: "https://pickhvac.com",
 	dateReviewed: "2026-08-27",
-	notes: "HVAC technician guide. Corroborates the 10-character modern Ruud format (letter + week + year + 5 sequence digits). Validates the week and year position rules.",
+	notes: "HVAC technician guide. Corroborates the modern ruud format rules.",
 	confidence: "verified"
 }];
-/** Sources for ruud-embedded-plant (older embedded plant-code formats) */
-var RUUD_EMBEDDED_PLANT_SOURCES = [BIC_SOURCE$2];
 //#endregion
 //#region src/decoder/manufacturers/ruud/formats.ts
-/**
-* Format 1: ruud-standard-10
-* Structure: 1 Letter + 2-digit week + 2-digit year + 5-digit sequence (total 10 chars).
-* Regex from contract: ^[A-Z](0[1-9]|[1-4][0-9]|5[0-3])([0-9]{2})[0-9]{5}$
-*
-* Length: exactly 10.
-*/
-var STANDARD_10_PATTERN = /^[A-Z](0[1-9]|[1-4][0-9]|5[0-3])([0-9]{2})[0-9]{5}$/;
-/**
-* Format 2: ruud-embedded-plant
-*
-* Phase 8F safety fix — see rheem/formats.ts for full analysis.
-* Two-pattern approach:
-*   Pattern A: ^[A-Z0-9\s]{2,9}[FMGNW](week)(yr)[0-9\s]{0,6}$ with code-level mixed-prefix check
-*   Pattern B: ^\d{4}\s[FMGNW](week)(yr)\s\d{5}$ (strict spaced format)
-*/
-/** Format 2A: anchored, mixed-alphanumeric prefix (2–9 chars), optional trailing seq */
-var EMBEDDED_PLANT_PATTERN_A = /^[A-Z0-9\s]{2,9}[FMGNW](0[1-9]|[1-4][0-9]|5[0-3])([0-9]{2})[0-9\s]{0,6}$/;
-/** Format 2B: spaced 3-part format exactly — DDDD PLANT_WWYY DDDDD */
-var EMBEDDED_PLANT_PATTERN_B = /^\d{4}\s[FMGNW](0[1-9]|[1-4][0-9]|5[0-3])([0-9]{2})\s\d{5}$/;
-/** Return true if str contains at least one [A-Z] AND at least one [0-9]. */
-function isMixedAlphanumeric(s) {
-	return /[A-Z]/.test(s) && /[0-9]/.test(s);
-}
+var STRUCTURAL_PATTERN = /([A-Z])(0[1-9]|[1-4][0-9]|5[0-3])([0-9]{2})([0-9]{4,})$/i;
 /**
 * Resolve a 2-digit year to a 4-digit year using a 50-year sliding window.
-*
-* Contract Section 1 (Format 1, Format 2):
-* "Use a 50-year sliding window based on the current year."
-*
-* Example (current year 2026):
-*   2-digit 17 → threshold = 2026 - 50 = 1976 → 2017 (within 50 yrs of current)
-*   2-digit 99 → 1999 (not within 50 yrs of 2026 if we used 2099, so → 1999)
 */
 function resolveYear(twoDigit) {
 	const currentYear = (/* @__PURE__ */ new Date()).getFullYear();
@@ -1246,109 +1076,42 @@ registerManufacturer({
 	id: "ruud",
 	name: "Ruud",
 	formats: [{
-		id: "ruud-standard-10",
-		name: "Ruud Standard 10-Character Format",
-		description: "10-character format used by modern Ruud HVAC equipment. Character 1 is the manufacturing plant identification code. Characters 2-3 encode the week of manufacture (01–53). Characters 4-5 encode the 2-digit year. Characters 6-10 are the production sequence number.",
-		yearRange: [1980, null],
+		id: "ruud-modern-structural",
+		name: "ruud Structural Format",
+		description: "Modern ruud and Ruud HVAC equipment format. Extracts the manufacture date structurally by identifying the plant letter immediately preceding the week and year digits, followed by a purely numeric terminal sequence.",
+		yearRange: [1975, null],
 		productTypes: [],
-		sources: RUUD_STANDARD_10_SOURCES,
+		sources: ruud_STRUCTURAL_SOURCES,
 		matches(input) {
-			return input.normalized.length === 10 && STANDARD_10_PATTERN.test(input.normalized);
+			const cleanStr = input.normalized.replace(/[\s-]/g, "");
+			return STRUCTURAL_PATTERN.test(cleanStr);
 		},
 		decode(input) {
-			const match = input.normalized.match(STANDARD_10_PATTERN);
+			const cleanStr = input.normalized.replace(/[\s-]/g, "");
+			const match = cleanStr.match(STRUCTURAL_PATTERN);
 			if (!match) return null;
-			const plantCode = input.normalized[0];
-			const week = parseInt(match[1], 10);
-			const fullYear = resolveYear(parseInt(match[2], 10));
-			return {
-				year: fullYear,
-				month: null,
-				week,
-				day: null,
-				productType: "unknown",
-				explanation: `Character 1 is the plant code ("${plantCode}"). Characters 2-3 indicate the week of manufacture (week ${week}). Characters 4-5 indicate the year of manufacture (${match[2]} = ${fullYear}).`,
-				warnings: [],
-				segments: [
-					{
-						startIndex: 0,
-						endIndex: 1,
-						field: "Plant Code",
-						value: plantCode,
-						description: "Manufacturing plant identifier"
-					},
-					{
-						startIndex: 1,
-						endIndex: 3,
-						field: "Week",
-						value: match[1],
-						description: `Week ${week} of manufacture`
-					},
-					{
-						startIndex: 3,
-						endIndex: 5,
-						field: "Year",
-						value: match[2],
-						description: `Year ${fullYear} of manufacture`
-					}
-				],
-				metadata: {
-					plantCode,
-					sequence: input.normalized.substring(5)
-				}
-			};
-		}
-	}, {
-		id: "ruud-embedded-plant",
-		name: "Ruud Embedded Plant Code Format (Styles 2/3)",
-		description: "Older Ruud serial number format (typically 10–17 characters) where the manufacture date is encoded following a plant letter (F, M, G, N, or W) embedded within the string. The two digits immediately after the plant letter encode the week of manufacture (01–53), and the next two digits encode the 2-digit year. Used in commercial and older residential equipment.",
-		yearRange: [1975, 2010],
-		productTypes: [],
-		sources: RUUD_EMBEDDED_PLANT_SOURCES,
-		matches(input) {
-			if (input.withoutHyphens.length < 10) return false;
-			if (STANDARD_10_PATTERN.test(input.withoutHyphens)) return false;
-			const w = input.withoutHyphens;
-			if (EMBEDDED_PLANT_PATTERN_B.test(w)) return true;
-			if (!w.match(EMBEDDED_PLANT_PATTERN_A)) return false;
-			const plantPatternPos = w.search(/[FMGNW](0[1-9]|[1-4][0-9]|5[0-3])[0-9]{2}[0-9\s]{0,6}$/);
-			if (plantPatternPos < 0) return false;
-			return isMixedAlphanumeric(w.slice(0, plantPatternPos));
-		},
-		decode(input) {
-			const w = input.withoutHyphens;
-			const matchB = w.match(EMBEDDED_PLANT_PATTERN_B);
-			if (matchB) {
-				const week = parseInt(matchB[1], 10);
-				const fullYear = resolveYear(parseInt(matchB[2], 10));
-				const plantLetter = w[5];
-				return {
-					year: fullYear,
-					month: null,
-					week,
-					day: null,
-					productType: "unknown",
-					explanation: `Plant code letter "${plantLetter}" is followed by the week (${matchB[1]} = week ${week}) and year (${matchB[2]} = ${fullYear}) of manufacture.`,
-					warnings: ["Format 2 date extraction is based on the embedded plant letter position. Verify against the unit data plate if the date appears incorrect."],
-					metadata: { plantLetter }
-				};
+			const plantLetter = match[1].toUpperCase();
+			const week = parseInt(match[2], 10);
+			const fullYear = resolveYear(parseInt(match[3], 10));
+			const sequence = match[4];
+			const warnings = [];
+			let productType = "unknown";
+			if (/^[A-Z][0-9]{9}$/i.test(cleanStr)) {
+				productType = "unknown";
+				warnings.push("This 10-character format is shared between ruud HVAC equipment and ruud Water Heaters. This date decode is valid for both, but this tool specializes in HVAC.");
 			}
-			const matchA = w.match(EMBEDDED_PLANT_PATTERN_A);
-			if (!matchA) return null;
-			const week = parseInt(matchA[1], 10);
-			const fullYear = resolveYear(parseInt(matchA[2], 10));
-			const matchedSubstring = matchA[0];
-			const weekStartInMatch = matchedSubstring.indexOf(matchA[1]);
-			const plantLetter = weekStartInMatch > 0 ? matchedSubstring[weekStartInMatch - 1] : "?";
 			return {
 				year: fullYear,
 				month: null,
 				week,
 				day: null,
-				productType: "unknown",
-				explanation: `Plant code letter "${plantLetter}" is followed by the week (${matchA[1]} = week ${week}) and year (${matchA[2]} = ${fullYear}) of manufacture.`,
-				warnings: ["Format 2 date extraction is based on the embedded plant letter position. Verify against the unit data plate if the date appears incorrect."],
-				metadata: { plantLetter }
+				productType,
+				explanation: `Plant code letter "${plantLetter}" is followed by the week (${match[2]} = week ${week}) and year (${match[3]} = ${fullYear}) of manufacture.`,
+				warnings,
+				metadata: {
+					plantLetter,
+					sequence
+				}
 			};
 		}
 	}]
@@ -4409,7 +4172,7 @@ var ALL_BRAND_PAGES = [
 					marginBottom: "32px"
 				},
 				children: [
-					"Carrier has used several different serial number formats over the decades. Our decoder supports the documented formats below. Read our ",
+					"Carrier and its allied brands (like Bryant and Payne in the BDP Company) have used several different serial number formats over the decades. Our decoder supports the documented Carrier-family formats below. Read our ",
 					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_router_dom.Link, {
 						to: "/methodology",
 						style: {
@@ -4620,7 +4383,7 @@ var ALL_BRAND_PAGES = [
 				style: { marginBottom: "16px" },
 				children: [
 					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "1980–1984 Month Letter Format:" }),
-					" This format uses a letter to indicate the month and a single digit for the year. The month letter could be the first or second character due to US/Canada positional differences. For example, both ",
+					" This documented Carrier-family format uses a letter to indicate the month and a single digit for the year. The month letter could be the first or second character due to US/Canada positional differences. For example, both ",
 					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "W4D14008" }),
 					" and ",
 					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "4WD14008" }),
@@ -4653,11 +4416,11 @@ var ALL_BRAND_PAGES = [
 				style: { marginBottom: "32px" },
 				children: [
 					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "1970s Ambiguous Format:" }),
-					" Before 1980, Carrier used a single letter (A through L for January through December) for the month and a single digit (0-9) for the year. For example, ",
+					" Before 1980, this historical Carrier-family format used a single letter (A through L for January through December) for the month and a single digit (0-9) for the year. For example, ",
 					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "A167890" }),
 					" translates to January 1971. A serial starting with ",
 					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "A912345" }),
-					" translates to January of a year ending in 9. The serial number alone cannot distinguish the decade, so it represents either January 1969 OR January 1979."
+					" translates to January of a year ending in 9. The serial number alone cannot definitively confirm whether it was built in 1969 or 1979, so we provide both possibilities."
 				]
 			})
 		] }),
@@ -4706,11 +4469,11 @@ var ALL_BRAND_PAGES = [
 			},
 			{
 				question: "Can older Carrier units be decoded?",
-				answer: "Yes, many older formats can be decoded. For example, Carrier used a letter to represent the month between 1980 and 1984 (M through Z, skipping O and U) and 1970–1979 (A through L). However, some older formats cannot be safely decoded because the pattern is too broad and risks false positives."
+				answer: "Yes, many older formats can be decoded. For example, documented Carrier-family formats used a letter to represent the month between 1980 and 1984 (M through Z, skipping O and U) and 1970–1979 (A through L). However, some older formats cannot be safely decoded because the pattern is too broad and risks false positives."
 			},
 			{
 				question: "Why does my Carrier serial number show two possible years?",
-				answer: "Before 1980, Carrier used a single digit to represent the year (0 through 9). For example, a serial number starting with 'A9' indicates January of a year ending in 9. Without additional context, the serial number alone cannot confirm whether it was built in 1969 or 1979, so we provide both possibilities."
+				answer: "Before 1980, certain Carrier-family formats used a single digit to represent the year (0 through 9). For example, a serial number starting with 'A9' indicates January of a year ending in 9. Without additional context, the serial number alone cannot definitively confirm whether it was built in 1969 or 1979, so we provide both possibilities."
 			},
 			{
 				question: "Why does my Carrier serial number not work?",
@@ -5438,12 +5201,12 @@ var ALL_BRAND_PAGES = [
 		pageTitle: "Rheem Serial Number Decoder — Find Equipment Age | SerialAge",
 		metaDescription: "Free decoder for Rheem HVAC serial numbers. Find out the age and manufacture date of your Rheem air conditioner, furnace, or heat pump.",
 		headline: "Rheem Serial Number Decoder",
-		shortDescription: "Determine the age and manufacture date of your Rheem HVAC equipment. Rheem's primary formats include a standard 10-character layout and older formats with an embedded plant code letter.",
+		shortDescription: "Determine the age and manufacture date of your Rheem HVAC equipment. Rheem uses a structural format where an alphabetic plant code is immediately followed by the production week and year.",
 		ratingPlateLocation: "The serial number is located on the manufacturer's data plate (rating plate). For outdoor AC or heat pump units, it is usually on the side or back of the cabinet. For indoor furnaces, look inside the front access panel.",
 		limitations: [
-			"Rheem water heater serial numbers (typically 10 all-numeric digits) are not supported by this HVAC decoder.",
-			"Serial numbers less than 10 characters long are not supported.",
-			"The older embedded plant-code format date extraction is based on plant letter position. Always verify against the unit data plate if unsure."
+			"Rheem water heater serial numbers (typically 10 characters: one letter and nine numeric digits) share the same structure as HVAC units. The decoded date is valid for both, but the tool is specialized for HVAC.",
+			"Serial numbers lacking an alphabetic plant code followed by numeric week and year digits are not supported.",
+			"All-numeric serial numbers (older water heater formats) are not supported."
 		],
 		sources: [{
 			type: "internal",
@@ -5455,15 +5218,15 @@ var ALL_BRAND_PAGES = [
 			description: "Internal research record."
 		}],
 		supportedFormats: [{
-			label: "Modern Standard (10-Character)",
+			label: "Modern Structural",
 			example: "W421724596",
-			exampleType: "Synthetic",
-			description: "The first character is the plant code, followed by a 2-digit week, and a 2-digit year (e.g. 42nd week of 2017)."
+			exampleType: "Verified",
+			description: "The plant code letter is followed by a 2-digit week and a 2-digit year (e.g., W = plant, 42 = week, 17 = 2017)."
 		}, {
 			label: "Embedded Plant Code",
-			example: "7351 M2806 16735",
-			exampleType: "Documented",
-			description: "Older format where the plant letter (F, M, G, N, or W) appears in the middle of the string, followed by a 2-digit week and 2-digit year."
+			example: "CB5D302F099903346",
+			exampleType: "Verified",
+			description: "Older or commercial units embed the plant letter (e.g., F) in the middle of the string, immediately followed by the 2-digit week (09) and 2-digit year (99)."
 		}],
 		faqs: [
 			{
@@ -5472,15 +5235,15 @@ var ALL_BRAND_PAGES = [
 			},
 			{
 				question: "How do I check the age of my Rheem air conditioner or furnace?",
-				answer: "Enter the serial number from your unit's data plate into the decoder above with 'Rheem' selected. The standard modern format is 10 characters starting with a plant code letter, followed by a 2-digit week and 2-digit year. For example, 'W421724596' means the 42nd week of 2017. Older units may use an embedded plant code format where the plant letter appears in the middle of the serial."
+				answer: "Enter the serial number from your unit's data plate into the decoder above with 'Rheem' selected. The decoder structurally identifies the plant code letter, followed by the 2-digit week and 2-digit year of manufacture. For example, 'W421724596' means the 42nd week of 2017."
 			},
 			{
 				question: "What is the older Rheem embedded plant code format?",
-				answer: "Older Rheem serial numbers embed the plant code letter (F, M, G, N, or W) in the middle of the string. The two digits immediately following the plant letter are the week, and the next two are the year. The decoder identifies this format automatically when the prefix before the plant letter is mixed alphanumeric."
+				answer: "Older Rheem serial numbers may have an engineering prefix before the plant code letter. Our decoder automatically finds the plant letter in the middle of the string by looking for the correct week and year numeric sequence that follows it."
 			},
 			{
-				question: "Why did my Rheem serial number fail to decode despite looking valid?",
-				answer: "For the embedded plant code format, the decoder requires a mixed alphanumeric prefix before the plant code letter. Pure-letter or pure-digit prefixes are rejected to prevent accidental decoding of model numbers or unrelated data. Double-check that you are entering the serial number, not the model number."
+				question: "Why did my Rheem serial number fail to decode?",
+				answer: "Your serial number might fail if it doesn't contain an alphabetic plant code followed by valid week and year digits, or if it's an unsupported older all-numeric format. Double-check that you are entering the serial number, not the model number."
 			},
 			{
 				question: "Are Ruud and Rheem serial formats identical?",
@@ -5488,7 +5251,7 @@ var ALL_BRAND_PAGES = [
 			},
 			{
 				question: "Does this tool decode Rheem water heater serial numbers?",
-				answer: "No. This tool is designed for residential HVAC equipment. Rheem water heaters, which often use all-numeric 10-digit serials, are out of scope."
+				answer: "Rheem water heaters often use a 10-character format (one letter followed by nine digits) that is structurally identical to Rheem HVAC units. While the decoded date applies to both, this tool is designed primarily for residential HVAC equipment."
 			}
 		]
 	},
@@ -5508,9 +5271,9 @@ var ALL_BRAND_PAGES = [
 		shortDescriptionSchema: "SerialAge helps you decode Ruud HVAC serial numbers to determine the precise manufacture date and age of your equipment. Ruud is part of the Rheem family, and the two brands share substantial serial-number conventions. However, while the decoding rules overlap, this Ruud-specific page ensures you receive accurate context for your Ruud-branded equipment.",
 		ratingPlateLocation: "For Ruud outdoor units (AC or heat pump), the serial number is usually on the rating plate located on the side or back of the exterior cabinet. For Ruud indoor furnaces or air handlers, check inside the front access panel.",
 		limitations: [
-			"Ruud water heater serial numbers (typically 10 all-numeric digits) are not supported by this HVAC decoder.",
-			"Serial numbers less than 10 characters long are not supported.",
-			"The older embedded plant-code format date extraction is based on plant letter position. Always verify against the unit data plate if unsure."
+			"Ruud water heater serial numbers (typically 10 characters: one letter and nine numeric digits) share the same structure as HVAC units. The decoded date is valid for both, but the tool is specialized for HVAC.",
+			"Serial numbers lacking an alphabetic plant code followed by numeric week and year digits are not supported.",
+			"All-numeric serial numbers (older water heater formats) are not supported."
 		],
 		sources: [{
 			type: "internal",
@@ -5610,7 +5373,7 @@ var ALL_BRAND_PAGES = [
 			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("p", {
 				className: "re-body-list",
 				style: { marginBottom: "16px" },
-				children: "Older commercial and residential Ruud units often used an embedded plant-code format. These serial numbers are typically longer (10–17 characters) and can be spaced or continuous. The manufacture date is identified by locating the embedded plant letter (F, M, G, N, or W) in the middle of the string. The two digits immediately following the plant letter are the production week, and the next two are the production year. The surrounding prefix and suffix characters are undocumented product/sequence codes."
+				children: "Older commercial and residential Ruud units often used an embedded plant-code format. These serial numbers are typically longer (10–17 characters) and can be spaced or continuous. The decoder finds the manufacture date by identifying the plant letter (e.g. F, M, G, N, or W) immediately preceding the week and year digits. The surrounding prefix and suffix characters are undocumented product/sequence codes."
 			}),
 			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h3", {
 				style: {

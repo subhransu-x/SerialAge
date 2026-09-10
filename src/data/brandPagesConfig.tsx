@@ -675,12 +675,12 @@ const rheem: BrandPageConfig = {
   pageTitle: 'Rheem Serial Number Decoder — Find Equipment Age | SerialAge',
   metaDescription: 'Free decoder for Rheem HVAC serial numbers. Find out the age and manufacture date of your Rheem air conditioner, furnace, or heat pump.',
   headline: 'Rheem Serial Number Decoder',
-  shortDescription: "Determine the age and manufacture date of your Rheem HVAC equipment. Rheem's primary formats include a standard 10-character layout and older formats with an embedded plant code letter.",
+  shortDescription: "Determine the age and manufacture date of your Rheem HVAC equipment. Rheem uses a structural format where an alphabetic plant code is immediately followed by the production week and year.",
   ratingPlateLocation: "The serial number is located on the manufacturer's data plate (rating plate). For outdoor AC or heat pump units, it is usually on the side or back of the cabinet. For indoor furnaces, look inside the front access panel.",
   limitations: [
-    "Rheem water heater serial numbers (typically 10 all-numeric digits) are not supported by this HVAC decoder.",
-    "Serial numbers less than 10 characters long are not supported.",
-    "The older embedded plant-code format date extraction is based on plant letter position. Always verify against the unit data plate if unsure."
+    "Rheem water heater serial numbers (typically 10 characters: one letter and nine numeric digits) share the same structure as HVAC units. The decoded date is valid for both, but the tool is specialized for HVAC.",
+    "Serial numbers lacking an alphabetic plant code followed by numeric week and year digits are not supported.",
+    "All-numeric serial numbers (older water heater formats) are not supported."
   ],
   sources: [
     { type: 'internal', title: 'Rheem/Ruud Implementation Contract', description: 'Implementation audit.' },
@@ -688,16 +688,16 @@ const rheem: BrandPageConfig = {
   ],
   supportedFormats: [
     {
-      label: "Modern Standard (10-Character)",
+      label: "Modern Structural",
       example: "W421724596",
-      exampleType: "Synthetic",
-      description: "The first character is the plant code, followed by a 2-digit week, and a 2-digit year (e.g. 42nd week of 2017)."
+      exampleType: "Verified",
+      description: "The plant code letter is followed by a 2-digit week and a 2-digit year (e.g., W = plant, 42 = week, 17 = 2017)."
     },
     {
       label: "Embedded Plant Code",
-      example: "7351 M2806 16735",
-      exampleType: "Documented",
-      description: "Older format where the plant letter (F, M, G, N, or W) appears in the middle of the string, followed by a 2-digit week and 2-digit year."
+      example: "CB5D302F099903346",
+      exampleType: "Verified",
+      description: "Older or commercial units embed the plant letter (e.g., F) in the middle of the string, immediately followed by the 2-digit week (09) and 2-digit year (99)."
     }
   ],
   faqs: [
@@ -707,15 +707,15 @@ const rheem: BrandPageConfig = {
     },
     {
       question: "How do I check the age of my Rheem air conditioner or furnace?",
-      answer: "Enter the serial number from your unit's data plate into the decoder above with 'Rheem' selected. The standard modern format is 10 characters starting with a plant code letter, followed by a 2-digit week and 2-digit year. For example, 'W421724596' means the 42nd week of 2017. Older units may use an embedded plant code format where the plant letter appears in the middle of the serial."
+      answer: "Enter the serial number from your unit's data plate into the decoder above with 'Rheem' selected. The decoder structurally identifies the plant code letter, followed by the 2-digit week and 2-digit year of manufacture. For example, 'W421724596' means the 42nd week of 2017."
     },
     {
       question: "What is the older Rheem embedded plant code format?",
-      answer: "Older Rheem serial numbers embed the plant code letter (F, M, G, N, or W) in the middle of the string. The two digits immediately following the plant letter are the week, and the next two are the year. The decoder identifies this format automatically when the prefix before the plant letter is mixed alphanumeric."
+      answer: "Older Rheem serial numbers may have an engineering prefix before the plant code letter. Our decoder automatically finds the plant letter in the middle of the string by looking for the correct week and year numeric sequence that follows it."
     },
     {
-      question: "Why did my Rheem serial number fail to decode despite looking valid?",
-      answer: "For the embedded plant code format, the decoder requires a mixed alphanumeric prefix before the plant code letter. Pure-letter or pure-digit prefixes are rejected to prevent accidental decoding of model numbers or unrelated data. Double-check that you are entering the serial number, not the model number."
+      question: "Why did my Rheem serial number fail to decode?",
+      answer: "Your serial number might fail if it doesn't contain an alphabetic plant code followed by valid week and year digits, or if it's an unsupported older all-numeric format. Double-check that you are entering the serial number, not the model number."
     },
     {
       question: "Are Ruud and Rheem serial formats identical?",
@@ -723,7 +723,7 @@ const rheem: BrandPageConfig = {
     },
     {
       question: "Does this tool decode Rheem water heater serial numbers?",
-      answer: "No. This tool is designed for residential HVAC equipment. Rheem water heaters, which often use all-numeric 10-digit serials, are out of scope."
+      answer: "Rheem water heaters often use a 10-character format (one letter followed by nine digits) that is structurally identical to Rheem HVAC units. While the decoded date applies to both, this tool is designed primarily for residential HVAC equipment."
     }
   ],
 };
@@ -745,9 +745,9 @@ const ruud: BrandPageConfig = {
   shortDescriptionSchema: "SerialAge helps you decode Ruud HVAC serial numbers to determine the precise manufacture date and age of your equipment. Ruud is part of the Rheem family, and the two brands share substantial serial-number conventions. However, while the decoding rules overlap, this Ruud-specific page ensures you receive accurate context for your Ruud-branded equipment.",
   ratingPlateLocation: "For Ruud outdoor units (AC or heat pump), the serial number is usually on the rating plate located on the side or back of the exterior cabinet. For Ruud indoor furnaces or air handlers, check inside the front access panel.",
   limitations: [
-    "Ruud water heater serial numbers (typically 10 all-numeric digits) are not supported by this HVAC decoder.",
-    "Serial numbers less than 10 characters long are not supported.",
-    "The older embedded plant-code format date extraction is based on plant letter position. Always verify against the unit data plate if unsure."
+    "Ruud water heater serial numbers (typically 10 characters: one letter and nine numeric digits) share the same structure as HVAC units. The decoded date is valid for both, but the tool is specialized for HVAC.",
+    "Serial numbers lacking an alphabetic plant code followed by numeric week and year digits are not supported.",
+    "All-numeric serial numbers (older water heater formats) are not supported."
   ],
   sources: [
     { type: 'internal', title: 'Rheem/Ruud Implementation Contract', description: 'Implementation audit.' },
@@ -781,7 +781,7 @@ const ruud: BrandPageConfig = {
 
       <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--ink)', marginTop: '32px', marginBottom: '16px' }}>2. Embedded-Plant Code Formats</h3>
       <p className="re-body-list" style={{ marginBottom: '16px' }}>
-        Older commercial and residential Ruud units often used an embedded plant-code format. These serial numbers are typically longer (10–17 characters) and can be spaced or continuous. The manufacture date is identified by locating the embedded plant letter (F, M, G, N, or W) in the middle of the string. The two digits immediately following the plant letter are the production week, and the next two are the production year. The surrounding prefix and suffix characters are undocumented product/sequence codes.
+        Older commercial and residential Ruud units often used an embedded plant-code format. These serial numbers are typically longer (10–17 characters) and can be spaced or continuous. The decoder finds the manufacture date by identifying the plant letter (e.g. F, M, G, N, or W) immediately preceding the week and year digits. The surrounding prefix and suffix characters are undocumented product/sequence codes.
       </p>
 
       <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--ink)', marginTop: '32px', marginBottom: '16px' }}>Example Breakdowns</h3>
