@@ -85,7 +85,7 @@ const carrier: BrandPageConfig = {
       <h2 className="s-head" id="how-it-works">How Carrier Serial Numbers Work</h2>
       
       <p className="re-body-list" style={{ marginTop: '16px', marginBottom: '32px' }}>
-        Carrier has used several different serial number formats over the decades. Our decoder supports the documented formats below. Read our <Link to="/methodology" style={{ color: 'var(--primary)', textDecoration: 'underline' }}>Methodology page</Link> for our full sourcing and decoding approach.
+        Carrier and its allied brands (like Bryant and Payne in the BDP Company) have used several different serial number formats over the decades. Our decoder supports the documented Carrier-family formats below. Read our <Link to="/methodology" style={{ color: 'var(--primary)', textDecoration: 'underline' }}>Methodology page</Link> for our full sourcing and decoding approach.
       </p>
 
       <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--ink)', marginBottom: '16px' }}>Supported Carrier Formats</h3>
@@ -133,7 +133,7 @@ const carrier: BrandPageConfig = {
         <strong>Modern WWYY Format:</strong> Commonly used from approximately 1980 onward. In this documented format, the first two digits equal the production week, the next two digits equal the year, followed by a plant letter and sequence. For example, <strong>4006A17330</strong> was manufactured in Week 40 of 2006. <strong>0180A12345</strong> was manufactured in Week 1 of 1980.
       </p>
       <p className="re-body-list" style={{ marginBottom: '16px' }}>
-        <strong>1980–1984 Month Letter Format:</strong> This format uses a letter to indicate the month and a single digit for the year. The month letter could be the first or second character due to US/Canada positional differences. For example, both <strong>W4D14008</strong> and <strong>4WD14008</strong> translate to September 1984. The complete month mapping is as follows (O and U are skipped):
+        <strong>1980–1984 Month Letter Format:</strong> This documented Carrier-family format uses a letter to indicate the month and a single digit for the year. The month letter could be the first or second character due to US/Canada positional differences. For example, both <strong>W4D14008</strong> and <strong>4WD14008</strong> translate to September 1984. The complete month mapping is as follows (O and U are skipped):
       </p>
       <ul className="re-body-list" style={{ margin: '0 0 16px 20px', color: 'var(--ink)' }}>
         <li>M = January</li>
@@ -150,7 +150,7 @@ const carrier: BrandPageConfig = {
         <li>Z = December</li>
       </ul>
       <p className="re-body-list" style={{ marginBottom: '32px' }}>
-        <strong>1970s Ambiguous Format:</strong> Before 1980, Carrier used a single letter (A through L for January through December) for the month and a single digit (0-9) for the year. For example, <strong>A167890</strong> translates to January 1971. A serial starting with <strong>A912345</strong> translates to January of a year ending in 9. The serial number alone cannot distinguish the decade, so it represents either January 1969 OR January 1979.
+        <strong>1970s Ambiguous Format:</strong> Before 1980, this historical Carrier-family format used a single letter (A through L for January through December) for the month and a single digit (0-9) for the year. For example, <strong>A167890</strong> translates to January 1971. A serial starting with <strong>A912345</strong> translates to January of a year ending in 9. The serial number alone cannot definitively confirm whether it was built in 1969 or 1979, so we provide both possibilities.
       </p>
     </>
   ),
@@ -199,11 +199,11 @@ const carrier: BrandPageConfig = {
     },
     {
       question: "Can older Carrier units be decoded?",
-      answer: "Yes, many older formats can be decoded. For example, Carrier used a letter to represent the month between 1980 and 1984 (M through Z, skipping O and U) and 1970–1979 (A through L). However, some older formats cannot be safely decoded because the pattern is too broad and risks false positives."
+      answer: "Yes, many older formats can be decoded. For example, documented Carrier-family formats used a letter to represent the month between 1980 and 1984 (M through Z, skipping O and U) and 1970–1979 (A through L). However, some older formats cannot be safely decoded because the pattern is too broad and risks false positives."
     },
     {
       question: "Why does my Carrier serial number show two possible years?",
-      answer: "Before 1980, Carrier used a single digit to represent the year (0 through 9). For example, a serial number starting with 'A9' indicates January of a year ending in 9. Without additional context, the serial number alone cannot confirm whether it was built in 1969 or 1979, so we provide both possibilities."
+      answer: "Before 1980, certain Carrier-family formats used a single digit to represent the year (0 through 9). For example, a serial number starting with 'A9' indicates January of a year ending in 9. Without additional context, the serial number alone cannot definitively confirm whether it was built in 1969 or 1979, so we provide both possibilities."
     },
     {
       question: "Why does my Carrier serial number not work?",
