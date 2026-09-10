@@ -4365,13 +4365,15 @@ var ALL_BRAND_PAGES = [
 		}],
 		category: "HVAC",
 		pageTitle: "Carrier Serial Number Decoder — Find Equipment Age | SerialAge",
-		metaDescription: "Free decoder for Carrier HVAC serial numbers. Find out the age and manufacture date of your Carrier air conditioner, furnace, or heat pump.",
+		metaDescription: "Free decoder for Carrier HVAC serial numbers. Find out the exact age and manufacture date of your Carrier air conditioner, furnace, or heat pump.",
 		headline: "Carrier Serial Number Decoder",
-		shortDescription: "Determine the age and manufacture date of your Carrier HVAC equipment. This decoder supports standard 10-character formats used from approximately 1985 to the present, as well as the older 9-digit formats from the 1980s. Results are derived from verified manufacturer documentation — we never guess.",
+		shortDescription: /* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_jsx_runtime.Fragment, { children: "Determine the manufacture date and age of your Carrier HVAC equipment. This decoder supports modern 10-character formats (commonly used from approximately 1980 to the present) as well as documented historical formats from the 1970s and 1980s. The decoded manufacture date estimates when the equipment was built at the factory, which may differ from its installation or purchase date." }),
+		shortDescriptionSchema: "Determine the manufacture date and age of your Carrier HVAC equipment. This decoder supports modern 10-character formats (commonly used from approximately 1980 to the present) as well as documented historical formats from the 1970s and 1980s. The decoded manufacture date estimates when the equipment was built at the factory, which may differ from its installation or purchase date.",
 		ratingPlateLocation: "The serial number is located on the manufacturer's data plate (rating plate). For outdoor AC or heat pump units, it is usually on the side or back of the cabinet above the refrigerant valves. For indoor furnaces or air handlers, look inside the front access panel.",
 		limitations: [
-			"Serial numbers manufactured before approximately 1985 (pre-Style 1) cannot be reliably decoded due to inconsistent historical formatting.",
 			"Week-based dates (WWYY format) are precise to within 7 days, not a specific calendar date.",
+			"Serial numbers ending in a letter (e.g., 1234567ABC) are an older format that cannot be safely decoded because the pattern is too broad and risks false positives.",
+			"The decoded manufacture date is not the installation date.",
 			"Does not support Carrier water heaters.",
 			"If a printed \"MFR DATE\" appears on the data plate, always trust it over the decoded result."
 		],
@@ -4385,45 +4387,334 @@ var ALL_BRAND_PAGES = [
 			publisher: "Building Intelligence Center",
 			description: "Reference for historical formatting trends."
 		}],
-		supportedFormats: [{
-			label: "Modern Standard (10-Character)",
-			example: "4206A12345",
-			exampleType: "Synthetic",
-			description: "Used from ~1985 to present. The first two digits encode the week (01–52), and the next two digits encode the year."
-		}, {
-			label: "Legacy (9-Digit)",
-			example: "851212345",
-			exampleType: "Synthetic",
-			description: "Used during the 1980s. The first two digits encode the year (80-89), and the next two digits encode the month."
-		}],
+		headings: {
+			whereToFind: "Where to Find Your Carrier Serial Number",
+			supportedFormats: "Carrier Serial Number Formats",
+			faqs: "Carrier Serial Number FAQs"
+		},
+		customContent: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)(react_jsx_runtime.Fragment, { children: [
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+				className: "s-eye",
+				children: "Serial Formats"
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h2", {
+				className: "s-head",
+				id: "how-it-works",
+				children: "How Carrier Serial Numbers Work"
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("p", {
+				className: "re-body-list",
+				style: {
+					marginTop: "16px",
+					marginBottom: "32px"
+				},
+				children: [
+					"Carrier has used several different serial number formats over the decades. Our decoder supports the documented formats below. Read our ",
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)(react_router_dom.Link, {
+						to: "/methodology",
+						style: {
+							color: "var(--primary)",
+							textDecoration: "underline"
+						},
+						children: "Methodology page"
+					}),
+					" for our full sourcing and decoding approach."
+				]
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h3", {
+				style: {
+					fontSize: "18px",
+					fontWeight: 600,
+					color: "var(--ink)",
+					marginBottom: "16px"
+				},
+				children: "Supported Carrier Formats"
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("div", {
+				style: { overflowX: "auto" },
+				children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("table", {
+					style: {
+						width: "100%",
+						borderCollapse: "collapse",
+						textAlign: "left",
+						minWidth: "600px",
+						marginBottom: "32px"
+					},
+					children: [/* @__PURE__ */ (0, react_jsx_runtime.jsx)("thead", { children: /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("tr", {
+						style: {
+							borderBottom: "2px solid var(--hairline)",
+							color: "var(--ink)"
+						},
+						children: [
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("th", {
+								style: {
+									padding: "12px 16px",
+									fontWeight: 600
+								},
+								children: "Format"
+							}),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("th", {
+								style: {
+									padding: "12px 16px",
+									fontWeight: 600
+								},
+								children: "Example"
+							}),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("th", {
+								style: {
+									padding: "12px 16px",
+									fontWeight: 600
+								},
+								children: "Era / Usage"
+							}),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsx)("th", {
+								style: {
+									padding: "12px 16px",
+									fontWeight: 600
+								},
+								children: "How to Read It"
+							})
+						]
+					}) }), /* @__PURE__ */ (0, react_jsx_runtime.jsxs)("tbody", {
+						style: { color: "var(--mute)" },
+						children: [
+							/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("tr", {
+								style: { borderBottom: "1px solid var(--hairline)" },
+								children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: {
+											padding: "12px 16px",
+											fontWeight: 500,
+											color: "var(--ink)"
+										},
+										children: "Modern (WWYY)"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: {
+											padding: "12px 16px",
+											fontFamily: "var(--font-mono)"
+										},
+										children: "4006A17330"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: { padding: "12px 16px" },
+										children: "~1980 to present"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: { padding: "12px 16px" },
+										children: "Digits 1-2 = Week, Digits 3-4 = Year"
+									})
+								]
+							}),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("tr", {
+								style: { borderBottom: "1px solid var(--hairline)" },
+								children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: {
+											padding: "12px 16px",
+											fontWeight: 500,
+											color: "var(--ink)"
+										},
+										children: "Numeric (YYMM)"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: {
+											padding: "12px 16px",
+											fontFamily: "var(--font-mono)"
+										},
+										children: "850304091"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: { padding: "12px 16px" },
+										children: "1980s"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: { padding: "12px 16px" },
+										children: "Digits 1-2 = Year, Digits 3-4 = Month"
+									})
+								]
+							}),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("tr", {
+								style: { borderBottom: "1px solid var(--hairline)" },
+								children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: {
+											padding: "12px 16px",
+											fontWeight: 500,
+											color: "var(--ink)"
+										},
+										children: "Month Letter"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: {
+											padding: "12px 16px",
+											fontFamily: "var(--font-mono)"
+										},
+										children: "W4D14008"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: { padding: "12px 16px" },
+										children: "1980–1984"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: { padding: "12px 16px" },
+										children: "Letter = Month (M-Z, skipping O, U), Digit = Year"
+									})
+								]
+							}),
+							/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("tr", {
+								style: { borderBottom: "1px solid var(--hairline)" },
+								children: [
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: {
+											padding: "12px 16px",
+											fontWeight: 500,
+											color: "var(--ink)"
+										},
+										children: "Decade Ambiguous"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: {
+											padding: "12px 16px",
+											fontFamily: "var(--font-mono)"
+										},
+										children: "A167890"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: { padding: "12px 16px" },
+										children: "1970–1979 (or 1960s)"
+									}),
+									/* @__PURE__ */ (0, react_jsx_runtime.jsx)("td", {
+										style: { padding: "12px 16px" },
+										children: "Letter 1 = Month (A-L), Digit 2 = Year (0-9)"
+									})
+								]
+							})
+						]
+					})]
+				})
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsx)("h3", {
+				style: {
+					fontSize: "18px",
+					fontWeight: 600,
+					color: "var(--ink)",
+					marginBottom: "16px"
+				},
+				children: "Historical Format Details"
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("p", {
+				className: "re-body-list",
+				style: { marginBottom: "16px" },
+				children: [
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "Modern WWYY Format:" }),
+					" Commonly used from approximately 1980 onward. In this documented format, the first two digits equal the production week, the next two digits equal the year, followed by a plant letter and sequence. For example, ",
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "4006A17330" }),
+					" was manufactured in Week 40 of 2006. ",
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "0180A12345" }),
+					" was manufactured in Week 1 of 1980."
+				]
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("p", {
+				className: "re-body-list",
+				style: { marginBottom: "16px" },
+				children: [
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "1980–1984 Month Letter Format:" }),
+					" This format uses a letter to indicate the month and a single digit for the year. The month letter could be the first or second character due to US/Canada positional differences. For example, both ",
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "W4D14008" }),
+					" and ",
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "4WD14008" }),
+					" translate to September 1984. The complete month mapping is as follows (O and U are skipped):"
+				]
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("ul", {
+				className: "re-body-list",
+				style: {
+					margin: "0 0 16px 20px",
+					color: "var(--ink)"
+				},
+				children: [
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("li", { children: "M = January" }),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("li", { children: "N = February" }),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("li", { children: "P = March" }),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("li", { children: "Q = April" }),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("li", { children: "R = May" }),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("li", { children: "S = June" }),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("li", { children: "T = July" }),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("li", { children: "V = August" }),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("li", { children: "W = September" }),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("li", { children: "X = October" }),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("li", { children: "Y = November" }),
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("li", { children: "Z = December" })
+				]
+			}),
+			/* @__PURE__ */ (0, react_jsx_runtime.jsxs)("p", {
+				className: "re-body-list",
+				style: { marginBottom: "32px" },
+				children: [
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "1970s Ambiguous Format:" }),
+					" Before 1980, Carrier used a single letter (A through L for January through December) for the month and a single digit (0-9) for the year. For example, ",
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "A167890" }),
+					" translates to January 1971. A serial starting with ",
+					/* @__PURE__ */ (0, react_jsx_runtime.jsx)("strong", { children: "A912345" }),
+					" translates to January of a year ending in 9. The serial number alone cannot distinguish the decade, so it represents either January 1969 OR January 1979."
+				]
+			})
+		] }),
+		supportedFormats: [
+			{
+				label: "Modern Standard (10-Character)",
+				example: "4006A17330",
+				exampleType: "Verified",
+				description: "Commonly used from ~1980 to present. The first two digits encode the week (01–52), and the next two digits encode the year."
+			},
+			{
+				label: "Legacy Numeric (YYMM)",
+				example: "850304091",
+				exampleType: "Verified",
+				description: "Used during the 1980s. The first two digits encode the year, and the next two digits encode the month."
+			},
+			{
+				label: "Historical (1980-1984)",
+				example: "W4D14008",
+				exampleType: "Verified",
+				description: "Used from 1980 to 1984. The month is a letter (M-Z, skipping O & U), followed by the year."
+			},
+			{
+				label: "Historical (Ambiguous Decade)",
+				example: "A912345",
+				exampleType: "Verified",
+				description: "Month letter (A-L) and single year digit. Cannot determine exact decade (e.g., 1969 or 1979)."
+			}
+		],
 		faqs: [
 			{
-				question: "Where can I find the Carrier serial number?",
-				answer: "The serial number is on the manufacturer's data plate (rating plate). On outdoor AC or heat pump units, look on the side or back of the cabinet above the refrigerant valves. On indoor furnaces or air handlers, look inside the front access panel."
+				question: "How do I read a Carrier serial number?",
+				answer: "Since approximately 1980, the most common Carrier serial number format is 10 characters long, where the first two digits represent the week of manufacture and the next two digits represent the year (WWYY). For example, a serial starting with '4006' was manufactured in the 40th week of 2006. Older units may use different formats like YYMM or letters for months."
 			},
 			{
-				question: "How do I check the age of my Carrier air conditioner or furnace?",
-				answer: "Enter the serial number from your unit's data plate into the decoder above with 'Carrier' selected. Since roughly 1985, Carrier has used a 10-character format where the first two digits are the week of manufacture and the next two are the year (WWYY). For example, a serial starting with '4206' was manufactured in the 42nd week of 2006. The decoder calculates the current age from that date."
+				question: "How old is my Carrier HVAC?",
+				answer: "Enter your serial number into the decoder above. It will extract the manufacture date from the serial number and calculate its age. Keep in mind that the manufacture date is when the unit was built at the factory, which may be months before the actual installation date."
 			},
 			{
-				question: "What if my Carrier serial number is 9 digits?",
-				answer: "If your serial number is 9 digits consisting entirely of numbers (for example, '790512345'), it likely uses the older YYMM format from the 1980s. In this format, the first two digits are the year and the next two are the month. Enter the full 9-digit number — the decoder identifies the format automatically."
+				question: "Where is the Carrier serial number?",
+				answer: "The serial number is printed on the manufacturer's data plate (rating plate). On outdoor AC or heat pump units, look on the side or back of the cabinet above the refrigerant valves. On indoor furnaces or air handlers, look inside the front access panel."
 			},
 			{
-				question: "Does this decoder work for Bryant and Payne?",
-				answer: "Yes. Bryant, Payne, and Day & Night are manufactured by Carrier Global. Since the late 1980s, they share the same serial number formats and decoding logic as Carrier equipment."
+				question: "What do the first four digits mean?",
+				answer: "In the modern Carrier format, the first four digits are the date code. The first two digits represent the week of the year (01 to 52), and the third and fourth digits represent the year. For instance, '0180' means the 1st week of 1980."
 			},
 			{
-				question: "Why does the decoder say my pre-1985 Carrier serial number is unsupported?",
-				answer: "Before 1985, Carrier's formatting was highly inconsistent. Serial numbers often require deep historical catalog cross-referencing to decode accurately. To ensure we never provide a false date, we explicitly mark these legacy formats as unsupported."
+				question: "Can older Carrier units be decoded?",
+				answer: "Yes, many older formats can be decoded. For example, Carrier used a letter to represent the month between 1980 and 1984 (M through Z, skipping O and U) and 1970–1979 (A through L). However, some older formats cannot be safely decoded because the pattern is too broad and risks false positives."
 			},
 			{
-				question: "If there is a date printed directly on the data plate, should I trust it?",
-				answer: "Yes. If your Carrier data plate shows a printed 'MFR DATE' (for example, MFR DATE: 10/2018), always use the printed date over the decoded result if they differ."
+				question: "Why does my Carrier serial number show two possible years?",
+				answer: "Before 1980, Carrier used a single digit to represent the year (0 through 9). For example, a serial number starting with 'A9' indicates January of a year ending in 9. Without additional context, the serial number alone cannot confirm whether it was built in 1969 or 1979, so we provide both possibilities."
 			},
 			{
-				question: "Does this decoder support Carrier water heaters?",
-				answer: "No. This tool is designed for residential HVAC equipment — air conditioners, furnaces, and heat pumps. Water heaters are out of scope."
+				question: "Why does my Carrier serial number not work?",
+				answer: "Your serial number might not work if it uses an unsupported historical format, if it's missing characters, or if it is for a product we don't cover (like Carrier water heaters). Double-check the data plate to ensure you aren't accidentally entering the model number."
 			}
 		]
 	},
