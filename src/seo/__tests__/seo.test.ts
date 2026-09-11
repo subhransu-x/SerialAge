@@ -124,8 +124,8 @@ describe('Brand page configs', () => {
     'payne-serial-number-decoder',
   ];
 
-  it('exactly 10 brand pages are registered', () => {
-    expect(brands).toHaveLength(10);
+  it('exactly 11 brand pages are registered', () => {
+    expect(brands).toHaveLength(11);
   });
 
   it('brand page slugs match expected routes', () => {

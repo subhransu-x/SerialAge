@@ -34,16 +34,25 @@ const DUCTLESS_NEWER_PATTERN = /^V([0-9]{2})(0[1-9]|[1-4][0-9]|5[0-3])V([0-9]{5}
 // ---------------------------------------------------------------------------
 
 /**
- * Resolve a 2-digit year to a 4-digit year using a 50-year sliding window.
+ * Resolve a 2-digit year for the modern ICP format (established early 1990s).
+ * 90-99 -> 1990-1999
+ * 00-27 (approx) -> 2000-2027
+ * 28-89 -> unsupported gap
  */
-function resolveYear(twoDigit: number): number {
-  const currentYear = new Date().getFullYear();
-  const candidate2000 = 2000 + twoDigit;
-  const candidate1900 = 1900 + twoDigit;
-  if (candidate2000 <= currentYear + 2) {
-    return candidate2000;
+function resolveModernICPYear(twoDigit: number): number | null {
+  if (twoDigit >= 90) {
+    return 1900 + twoDigit;
   }
-  return candidate1900;
+  
+  const currentYear = new Date().getFullYear();
+  const currentTwoDigit = currentYear % 100;
+  
+  // Allow up to one year into the future for late-year manufacturing runs
+  if (twoDigit <= currentTwoDigit + 1) {
+    return 2000 + twoDigit;
+  }
+  
+  return null;
 }
 
 // ---------------------------------------------------------------------------
@@ -73,7 +82,13 @@ const heilModernUnitary: FormatRule = {
     const week = parseInt(match[3], 10);
     const sequence = match[4];
 
-    const fullYear = resolveYear(yearTwoDigit);
+    const fullYear = resolveModernICPYear(yearTwoDigit);
+    if (fullYear === null) {
+      return {
+        error: 'insufficient-info',
+        explanation: `The year portion "${match[2]}" falls in an unsupported gap for this format. The modern 10-character format was established in the early 1990s, making years 1928-1989 and future years invalid for this structure.`,
+      };
+    }
 
     return {
       year: fullYear,

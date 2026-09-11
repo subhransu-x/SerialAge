@@ -143,8 +143,8 @@ describe('Sitemap URL generation logic', () => {
     }
   });
 
-  it('sitemap has exactly 12 entries (homepage + privacy + 10 brand pages)', () => {
-    expect(sitemapUrls).toHaveLength(12);
+  it('sitemap has exactly 13 entries (homepage + privacy + 11 brand pages)', () => {
+    expect(sitemapUrls).toHaveLength(13);
   });
 
   it('future brands would appear in sitemap automatically', () => {
