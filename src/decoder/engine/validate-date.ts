@@ -20,22 +20,24 @@ const MAX_YEAR_OFFSET = 2; // allow up to 2 years ahead of current year
  * reaching the user.
  */
 export function validateDecodedDate(
-  year: number,
+  year: number | null,
   month: number | null,
   week: number | null,
   day: number | null,
   referenceDate: Date = new Date(),
 ): string | null {
   // Year validation
-  if (!Number.isInteger(year)) {
-    return `Invalid year: "${year}" is not an integer.`;
-  }
-  if (year < MIN_YEAR) {
-    return `Implausible year: ${year} is before ${MIN_YEAR}. HVAC equipment this old is not expected.`;
-  }
-  const maxYear = referenceDate.getFullYear() + MAX_YEAR_OFFSET;
-  if (year > maxYear) {
-    return `Implausible year: ${year} is more than ${MAX_YEAR_OFFSET} years in the future.`;
+  if (year !== null) {
+    if (!Number.isInteger(year)) {
+      return `Invalid year: "${year}" is not an integer.`;
+    }
+    if (year < MIN_YEAR) {
+      return `Implausible year: ${year} is before ${MIN_YEAR}. HVAC equipment this old is not expected.`;
+    }
+    const maxYear = referenceDate.getFullYear() + MAX_YEAR_OFFSET;
+    if (year > maxYear) {
+      return `Implausible year: ${year} is more than ${MAX_YEAR_OFFSET} years in the future.`;
+    }
   }
 
   // Month validation
@@ -59,7 +61,7 @@ export function validateDecodedDate(
     }
 
     // If we have year + month + day, validate it's a real calendar date
-    if (month !== null) {
+    if (year !== null && month !== null) {
       const testDate = new Date(year, month - 1, day);
       if (
         testDate.getFullYear() !== year ||

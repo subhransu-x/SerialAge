@@ -103,7 +103,8 @@ interface Props {
   onDecodeAnother: () => void;
 }
 
-function calcAge(year: number) {
+function calcAge(year: number | null) {
+  if (year === null) return 'unknown age';
   const diff = new Date().getFullYear() - year;
   if (diff <= 0) return 'manufactured this year';
   return diff === 1 ? '1 year old' : `${diff} years old`;
@@ -127,9 +128,13 @@ function buildCopyText(result: Props['result']): string {
   const lines: string[] = [
     `${result.manufacturer.name} Equipment`,
     `Manufactured: ${result.manufactureDate!.display}`,
-    `Approximate age: ${result.approximateAge!.display}`,
-    `Confidence: ${confidenceLabel}`,
   ];
+
+  if (result.approximateAge) {
+    lines.push(`Approximate age: ${result.approximateAge.display}`);
+  }
+
+  lines.push(`Confidence: ${confidenceLabel}`);
 
   if (result.formatUsed) {
     lines.push(`Matched format: ${result.formatUsed.name}`);

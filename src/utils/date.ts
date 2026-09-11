@@ -10,34 +10,49 @@ import type { ManufactureDate, ApproximateAge } from '../decoder/types';
  * - Year only          → "2019"
  */
 export function buildManufactureDate(
-  year: number,
+  year: number | null,
   month: number | null,
   week: number | null,
   day: number | null,
 ): ManufactureDate {
   let display: string;
 
-  if (month !== null && day !== null) {
-    // Full date: "March 15, 2019"
-    const date = new Date(year, month - 1, day);
-    display = date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  } else if (month !== null) {
-    // Year + Month: "March 2019"
-    const date = new Date(year, month - 1, 1);
-    display = date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-    });
-  } else if (week !== null) {
-    // Year + Week: "Week 31, 2019"
-    display = `Week ${week}, ${year}`;
+  if (year !== null) {
+    if (month !== null && day !== null) {
+      // Full date: "March 15, 2019"
+      const date = new Date(year, month - 1, day);
+      display = date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+    } else if (month !== null) {
+      // Year + Month: "March 2019"
+      const date = new Date(year, month - 1, 1);
+      display = date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+      });
+    } else if (week !== null) {
+      // Year + Week: "Week 31, 2019"
+      display = `Week ${week}, ${year}`;
+    } else {
+      // Year only: "2019"
+      display = `${year}`;
+    }
   } else {
-    // Year only: "2019"
-    display = `${year}`;
+    // Year is null (century could not be established)
+    if (month !== null && day !== null) {
+      const date = new Date(2000, month - 1, day); // Dummy year for formatting
+      display = `Unknown Year, ${date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}`;
+    } else if (month !== null) {
+      const date = new Date(2000, month - 1, 1);
+      display = `Unknown Year, ${date.toLocaleDateString('en-US', { month: 'long' })}`;
+    } else if (week !== null) {
+      display = `Unknown Year, Week ${week}`;
+    } else {
+      display = 'Unknown Year';
+    }
   }
 
   return { year, month, week, day, display };
@@ -49,12 +64,16 @@ export function buildManufactureDate(
  *
  * @param manufactureDate - The decoded manufacture date
  * @param referenceDate   - The date to calculate age relative to (injectable for testing)
- * @returns ApproximateAge with years, months, and display string
+ * @returns ApproximateAge with years, months, and display string, or null if year is unknown
  */
 export function calculateAge(
   manufactureDate: ManufactureDate,
   referenceDate: Date = new Date(),
-): ApproximateAge {
+): ApproximateAge | null {
+  if (manufactureDate.year === null) {
+    return null;
+  }
+
   // Build the best approximation of the manufacture date
   const mfgMonth = manufactureDate.month ?? 1; // default to January if unknown
   const mfgDay = manufactureDate.day ?? 1;     // default to 1st if unknown

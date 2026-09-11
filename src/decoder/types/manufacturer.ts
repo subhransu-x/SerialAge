@@ -84,8 +84,8 @@ export interface NormalizedInput {
  * into a full DecodeResult. FormatRules return this (or null).
  */
 export interface DecodedData {
-  /** Manufacture year (4-digit) */
-  readonly year: number;
+  /** Manufacture year (4-digit), or null if century/year cannot be established */
+  readonly year: number | null;
 
   /** Manufacture month (1–12), or null if not determinable */
   readonly month: number | null;

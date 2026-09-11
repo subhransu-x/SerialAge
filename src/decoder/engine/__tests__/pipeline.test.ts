@@ -343,8 +343,8 @@ describe('Decode Pipeline', () => {
       ]);
 
       const result = decode('testbrand', 'ABC12345', { referenceDate: REFERENCE_DATE });
-      expect(result.candidates[0].approximateAge.years).toBe(6);
-      expect(result.candidates[1].approximateAge.years).toBe(15);
+      expect(result.candidates[0].approximateAge?.years).toBe(6);
+      expect(result.candidates[1].approximateAge?.years).toBe(15);
     });
   });
 

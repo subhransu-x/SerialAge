@@ -56,75 +56,75 @@ describe('calculateAge', () => {
     const mfgDate = buildManufactureDate(2019, 3, null, null);
     const refDate = new Date(2025, 5, 15); // June 15, 2025
     const age = calculateAge(mfgDate, refDate);
-    expect(age.years).toBe(6);
-    expect(age.months).toBe(3);
-    expect(age.display).toBe('6 years, 3 months');
+    expect(age!.years).toBe(6);
+    expect(age!.months).toBe(3);
+    expect(age!.display).toBe('6 years, 3 months');
   });
 
   it('handles exact year boundary', () => {
     const mfgDate = buildManufactureDate(2020, 1, null, 1);
     const refDate = new Date(2025, 0, 1); // Jan 1, 2025
     const age = calculateAge(mfgDate, refDate);
-    expect(age.years).toBe(5);
-    expect(age.months).toBe(0);
-    expect(age.display).toBe('5 years');
+    expect(age!.years).toBe(5);
+    expect(age!.months).toBe(0);
+    expect(age!.display).toBe('5 years');
   });
 
   it('handles less than 1 month old', () => {
     const mfgDate = buildManufactureDate(2025, 6, null, 10);
     const refDate = new Date(2025, 5, 15); // June 15, 2025
     const age = calculateAge(mfgDate, refDate);
-    expect(age.years).toBe(0);
-    expect(age.months).toBe(0);
-    expect(age.display).toBe('Less than 1 month');
+    expect(age!.years).toBe(0);
+    expect(age!.months).toBe(0);
+    expect(age!.display).toBe('Less than 1 month');
   });
 
   it('handles exactly 1 month old', () => {
     const mfgDate = buildManufactureDate(2025, 5, null, 1);
     const refDate = new Date(2025, 5, 1); // June 1, 2025
     const age = calculateAge(mfgDate, refDate);
-    expect(age.years).toBe(0);
-    expect(age.months).toBe(1);
-    expect(age.display).toBe('1 month');
+    expect(age!.years).toBe(0);
+    expect(age!.months).toBe(1);
+    expect(age!.display).toBe('1 month');
   });
 
   it('handles exactly 1 year old', () => {
     const mfgDate = buildManufactureDate(2024, 6, null, 15);
     const refDate = new Date(2025, 5, 15); // June 15, 2025
     const age = calculateAge(mfgDate, refDate);
-    expect(age.years).toBe(1);
-    expect(age.months).toBe(0);
-    expect(age.display).toBe('1 year');
+    expect(age!.years).toBe(1);
+    expect(age!.months).toBe(0);
+    expect(age!.display).toBe('1 year');
   });
 
   it('handles future manufacture dates gracefully', () => {
     const mfgDate = buildManufactureDate(2030, 1, null, null);
     const refDate = new Date(2025, 5, 15);
     const age = calculateAge(mfgDate, refDate);
-    expect(age.years).toBe(0);
-    expect(age.months).toBe(0);
-    expect(age.display).toBe('Less than 1 month');
+    expect(age!.years).toBe(0);
+    expect(age!.months).toBe(0);
+    expect(age!.display).toBe('Less than 1 month');
   });
 
   it('defaults to January 1st when month and day are unknown', () => {
     const mfgDate = buildManufactureDate(2020, null, null, null);
     const refDate = new Date(2025, 5, 15); // June 15, 2025
     const age = calculateAge(mfgDate, refDate);
-    expect(age.years).toBe(5);
-    expect(age.months).toBe(5);
+    expect(age!.years).toBe(5);
+    expect(age!.months).toBe(5);
   });
 
   it('displays singular month correctly', () => {
     const mfgDate = buildManufactureDate(2025, 4, null, 1);
     const refDate = new Date(2025, 4, 15); // May 15, 2025
     const age = calculateAge(mfgDate, refDate);
-    expect(age.display).toBe('1 month');
+    expect(age!.display).toBe('1 month');
   });
 
   it('displays plural months correctly', () => {
     const mfgDate = buildManufactureDate(2025, 1, null, 1);
     const refDate = new Date(2025, 5, 15); // June 15, 2025
     const age = calculateAge(mfgDate, refDate);
-    expect(age.display).toBe('5 months');
+    expect(age!.display).toBe('5 months');
   });
 });

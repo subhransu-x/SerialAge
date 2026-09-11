@@ -30,7 +30,7 @@ export type Confidence =
 
 /** Decoded manufacture date with variable precision */
 export interface ManufactureDate {
-  readonly year: number;
+  readonly year: number | null;
   readonly month: number | null;
   readonly week: number | null;
   readonly day: number | null;
@@ -64,7 +64,7 @@ export interface DecodeCandidate {
     readonly name: string;
   };
   readonly manufactureDate: ManufactureDate;
-  readonly approximateAge: ApproximateAge;
+  readonly approximateAge: ApproximateAge | null;
   readonly confidence: Confidence;
   readonly explanation: string;
   readonly sources: readonly SourceReference[];
