@@ -7,6 +7,7 @@ import './amana';
 import './bryant';
 import './carrier';
 import './goodman';
+import './heil';
 import './lennox';
 import './payne';
 import './rheem';

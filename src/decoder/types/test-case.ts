@@ -34,6 +34,9 @@ export interface DecoderTestCase {
   /** Expected manufacture month (null if format doesn't encode month) */
   readonly expectedMonth: number | null;
 
+  /** Expected manufacture week (null if format doesn't encode week) */
+  readonly expectedWeek?: number | null;
+
   /** Expected confidence level (null if decode should fail) */
   readonly expectedConfidence: Confidence | null;
 

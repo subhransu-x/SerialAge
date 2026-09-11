@@ -105,7 +105,7 @@ var LEGACY_PTAC_PATTERN = /^.?[A-Z].*[PD]$/;
 var LEGACY_PTAC_EXPLANATION = "Pre-2012 Goodman PTAC units used a letter-based serial format that cannot be reliably decoded. Please check the data plate for a printed manufacture date.";
 var GOODMAN_MIN_YEAR = 1982;
 var CENTURY_THRESHOLD = 82;
-var formats$5 = [{
+var formats$6 = [{
 	id: "goodman-standard-10",
 	name: "Goodman Standard (10-Digit)",
 	description: "Standard Goodman serial number format (~1982–present). 10-character numeric format: YYMMXXXXXX where YY=year, MM=month.",
@@ -190,7 +190,7 @@ var AMANA_MODERN_SOURCES = [{
 * uses the exact same 10-digit YYMM structure as Goodman.
 * Older dashed or spaced historical Amana formats are not supported.
 */
-var goodmanStandard10 = formats$5.find((f) => f.id === "goodman-standard-10");
+var goodmanStandard10 = formats$6.find((f) => f.id === "goodman-standard-10");
 if (!goodmanStandard10) throw new Error("Required goodman-standard-10 format rule not found.");
 registerManufacturer({
 	id: "amana",
@@ -652,7 +652,7 @@ var carrierStyle4Unambiguous = {
 	}
 };
 var STYLE4_AMBIGUOUS_WARNING = "This Style 4 serial has year digit \"9\", which represents either 1969 or 1979. The serial itself cannot distinguish between these two years. Check the unit's ANSI certification date or the home construction year to determine the correct decade.";
-var formats$4 = [
+var formats$5 = [
 	carrierWwyyStandard,
 	carrierYymmLegacy,
 	carrierStyle3Us,
@@ -796,7 +796,7 @@ var BRYANT_LEGACY_SOURCES = [{
 registerManufacturer({
 	id: "bryant",
 	name: "Bryant",
-	formats: formats$4.map((f) => {
+	formats: formats$5.map((f) => {
 		let overrideSources = f.sources;
 		if (f.id === "carrier-wwyy-standard") overrideSources = BRYANT_WWYY_SOURCES;
 		if (f.id === "carrier-yymm-legacy") overrideSources = BRYANT_YYMM_SOURCES;
@@ -823,7 +823,7 @@ registerManufacturer({
 registerManufacturer({
 	id: "carrier",
 	name: "Carrier",
-	formats: formats$4
+	formats: formats$5
 });
 //#endregion
 //#region src/decoder/manufacturers/goodman/index.ts
@@ -838,7 +838,645 @@ registerManufacturer({
 registerManufacturer({
 	id: "goodman",
 	name: "Goodman",
-	formats: formats$5
+	formats: formats$6
+});
+//#endregion
+//#region src/decoder/types/guards.ts
+/**
+* Type guard: result is a successful decode.
+*
+* When this returns true, TypeScript knows:
+* - `result.manufactureDate` is non-null
+* - `result.approximateAge` is non-null
+* - `result.confidence` is non-null
+* - `result.formatUsed` is non-null
+*/
+function isSuccessResult(result) {
+	return result.status === "success";
+}
+/**
+* Type guard: checks if a FormatRule.decode() return value is a FormatRuleError.
+*
+* Distinguishes between:
+* - DecodedData (successful decode — has 'year' property)
+* - FormatRuleError (intentional rejection — has 'error' property)
+* - null (silent skip)
+*/
+function isFormatRuleError(result) {
+	return result !== null && "error" in result;
+}
+//#endregion
+//#region src/decoder/engine/normalize.ts
+/**
+* Minimum length for a serial number to be considered valid.
+* Most HVAC serial numbers are 8+ characters. 3 is a generous minimum
+* to catch obvious garbage while not rejecting unusual short formats.
+*/
+var MIN_SERIAL_LENGTH = 3;
+/**
+* Maximum length for a serial number.
+* Prevents absurdly long input from being processed.
+*/
+var MAX_SERIAL_LENGTH = 50;
+/**
+* Validate raw user input before normalization.
+*
+* Returns an error message string if invalid, or null if valid.
+* This is a fast pre-check — it does NOT validate against any format.
+*/
+function validateInput(raw) {
+	if (typeof raw !== "string") return "Serial number must be a string.";
+	const trimmed = raw.trim();
+	if (trimmed.length === 0) return "Serial number is empty.";
+	if (trimmed.length < MIN_SERIAL_LENGTH) return `Serial number is too short (minimum ${MIN_SERIAL_LENGTH} characters).`;
+	if (trimmed.length > MAX_SERIAL_LENGTH) return `Serial number is too long (maximum ${MAX_SERIAL_LENGTH} characters).`;
+	return null;
+}
+/**
+* Normalize user input into multiple representations for pattern matching.
+*
+* Design principles:
+* - NEVER silently remove characters that could change meaning
+* - Provide multiple representations; let each FormatRule choose
+* - Preserve the original input untouched for display/debugging
+*
+* @param raw - Raw user input (should already pass validateInput)
+* @returns NormalizedInput with original, normalized, and variant forms
+*/
+function normalizeInput(raw) {
+	const uppercased = raw.trim().toUpperCase();
+	return {
+		original: raw,
+		normalized: uppercased,
+		withoutHyphens: uppercased.replace(/-/g, ""),
+		withoutSpaces: uppercased.replace(/\s+/g, "")
+	};
+}
+//#endregion
+//#region src/decoder/engine/validate-date.ts
+/**
+* Date validation utilities for decoded manufacture dates.
+*
+* These validate that decoded date components represent real,
+* plausible dates. Used by the pipeline to reject impossible
+* or nonsensical decode results before surfacing them.
+*/
+/** Earliest plausible manufacture year for HVAC/water heater equipment */
+var MIN_YEAR = 1950;
+/** Latest plausible manufacture year (generous buffer into the future) */
+var MAX_YEAR_OFFSET = 2;
+/**
+* Validate decoded date components.
+*
+* Returns null if valid, or a human-readable error string if invalid.
+* This prevents impossible dates (month 13, day 32, year 1800) from
+* reaching the user.
+*/
+function validateDecodedDate(year, month, week, day, referenceDate = /* @__PURE__ */ new Date()) {
+	if (!Number.isInteger(year)) return `Invalid year: "${year}" is not an integer.`;
+	if (year < MIN_YEAR) return `Implausible year: ${year} is before ${MIN_YEAR}. HVAC equipment this old is not expected.`;
+	if (year > referenceDate.getFullYear() + MAX_YEAR_OFFSET) return `Implausible year: ${year} is more than ${MAX_YEAR_OFFSET} years in the future.`;
+	if (month !== null) {
+		if (!Number.isInteger(month) || month < 1 || month > 12) return `Invalid month: ${month}. Must be 1–12.`;
+	}
+	if (week !== null) {
+		if (!Number.isInteger(week) || week < 1 || week > 53) return `Invalid week: ${week}. Must be 1–53.`;
+	}
+	if (day !== null) {
+		if (!Number.isInteger(day) || day < 1 || day > 31) return `Invalid day: ${day}. Must be 1–31.`;
+		if (month !== null) {
+			const testDate = new Date(year, month - 1, day);
+			if (testDate.getFullYear() !== year || testDate.getMonth() !== month - 1 || testDate.getDate() !== day) return `Invalid date: ${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")} does not exist.`;
+		}
+	}
+	return null;
+}
+//#endregion
+//#region src/utils/date.ts
+/**
+* Build a ManufactureDate object from decoded date components.
+*
+* Constructs the `display` string based on available precision:
+* - Year + Month + Day → "March 15, 2019"
+* - Year + Month       → "March 2019"
+* - Year + Week        → "Week 31, 2019"
+* - Year only          → "2019"
+*/
+function buildManufactureDate(year, month, week, day) {
+	let display;
+	if (month !== null && day !== null) display = new Date(year, month - 1, day).toLocaleDateString("en-US", {
+		year: "numeric",
+		month: "long",
+		day: "numeric"
+	});
+	else if (month !== null) display = new Date(year, month - 1, 1).toLocaleDateString("en-US", {
+		year: "numeric",
+		month: "long"
+	});
+	else if (week !== null) display = `Week ${week}, ${year}`;
+	else display = `${year}`;
+	return {
+		year,
+		month,
+		week,
+		day,
+		display
+	};
+}
+/**
+* Calculate the approximate age of equipment given a manufacture date
+* and a reference date (typically "now").
+*
+* @param manufactureDate - The decoded manufacture date
+* @param referenceDate   - The date to calculate age relative to (injectable for testing)
+* @returns ApproximateAge with years, months, and display string
+*/
+function calculateAge(manufactureDate, referenceDate = /* @__PURE__ */ new Date()) {
+	const mfgMonth = manufactureDate.month ?? 1;
+	const mfgDay = manufactureDate.day ?? 1;
+	const mfgDate = new Date(manufactureDate.year, mfgMonth - 1, mfgDay);
+	let years = referenceDate.getFullYear() - mfgDate.getFullYear();
+	let months = referenceDate.getMonth() - mfgDate.getMonth();
+	if (referenceDate.getDate() < mfgDate.getDate()) months--;
+	if (months < 0) {
+		years--;
+		months += 12;
+	}
+	if (years < 0) {
+		years = 0;
+		months = 0;
+	}
+	let display;
+	if (years === 0 && months === 0) display = "Less than 1 month";
+	else if (years === 0) display = months === 1 ? "1 month" : `${months} months`;
+	else if (months === 0) display = years === 1 ? "1 year" : `${years} years`;
+	else display = `${years === 1 ? "1 year" : `${years} years`}, ${months === 1 ? "1 month" : `${months} months`}`;
+	return {
+		years,
+		months,
+		display
+	};
+}
+//#endregion
+//#region src/decoder/engine/pipeline.ts
+/**
+* Decode a serial number for a given manufacturer.
+*
+* This is the main entry point for the decoder pipeline:
+*   Validate → Normalize → Lookup → Match All → Decode → Disambiguate → Age → Result
+*
+* @param manufacturerId - Canonical manufacturer ID (e.g., "carrier")
+* @param serialNumber   - Raw serial number as entered by the user
+* @param options        - Optional configuration (reference date for testing)
+* @returns A complete DecodeResult ready for UI consumption
+*/
+function decode(manufacturerId, serialNumber, options = {}) {
+	const referenceDate = options.referenceDate ?? /* @__PURE__ */ new Date();
+	const validationError = validateInput(serialNumber);
+	if (validationError !== null) return buildErrorResult("invalid-input", manufacturerId, serialNumber, validationError);
+	const input = normalizeInput(serialNumber);
+	const manufacturer = getManufacturer(manufacturerId);
+	if (!manufacturer) return buildErrorResult("unsupported", manufacturerId, serialNumber, `Manufacturer "${manufacturerId}" is not registered in the decoder.`);
+	const { matches, errors } = collectMatches(manufacturer.formats, input, referenceDate);
+	if (matches.length === 1 || matches.length > 1 && allMatchesAgree(matches)) return buildSuccessResult(matches, manufacturer, input, referenceDate);
+	if (matches.length > 1) return buildAmbiguousResult(matches, manufacturer, input, referenceDate);
+	if (errors.length > 0) {
+		const firstError = errors[0];
+		return {
+			status: firstError.error.error === "insufficient-info" ? "insufficient-info" : "unsupported",
+			manufacturer: {
+				id: manufacturer.id,
+				name: manufacturer.name
+			},
+			manufactureDate: null,
+			approximateAge: null,
+			confidence: null,
+			formatUsed: null,
+			productType: null,
+			explanation: firstError.error.explanation,
+			sources: [...firstError.format.sources],
+			warnings: [],
+			input: {
+				original: input.original,
+				normalized: input.normalized
+			},
+			candidates: [],
+			segments: []
+		};
+	}
+	return {
+		status: "unsupported",
+		manufacturer: {
+			id: manufacturer.id,
+			name: manufacturer.name
+		},
+		manufactureDate: null,
+		approximateAge: null,
+		confidence: null,
+		formatUsed: null,
+		productType: null,
+		explanation: `No known serial number format for ${manufacturer.name} matched the input "${input.normalized}".`,
+		sources: [],
+		warnings: [],
+		input: {
+			original: input.original,
+			normalized: input.normalized
+		},
+		candidates: [],
+		segments: []
+	};
+}
+/**
+* Run all format rules against the input, collecting successful decodes
+* and explicit error signals separately.
+*
+* Rejects decoded results with impossible dates (month 13, Feb 30, etc.)
+*
+* Priority semantics:
+* - Valid DecodedData results are always collected as matches
+* - FormatRuleError results are collected as explicit errors
+* - null results are silently skipped
+* - The caller decides priority: valid matches always win over explicit errors
+*/
+function collectMatches(formats, input, referenceDate) {
+	const matches = [];
+	const errors = [];
+	for (const format of formats) {
+		if (!format.matches(input)) continue;
+		const result = format.decode(input);
+		if (result === null) continue;
+		if (isFormatRuleError(result)) {
+			errors.push({
+				format,
+				error: result
+			});
+			continue;
+		}
+		if (validateDecodedDate(result.year, result.month, result.week, result.day, referenceDate) !== null) continue;
+		matches.push({
+			format,
+			data: result
+		});
+	}
+	return {
+		matches,
+		errors
+	};
+}
+/**
+* Check whether all matches decode to the same year and month.
+*/
+function allMatchesAgree(matches) {
+	if (matches.length <= 1) return true;
+	const first = matches[0];
+	return matches.every((m) => m.data.year === first.data.year && m.data.month === first.data.month);
+}
+/**
+* Pick the highest-confidence source from a set of matching format rules.
+*/
+function pickBestMatch(matches) {
+	const priority = {
+		high: 3,
+		medium: 2,
+		low: 1
+	};
+	return matches.reduce((best, current) => {
+		const bestScore = bestSourceScore(best.format);
+		return bestSourceScore(current.format) > bestScore ? current : best;
+	});
+	function bestSourceScore(format) {
+		if (format.sources.length === 0) return 0;
+		return Math.max(...format.sources.map((s) => priority[s.confidence] ?? 0));
+	}
+}
+/**
+* Determine confidence level for a successful decode.
+*/
+function determineConfidence(match, totalMatches) {
+	if (totalMatches === 1) {
+		const bestSource = match.format.sources[0];
+		if (bestSource?.confidence === "verified") return "high";
+		if (bestSource?.confidence === "probable") return "medium";
+		return "low";
+	}
+	return "medium";
+}
+/**
+* Build a success DecodeResult from matching format(s).
+*/
+function buildSuccessResult(matches, manufacturer, input, referenceDate) {
+	const best = matches.length === 1 ? matches[0] : pickBestMatch(matches);
+	const confidence = determineConfidence(best, matches.length);
+	const manufactureDate = buildManufactureDate(best.data.year, best.data.month, best.data.week, best.data.day);
+	const approximateAge = calculateAge(manufactureDate, referenceDate);
+	const warnings = [...best.data.warnings];
+	if (matches.length > 1) warnings.push(`${matches.length} format rules matched but all agreed on the same manufacture date.`);
+	return {
+		status: "success",
+		manufacturer: {
+			id: manufacturer.id,
+			name: manufacturer.name
+		},
+		manufactureDate,
+		approximateAge,
+		confidence,
+		formatUsed: {
+			id: best.format.id,
+			name: best.format.name,
+			description: best.format.description,
+			yearRange: best.format.yearRange
+		},
+		productType: best.data.productType,
+		explanation: best.data.explanation,
+		sources: [...best.format.sources],
+		warnings,
+		input: {
+			original: input.original,
+			normalized: input.normalized
+		},
+		candidates: [],
+		segments: [...best.data.segments ?? []]
+	};
+}
+/**
+* Build an ambiguous DecodeResult when formats disagree.
+*/
+function buildAmbiguousResult(matches, manufacturer, input, referenceDate) {
+	const candidates = matches.map((match) => {
+		const mfgDate = buildManufactureDate(match.data.year, match.data.month, match.data.week, match.data.day);
+		const age = calculateAge(mfgDate, referenceDate);
+		const bestSource = match.format.sources[0];
+		let confidence = "low";
+		if (bestSource?.confidence === "verified") confidence = "medium";
+		else if (bestSource?.confidence === "probable") confidence = "low";
+		return {
+			formatUsed: {
+				id: match.format.id,
+				name: match.format.name
+			},
+			manufactureDate: mfgDate,
+			approximateAge: age,
+			confidence,
+			explanation: match.data.explanation,
+			sources: [...match.format.sources],
+			productType: match.data.productType,
+			warnings: [...match.data.warnings],
+			segments: [...match.data.segments ?? []]
+		};
+	});
+	return {
+		status: "ambiguous",
+		manufacturer: {
+			id: manufacturer.id,
+			name: manufacturer.name
+		},
+		manufactureDate: null,
+		approximateAge: null,
+		confidence: null,
+		formatUsed: null,
+		productType: null,
+		explanation: `This serial number matches ${matches.length} different format rules for ${manufacturer.name} with different manufacture dates. Additional context may be needed to determine the correct date.`,
+		sources: [],
+		warnings: ["Multiple decode interpretations exist. The manufacture date could not be determined unambiguously."],
+		input: {
+			original: input.original,
+			normalized: input.normalized
+		},
+		candidates,
+		segments: []
+	};
+}
+/**
+* Build an error DecodeResult for validation failures or unknown manufacturers.
+*/
+function buildErrorResult(status, manufacturerId, serialNumber, explanation) {
+	return {
+		status,
+		manufacturer: {
+			id: manufacturerId,
+			name: manufacturerId
+		},
+		manufactureDate: null,
+		approximateAge: null,
+		confidence: null,
+		formatUsed: null,
+		productType: null,
+		explanation,
+		sources: [],
+		warnings: [],
+		input: {
+			original: serialNumber,
+			normalized: serialNumber.trim().toUpperCase()
+		},
+		candidates: [],
+		segments: []
+	};
+}
+//#endregion
+//#region src/decoder/manufacturers/heil/sources.ts
+var HEIL_MODERN_SOURCES = [{
+	name: "SerialAge Manufacturer Decoding Audit - Heil",
+	url: null,
+	dateReviewed: "2024-05-15T00:00:00.000Z",
+	notes: "Internal forensic investigation establishing the structure of modern ICP formats.",
+	confidence: "verified"
+}, {
+	name: "ICP Technical Information Communication TIC2021-0009",
+	url: null,
+	dateReviewed: "2024-05-15T00:00:00.000Z",
+	notes: "Primary manufacturer engineering document confirming the format and explicitly verifying that positions 4 and 5 represent the week, not the month.",
+	confidence: "verified"
+}];
+var HEIL_LEGACY_SOURCES = [{
+	name: "SerialAge Manufacturer Decoding Audit - Heil",
+	url: null,
+	dateReviewed: "2024-05-15T00:00:00.000Z",
+	notes: "Internal forensic investigation mapping the Heil-Quaker decade formats.",
+	confidence: "verified"
+}];
+var HEIL_DUCTLESS_SOURCES = [{
+	name: "ICP Ductless Compatibility Guide",
+	url: null,
+	dateReviewed: "2024-05-15T00:00:00.000Z",
+	notes: "Primary OEM documentation confirming the V-prefix ductless format (e.g. V2028V10001 = 2020, Week 28).",
+	confidence: "verified"
+}];
+//#endregion
+//#region src/decoder/manufacturers/heil/formats.ts
+var MODERN_PATTERN = /^([A-Z])([0-9]{2})(0[1-9]|[1-4][0-9]|5[0-3])([0-9]{5})$/i;
+var LEGACY_QUAKER_PATTERN = /^([GH])([0-9])(0[1-9]|[1-4][0-9]|5[0-3])([0-9]{5})$/i;
+var LEGACY_NUMERIC_PATTERN = /^[0-9]{6}$/;
+var DUCTLESS_OLDER_PATTERN = /^([0-9]{2})(0[1-9]|[1-4][0-9]|5[0-3])V([0-9]{5})$/i;
+var DUCTLESS_NEWER_PATTERN = /^V([0-9]{2})(0[1-9]|[1-4][0-9]|5[0-3])V([0-9]{5})$/i;
+/**
+* Resolve a 2-digit year to a 4-digit year using a 50-year sliding window.
+*/
+function resolveYear$2(twoDigit) {
+	const currentYear = (/* @__PURE__ */ new Date()).getFullYear();
+	const candidate2000 = 2e3 + twoDigit;
+	const candidate1900 = 1900 + twoDigit;
+	if (candidate2000 <= currentYear + 2) return candidate2000;
+	return candidate1900;
+}
+//#endregion
+//#region src/decoder/manufacturers/heil/index.ts
+registerManufacturer({
+	id: "heil",
+	name: "Heil",
+	formats: [
+		{
+			id: "heil-modern-unitary",
+			name: "Modern ICP Unitary Format",
+			description: "Standard 10-character format used by Heil and ICP sister brands from roughly 1990 to present. The first letter is a plant code, followed by the two-digit year, two-digit week, and sequence.",
+			yearRange: [1990, null],
+			productTypes: [
+				"furnace",
+				"air-conditioner",
+				"heat-pump",
+				"package-unit"
+			],
+			sources: HEIL_MODERN_SOURCES,
+			matches(input) {
+				return MODERN_PATTERN.test(input.withoutSpaces);
+			},
+			decode(input) {
+				const match = input.withoutSpaces.match(MODERN_PATTERN);
+				if (!match) return null;
+				const plantCode = match[1].toUpperCase();
+				const yearTwoDigit = parseInt(match[2], 10);
+				const week = parseInt(match[3], 10);
+				const sequence = match[4];
+				const fullYear = resolveYear$2(yearTwoDigit);
+				return {
+					year: fullYear,
+					month: null,
+					week,
+					day: null,
+					productType: "unknown",
+					explanation: `Plant code "${plantCode}" is followed by the year (${match[2]} = ${fullYear}) and week (${match[3]} = week ${week}).`,
+					warnings: [],
+					metadata: {
+						plantCode,
+						sequence
+					}
+				};
+			}
+		},
+		{
+			id: "heil-quaker-decade",
+			name: "Heil-Quaker Decade Format",
+			description: "Legacy 9-character format used in the 1970s and 1980s. The first letter dictates the decade (G=1970s, H=1980s), followed by the single-digit year and two-digit week.",
+			yearRange: [1970, 1989],
+			productTypes: [],
+			sources: HEIL_LEGACY_SOURCES,
+			matches(input) {
+				return LEGACY_QUAKER_PATTERN.test(input.withoutSpaces);
+			},
+			decode(input) {
+				const match = input.withoutSpaces.match(LEGACY_QUAKER_PATTERN);
+				if (!match) return null;
+				const decadeLetter = match[1].toUpperCase();
+				const yearDigit = parseInt(match[2], 10);
+				const week = parseInt(match[3], 10);
+				const sequence = match[4];
+				let baseYear = 1970;
+				let decadeDisplay = "1970s";
+				if (decadeLetter === "H") {
+					baseYear = 1980;
+					decadeDisplay = "1980s";
+				}
+				const fullYear = baseYear + yearDigit;
+				return {
+					year: fullYear,
+					month: null,
+					week,
+					day: null,
+					productType: "unknown",
+					explanation: `The starting letter "${decadeLetter}" indicates the ${decadeDisplay}. The next digit "${match[2]}" represents the year (${fullYear}), followed by the week (${match[3]} = week ${week}).`,
+					warnings: [],
+					metadata: {
+						decadeLetter,
+						sequence
+					}
+				};
+			}
+		},
+		{
+			id: "heil-ductless-modern",
+			name: "ICP Ductless Format (Newer)",
+			description: "11-character Midea OEM format used for modern ICP ductless mini-split systems.",
+			yearRange: [2020, null],
+			productTypes: [],
+			sources: HEIL_DUCTLESS_SOURCES,
+			matches(input) {
+				return DUCTLESS_NEWER_PATTERN.test(input.withoutSpaces);
+			},
+			decode(input) {
+				const match = input.withoutSpaces.match(DUCTLESS_NEWER_PATTERN);
+				if (!match) return null;
+				const yearTwoDigit = parseInt(match[1], 10);
+				const week = parseInt(match[2], 10);
+				const sequence = match[3];
+				const fullYear = 2e3 + yearTwoDigit;
+				return {
+					year: fullYear,
+					month: null,
+					week,
+					day: null,
+					productType: "unknown",
+					explanation: `After the starting "V", the next digits indicate the year (${match[1]} = ${fullYear}) and week (${match[2]} = week ${week}).`,
+					warnings: ["This format is specific to ductless mini-split systems."],
+					metadata: { sequence }
+				};
+			}
+		},
+		{
+			id: "heil-ductless-legacy",
+			name: "ICP Ductless Format (Older)",
+			description: "10-character Midea OEM format used for older ICP ductless mini-split systems.",
+			yearRange: [2010, 2019],
+			productTypes: [],
+			sources: HEIL_DUCTLESS_SOURCES,
+			matches(input) {
+				return DUCTLESS_OLDER_PATTERN.test(input.withoutSpaces);
+			},
+			decode(input) {
+				const match = input.withoutSpaces.match(DUCTLESS_OLDER_PATTERN);
+				if (!match) return null;
+				const yearTwoDigit = parseInt(match[1], 10);
+				const week = parseInt(match[2], 10);
+				const sequence = match[3];
+				const fullYear = 2e3 + yearTwoDigit;
+				return {
+					year: fullYear,
+					month: null,
+					week,
+					day: null,
+					productType: "unknown",
+					explanation: `The first digits indicate the year (${match[1]} = ${fullYear}) and week (${match[2]} = week ${week}), followed by an internal "V" separator.`,
+					warnings: ["This format is specific to ductless mini-split systems."],
+					metadata: { sequence }
+				};
+			}
+		},
+		{
+			id: "heil-legacy-numeric",
+			name: "Legacy 6-Digit Numeric",
+			description: "Pre-1970s format relying on a single digit for the year.",
+			yearRange: [1950, 1969],
+			productTypes: [],
+			sources: [],
+			matches(input) {
+				return LEGACY_NUMERIC_PATTERN.test(input.withoutSpaces);
+			},
+			decode() {
+				return {
+					error: "insufficient-info",
+					explanation: "This 6-digit numeric serial appears to be a pre-1970s format where the first digit represents the final digit of the year. Because there is no decade indicator, it is impossible to determine the exact year from the serial number alone. Visual inspection of the unit is required."
+				};
+			}
+		}
+	]
 });
 //#endregion
 //#region src/decoder/manufacturers/lennox/sources.ts
@@ -941,7 +1579,7 @@ var PAYNE_LEGACY_SOURCES = [{
 registerManufacturer({
 	id: "payne",
 	name: "Payne",
-	formats: formats$4.map((f) => {
+	formats: formats$5.map((f) => {
 		let overrideSources = f.sources;
 		if (f.id === "carrier-wwyy-standard") overrideSources = PAYNE_WWYY_SOURCES;
 		if (f.id === "carrier-yymm-legacy") overrideSources = PAYNE_YYMM_SOURCES;
@@ -1730,438 +2368,6 @@ registerManufacturer({
 		}
 	]
 });
-//#endregion
-//#region src/decoder/types/guards.ts
-/**
-* Type guard: result is a successful decode.
-*
-* When this returns true, TypeScript knows:
-* - `result.manufactureDate` is non-null
-* - `result.approximateAge` is non-null
-* - `result.confidence` is non-null
-* - `result.formatUsed` is non-null
-*/
-function isSuccessResult(result) {
-	return result.status === "success";
-}
-/**
-* Type guard: checks if a FormatRule.decode() return value is a FormatRuleError.
-*
-* Distinguishes between:
-* - DecodedData (successful decode — has 'year' property)
-* - FormatRuleError (intentional rejection — has 'error' property)
-* - null (silent skip)
-*/
-function isFormatRuleError(result) {
-	return result !== null && "error" in result;
-}
-//#endregion
-//#region src/decoder/engine/normalize.ts
-/**
-* Minimum length for a serial number to be considered valid.
-* Most HVAC serial numbers are 8+ characters. 3 is a generous minimum
-* to catch obvious garbage while not rejecting unusual short formats.
-*/
-var MIN_SERIAL_LENGTH = 3;
-/**
-* Maximum length for a serial number.
-* Prevents absurdly long input from being processed.
-*/
-var MAX_SERIAL_LENGTH = 50;
-/**
-* Validate raw user input before normalization.
-*
-* Returns an error message string if invalid, or null if valid.
-* This is a fast pre-check — it does NOT validate against any format.
-*/
-function validateInput(raw) {
-	if (typeof raw !== "string") return "Serial number must be a string.";
-	const trimmed = raw.trim();
-	if (trimmed.length === 0) return "Serial number is empty.";
-	if (trimmed.length < MIN_SERIAL_LENGTH) return `Serial number is too short (minimum ${MIN_SERIAL_LENGTH} characters).`;
-	if (trimmed.length > MAX_SERIAL_LENGTH) return `Serial number is too long (maximum ${MAX_SERIAL_LENGTH} characters).`;
-	return null;
-}
-/**
-* Normalize user input into multiple representations for pattern matching.
-*
-* Design principles:
-* - NEVER silently remove characters that could change meaning
-* - Provide multiple representations; let each FormatRule choose
-* - Preserve the original input untouched for display/debugging
-*
-* @param raw - Raw user input (should already pass validateInput)
-* @returns NormalizedInput with original, normalized, and variant forms
-*/
-function normalizeInput(raw) {
-	const uppercased = raw.trim().toUpperCase();
-	return {
-		original: raw,
-		normalized: uppercased,
-		withoutHyphens: uppercased.replace(/-/g, ""),
-		withoutSpaces: uppercased.replace(/\s+/g, "")
-	};
-}
-//#endregion
-//#region src/decoder/engine/validate-date.ts
-/**
-* Date validation utilities for decoded manufacture dates.
-*
-* These validate that decoded date components represent real,
-* plausible dates. Used by the pipeline to reject impossible
-* or nonsensical decode results before surfacing them.
-*/
-/** Earliest plausible manufacture year for HVAC/water heater equipment */
-var MIN_YEAR = 1950;
-/** Latest plausible manufacture year (generous buffer into the future) */
-var MAX_YEAR_OFFSET = 2;
-/**
-* Validate decoded date components.
-*
-* Returns null if valid, or a human-readable error string if invalid.
-* This prevents impossible dates (month 13, day 32, year 1800) from
-* reaching the user.
-*/
-function validateDecodedDate(year, month, week, day, referenceDate = /* @__PURE__ */ new Date()) {
-	if (!Number.isInteger(year)) return `Invalid year: "${year}" is not an integer.`;
-	if (year < MIN_YEAR) return `Implausible year: ${year} is before ${MIN_YEAR}. HVAC equipment this old is not expected.`;
-	if (year > referenceDate.getFullYear() + MAX_YEAR_OFFSET) return `Implausible year: ${year} is more than ${MAX_YEAR_OFFSET} years in the future.`;
-	if (month !== null) {
-		if (!Number.isInteger(month) || month < 1 || month > 12) return `Invalid month: ${month}. Must be 1–12.`;
-	}
-	if (week !== null) {
-		if (!Number.isInteger(week) || week < 1 || week > 53) return `Invalid week: ${week}. Must be 1–53.`;
-	}
-	if (day !== null) {
-		if (!Number.isInteger(day) || day < 1 || day > 31) return `Invalid day: ${day}. Must be 1–31.`;
-		if (month !== null) {
-			const testDate = new Date(year, month - 1, day);
-			if (testDate.getFullYear() !== year || testDate.getMonth() !== month - 1 || testDate.getDate() !== day) return `Invalid date: ${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")} does not exist.`;
-		}
-	}
-	return null;
-}
-//#endregion
-//#region src/utils/date.ts
-/**
-* Build a ManufactureDate object from decoded date components.
-*
-* Constructs the `display` string based on available precision:
-* - Year + Month + Day → "March 15, 2019"
-* - Year + Month       → "March 2019"
-* - Year + Week        → "Week 31, 2019"
-* - Year only          → "2019"
-*/
-function buildManufactureDate(year, month, week, day) {
-	let display;
-	if (month !== null && day !== null) display = new Date(year, month - 1, day).toLocaleDateString("en-US", {
-		year: "numeric",
-		month: "long",
-		day: "numeric"
-	});
-	else if (month !== null) display = new Date(year, month - 1, 1).toLocaleDateString("en-US", {
-		year: "numeric",
-		month: "long"
-	});
-	else if (week !== null) display = `Week ${week}, ${year}`;
-	else display = `${year}`;
-	return {
-		year,
-		month,
-		week,
-		day,
-		display
-	};
-}
-/**
-* Calculate the approximate age of equipment given a manufacture date
-* and a reference date (typically "now").
-*
-* @param manufactureDate - The decoded manufacture date
-* @param referenceDate   - The date to calculate age relative to (injectable for testing)
-* @returns ApproximateAge with years, months, and display string
-*/
-function calculateAge(manufactureDate, referenceDate = /* @__PURE__ */ new Date()) {
-	const mfgMonth = manufactureDate.month ?? 1;
-	const mfgDay = manufactureDate.day ?? 1;
-	const mfgDate = new Date(manufactureDate.year, mfgMonth - 1, mfgDay);
-	let years = referenceDate.getFullYear() - mfgDate.getFullYear();
-	let months = referenceDate.getMonth() - mfgDate.getMonth();
-	if (referenceDate.getDate() < mfgDate.getDate()) months--;
-	if (months < 0) {
-		years--;
-		months += 12;
-	}
-	if (years < 0) {
-		years = 0;
-		months = 0;
-	}
-	let display;
-	if (years === 0 && months === 0) display = "Less than 1 month";
-	else if (years === 0) display = months === 1 ? "1 month" : `${months} months`;
-	else if (months === 0) display = years === 1 ? "1 year" : `${years} years`;
-	else display = `${years === 1 ? "1 year" : `${years} years`}, ${months === 1 ? "1 month" : `${months} months`}`;
-	return {
-		years,
-		months,
-		display
-	};
-}
-//#endregion
-//#region src/decoder/engine/pipeline.ts
-/**
-* Decode a serial number for a given manufacturer.
-*
-* This is the main entry point for the decoder pipeline:
-*   Validate → Normalize → Lookup → Match All → Decode → Disambiguate → Age → Result
-*
-* @param manufacturerId - Canonical manufacturer ID (e.g., "carrier")
-* @param serialNumber   - Raw serial number as entered by the user
-* @param options        - Optional configuration (reference date for testing)
-* @returns A complete DecodeResult ready for UI consumption
-*/
-function decode(manufacturerId, serialNumber, options = {}) {
-	const referenceDate = options.referenceDate ?? /* @__PURE__ */ new Date();
-	const validationError = validateInput(serialNumber);
-	if (validationError !== null) return buildErrorResult("invalid-input", manufacturerId, serialNumber, validationError);
-	const input = normalizeInput(serialNumber);
-	const manufacturer = getManufacturer(manufacturerId);
-	if (!manufacturer) return buildErrorResult("unsupported", manufacturerId, serialNumber, `Manufacturer "${manufacturerId}" is not registered in the decoder.`);
-	const { matches, errors } = collectMatches(manufacturer.formats, input, referenceDate);
-	if (matches.length === 1 || matches.length > 1 && allMatchesAgree(matches)) return buildSuccessResult(matches, manufacturer, input, referenceDate);
-	if (matches.length > 1) return buildAmbiguousResult(matches, manufacturer, input, referenceDate);
-	if (errors.length > 0) {
-		const firstError = errors[0];
-		return {
-			status: firstError.error.error === "insufficient-info" ? "insufficient-info" : "unsupported",
-			manufacturer: {
-				id: manufacturer.id,
-				name: manufacturer.name
-			},
-			manufactureDate: null,
-			approximateAge: null,
-			confidence: null,
-			formatUsed: null,
-			productType: null,
-			explanation: firstError.error.explanation,
-			sources: [...firstError.format.sources],
-			warnings: [],
-			input: {
-				original: input.original,
-				normalized: input.normalized
-			},
-			candidates: [],
-			segments: []
-		};
-	}
-	return {
-		status: "unsupported",
-		manufacturer: {
-			id: manufacturer.id,
-			name: manufacturer.name
-		},
-		manufactureDate: null,
-		approximateAge: null,
-		confidence: null,
-		formatUsed: null,
-		productType: null,
-		explanation: `No known serial number format for ${manufacturer.name} matched the input "${input.normalized}".`,
-		sources: [],
-		warnings: [],
-		input: {
-			original: input.original,
-			normalized: input.normalized
-		},
-		candidates: [],
-		segments: []
-	};
-}
-/**
-* Run all format rules against the input, collecting successful decodes
-* and explicit error signals separately.
-*
-* Rejects decoded results with impossible dates (month 13, Feb 30, etc.)
-*
-* Priority semantics:
-* - Valid DecodedData results are always collected as matches
-* - FormatRuleError results are collected as explicit errors
-* - null results are silently skipped
-* - The caller decides priority: valid matches always win over explicit errors
-*/
-function collectMatches(formats, input, referenceDate) {
-	const matches = [];
-	const errors = [];
-	for (const format of formats) {
-		if (!format.matches(input)) continue;
-		const result = format.decode(input);
-		if (result === null) continue;
-		if (isFormatRuleError(result)) {
-			errors.push({
-				format,
-				error: result
-			});
-			continue;
-		}
-		if (validateDecodedDate(result.year, result.month, result.week, result.day, referenceDate) !== null) continue;
-		matches.push({
-			format,
-			data: result
-		});
-	}
-	return {
-		matches,
-		errors
-	};
-}
-/**
-* Check whether all matches decode to the same year and month.
-*/
-function allMatchesAgree(matches) {
-	if (matches.length <= 1) return true;
-	const first = matches[0];
-	return matches.every((m) => m.data.year === first.data.year && m.data.month === first.data.month);
-}
-/**
-* Pick the highest-confidence source from a set of matching format rules.
-*/
-function pickBestMatch(matches) {
-	const priority = {
-		high: 3,
-		medium: 2,
-		low: 1
-	};
-	return matches.reduce((best, current) => {
-		const bestScore = bestSourceScore(best.format);
-		return bestSourceScore(current.format) > bestScore ? current : best;
-	});
-	function bestSourceScore(format) {
-		if (format.sources.length === 0) return 0;
-		return Math.max(...format.sources.map((s) => priority[s.confidence] ?? 0));
-	}
-}
-/**
-* Determine confidence level for a successful decode.
-*/
-function determineConfidence(match, totalMatches) {
-	if (totalMatches === 1) {
-		const bestSource = match.format.sources[0];
-		if (bestSource?.confidence === "verified") return "high";
-		if (bestSource?.confidence === "probable") return "medium";
-		return "low";
-	}
-	return "medium";
-}
-/**
-* Build a success DecodeResult from matching format(s).
-*/
-function buildSuccessResult(matches, manufacturer, input, referenceDate) {
-	const best = matches.length === 1 ? matches[0] : pickBestMatch(matches);
-	const confidence = determineConfidence(best, matches.length);
-	const manufactureDate = buildManufactureDate(best.data.year, best.data.month, best.data.week, best.data.day);
-	const approximateAge = calculateAge(manufactureDate, referenceDate);
-	const warnings = [...best.data.warnings];
-	if (matches.length > 1) warnings.push(`${matches.length} format rules matched but all agreed on the same manufacture date.`);
-	return {
-		status: "success",
-		manufacturer: {
-			id: manufacturer.id,
-			name: manufacturer.name
-		},
-		manufactureDate,
-		approximateAge,
-		confidence,
-		formatUsed: {
-			id: best.format.id,
-			name: best.format.name,
-			description: best.format.description,
-			yearRange: best.format.yearRange
-		},
-		productType: best.data.productType,
-		explanation: best.data.explanation,
-		sources: [...best.format.sources],
-		warnings,
-		input: {
-			original: input.original,
-			normalized: input.normalized
-		},
-		candidates: [],
-		segments: [...best.data.segments ?? []]
-	};
-}
-/**
-* Build an ambiguous DecodeResult when formats disagree.
-*/
-function buildAmbiguousResult(matches, manufacturer, input, referenceDate) {
-	const candidates = matches.map((match) => {
-		const mfgDate = buildManufactureDate(match.data.year, match.data.month, match.data.week, match.data.day);
-		const age = calculateAge(mfgDate, referenceDate);
-		const bestSource = match.format.sources[0];
-		let confidence = "low";
-		if (bestSource?.confidence === "verified") confidence = "medium";
-		else if (bestSource?.confidence === "probable") confidence = "low";
-		return {
-			formatUsed: {
-				id: match.format.id,
-				name: match.format.name
-			},
-			manufactureDate: mfgDate,
-			approximateAge: age,
-			confidence,
-			explanation: match.data.explanation,
-			sources: [...match.format.sources],
-			productType: match.data.productType,
-			warnings: [...match.data.warnings],
-			segments: [...match.data.segments ?? []]
-		};
-	});
-	return {
-		status: "ambiguous",
-		manufacturer: {
-			id: manufacturer.id,
-			name: manufacturer.name
-		},
-		manufactureDate: null,
-		approximateAge: null,
-		confidence: null,
-		formatUsed: null,
-		productType: null,
-		explanation: `This serial number matches ${matches.length} different format rules for ${manufacturer.name} with different manufacture dates. Additional context may be needed to determine the correct date.`,
-		sources: [],
-		warnings: ["Multiple decode interpretations exist. The manufacture date could not be determined unambiguously."],
-		input: {
-			original: input.original,
-			normalized: input.normalized
-		},
-		candidates,
-		segments: []
-	};
-}
-/**
-* Build an error DecodeResult for validation failures or unknown manufacturers.
-*/
-function buildErrorResult(status, manufacturerId, serialNumber, explanation) {
-	return {
-		status,
-		manufacturer: {
-			id: manufacturerId,
-			name: manufacturerId
-		},
-		manufactureDate: null,
-		approximateAge: null,
-		confidence: null,
-		formatUsed: null,
-		productType: null,
-		explanation,
-		sources: [],
-		warnings: [],
-		input: {
-			original: serialNumber,
-			normalized: serialNumber.trim().toUpperCase()
-		},
-		candidates: [],
-		segments: []
-	};
-}
 //#endregion
 //#region src/utils/analytics.ts
 /**
@@ -5793,6 +5999,66 @@ var ALL_BRAND_PAGES = [
 			{
 				question: "Does this tool decode York water heater serial numbers?",
 				answer: "No. This tool is designed for residential HVAC equipment — air conditioners, furnaces, and heat pumps. Water heaters are out of scope."
+			}
+		]
+	},
+	{
+		manufacturerId: "heil",
+		slug: "heil-serial-number-decoder",
+		displayName: "Heil",
+		relatedBrands: [],
+		category: "HVAC",
+		pageTitle: "Heil Serial Number Decoder — Find Equipment Age | SerialAge",
+		metaDescription: "Free decoder for Heil and ICP HVAC serial numbers. Find out the age and manufacture date of your Heil air conditioner, furnace, or heat pump.",
+		headline: "Heil Serial Number Decoder",
+		shortDescription: "Determine the age and manufacture date of your Heil or ICP (International Comfort Products) HVAC equipment.",
+		ratingPlateLocation: "On Heil outdoor units (air conditioners and heat pumps), the data plate is typically located on the side of the unit. On indoor furnaces, it is usually pasted on the inside wall of the blower compartment.",
+		limitations: [
+			"Legacy 6-digit numeric serial numbers (pre-1970s) are not supported because they only contain a single digit for the year, making it impossible to determine the exact decade.",
+			"The 1980s HFF recall format is explicitly rejected by this decoder.",
+			"This tool focuses on the core Heil/ICP structure. It does not invent or assume factory origins based on the starting letter."
+		],
+		sources: [{
+			type: "external",
+			title: "ICP Technical Information Communication TIC2021-0009",
+			description: "Primary engineering document confirming the modern 10-character format."
+		}, {
+			type: "external",
+			title: "ICP Ductless Compatibility Guide",
+			description: "OEM documentation confirming the ductless V-prefix format."
+		}],
+		supportedFormats: [
+			{
+				label: "Modern ICP Unitary Format (1990–Present)",
+				example: "E072514528",
+				exampleType: "Documented",
+				description: "A 10-character format starting with a letter. The second and third characters are the year, and the fourth and fifth are the week. Example: E072514528 = 2007, Week 25."
+			},
+			{
+				label: "Heil-Quaker Decade Format (1970s & 1980s)",
+				example: "H55116328",
+				exampleType: "Verified",
+				description: "A 9-character format starting with G (1970s) or H (1980s). The second character is the exact year digit, and the third and fourth are the week. Example: H55116328 = 1985, Week 51."
+			},
+			{
+				label: "ICP Ductless Formats",
+				example: "V2028V10001",
+				exampleType: "Documented",
+				description: "Midea-sourced ductless units use a format containing the internal separator 'V'. The year and week are clearly indicated near the beginning. Example: V2028V10001 = 2020, Week 28."
+			}
+		],
+		faqs: [
+			{
+				question: "Are the 4th and 5th characters the month or the week?",
+				answer: "They indicate the week of the year (01 to 53). According to official ICP Technical Information Communication documents, these positions definitively represent the week, not the month. Many online sources incorrectly claim it is the month."
+			},
+			{
+				question: "What does the first letter mean in a modern Heil serial number?",
+				answer: "The first letter (e.g., E, F, L) designates the plant or factory where the unit was manufactured. However, this decoder does not map these letters to specific cities because ICP factory assignments have changed and evolved over time, and relying on static lists leads to inaccuracies."
+			},
+			{
+				question: "Does this decoder work for Tempstar, Comfortmaker, and Arcoaire?",
+				answer: "While those brands share the same ICP parent company and use the identical serial number structure, this specific page is optimized for Heil. The decoding rules, however, are the same."
 			}
 		]
 	}

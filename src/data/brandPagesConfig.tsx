@@ -961,8 +961,64 @@ const york: BrandPageConfig = {
   ],
 };
 
+const heil: BrandPageConfig = {
+  manufacturerId: 'heil',
+  slug: 'heil-serial-number-decoder',
+  displayName: 'Heil',
+  relatedBrands: [],
+  category: 'HVAC',
+  pageTitle: 'Heil Serial Number Decoder — Find Equipment Age | SerialAge',
+  metaDescription: 'Free decoder for Heil and ICP HVAC serial numbers. Find out the age and manufacture date of your Heil air conditioner, furnace, or heat pump.',
+  headline: 'Heil Serial Number Decoder',
+  shortDescription: 'Determine the age and manufacture date of your Heil or ICP (International Comfort Products) HVAC equipment.',
+  ratingPlateLocation: 'On Heil outdoor units (air conditioners and heat pumps), the data plate is typically located on the side of the unit. On indoor furnaces, it is usually pasted on the inside wall of the blower compartment.',
+  limitations: [
+    "Legacy 6-digit numeric serial numbers (pre-1970s) are not supported because they only contain a single digit for the year, making it impossible to determine the exact decade.",
+    "The 1980s HFF recall format is explicitly rejected by this decoder.",
+    "This tool focuses on the core Heil/ICP structure. It does not invent or assume factory origins based on the starting letter."
+  ],
+  sources: [
+    { type: 'external', title: 'ICP Technical Information Communication TIC2021-0009', description: 'Primary engineering document confirming the modern 10-character format.' },
+    { type: 'external', title: 'ICP Ductless Compatibility Guide', description: 'OEM documentation confirming the ductless V-prefix format.' }
+  ],
+  supportedFormats: [
+    {
+      label: "Modern ICP Unitary Format (1990–Present)",
+      example: "E072514528",
+      exampleType: 'Documented',
+      description: "A 10-character format starting with a letter. The second and third characters are the year, and the fourth and fifth are the week. Example: E072514528 = 2007, Week 25."
+    },
+    {
+      label: "Heil-Quaker Decade Format (1970s & 1980s)",
+      example: "H55116328",
+      exampleType: 'Verified',
+      description: "A 9-character format starting with G (1970s) or H (1980s). The second character is the exact year digit, and the third and fourth are the week. Example: H55116328 = 1985, Week 51."
+    },
+    {
+      label: "ICP Ductless Formats",
+      example: "V2028V10001",
+      exampleType: 'Documented',
+      description: "Midea-sourced ductless units use a format containing the internal separator 'V'. The year and week are clearly indicated near the beginning. Example: V2028V10001 = 2020, Week 28."
+    }
+  ],
+  faqs: [
+    {
+      question: "Are the 4th and 5th characters the month or the week?",
+      answer: "They indicate the week of the year (01 to 53). According to official ICP Technical Information Communication documents, these positions definitively represent the week, not the month. Many online sources incorrectly claim it is the month."
+    },
+    {
+      question: "What does the first letter mean in a modern Heil serial number?",
+      answer: "The first letter (e.g., E, F, L) designates the plant or factory where the unit was manufactured. However, this decoder does not map these letters to specific cities because ICP factory assignments have changed and evolved over time, and relying on static lists leads to inaccuracies."
+    },
+    {
+      question: "Does this decoder work for Tempstar, Comfortmaker, and Arcoaire?",
+      answer: "While those brands share the same ICP parent company and use the identical serial number structure, this specific page is optimized for Heil. The decoding rules, however, are the same."
+    }
+  ]
+};
+
 export const ALL_BRAND_PAGES: BrandPageConfig[] = [
-  carrier, bryant, payne, goodman, amana, lennox, trane, rheem, ruud, york
+  carrier, bryant, payne, goodman, amana, lennox, trane, rheem, ruud, york, heil
 ];
 
 export function getBrandPageBySlug(slug: string): BrandPageConfig | undefined {
