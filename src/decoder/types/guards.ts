@@ -6,7 +6,6 @@ import type { FormatRuleError, FormatDecodeResult } from './manufacturer';
  *
  * When this returns true, TypeScript knows:
  * - `result.manufactureDate` is non-null
- * - `result.approximateAge` is non-null
  * - `result.confidence` is non-null
  * - `result.formatUsed` is non-null
  */
@@ -15,7 +14,7 @@ export function isSuccessResult(
 ): result is DecodeResult & {
   status: 'success';
   manufactureDate: NonNullable<DecodeResult['manufactureDate']>;
-  approximateAge: NonNullable<DecodeResult['approximateAge']>;
+  approximateAge: DecodeResult['approximateAge']; // Age can be null if year is unknown
   confidence: NonNullable<DecodeResult['confidence']>;
   formatUsed: NonNullable<DecodeResult['formatUsed']>;
 } {

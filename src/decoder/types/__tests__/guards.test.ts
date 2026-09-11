@@ -72,9 +72,23 @@ describe('Type Guards', () => {
       // TypeScript narrowing: these should be non-null after the guard
       if (isSuccessResult(result)) {
         expect(result.manufactureDate.year).toBe(2019);
-        expect(result.approximateAge.years).toBeGreaterThanOrEqual(0);
+        expect(result.approximateAge?.years).toBeGreaterThanOrEqual(0);
         expect(result.confidence).toBe('high');
         expect(result.formatUsed.id).toBe('f1');
+      }
+    });
+
+    it('returns true for a successful partial decode (null year)', () => {
+      registerManufacturer({
+        id: 'test', name: 'Test',
+        formats: [makeFormat({ id: 'f1', matches: () => true, decode: () => makeDecodedData({ year: null }) })],
+      });
+      const result = decode('test', 'ABC12345');
+      expect(isSuccessResult(result)).toBe(true);
+
+      if (isSuccessResult(result)) {
+        expect(result.manufactureDate.year).toBe(null);
+        expect(result.approximateAge).toBe(null);
       }
     });
 

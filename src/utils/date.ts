@@ -44,14 +44,14 @@ export function buildManufactureDate(
     // Year is null (century could not be established)
     if (month !== null && day !== null) {
       const date = new Date(2000, month - 1, day); // Dummy year for formatting
-      display = `Unknown Year, ${date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}`;
+      display = `${date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })} — Year cannot be determined`;
     } else if (month !== null) {
       const date = new Date(2000, month - 1, 1);
-      display = `Unknown Year, ${date.toLocaleDateString('en-US', { month: 'long' })}`;
+      display = `${date.toLocaleDateString('en-US', { month: 'long' })} — Year cannot be determined`;
     } else if (week !== null) {
-      display = `Unknown Year, Week ${week}`;
+      display = `Week ${week} — Year cannot be determined`;
     } else {
-      display = 'Unknown Year';
+      display = 'Year cannot be determined';
     }
   }
 

@@ -485,7 +485,7 @@ const amana: BrandPageConfig = {
   pageTitle: 'Amana Serial Number Decoder — Find Equipment Age | SerialAge',
   metaDescription: 'Free decoder for Amana HVAC serial numbers. Find out the age and manufacture date of your Amana air conditioner, furnace, or heat pump.',
   headline: 'Amana Serial Number Decoder',
-  shortDescription: 'Determine the age and manufacture date of your Amana HVAC equipment. Modern Amana equipment uses the same highly consistent 10-digit format as its parent company, Goodman.',
+  shortDescription: 'Determine the manufacture month of your Amana HVAC equipment using its 10-digit serial number format.',
   ratingPlateLocation: 'On Amana outdoor units (air conditioners and heat pumps), the data plate is typically located on the side of the unit, near where the refrigerant lines connect. On indoor furnaces, it is usually pasted on the inside wall of the blower compartment.',
   limitations: [
     "Requires exactly 10 digits.",
@@ -501,7 +501,7 @@ const amana: BrandPageConfig = {
       label: "Standard (10-Digit)",
       example: "2104123456",
       exampleType: "Synthetic",
-      description: "Used widely on modern equipment. The first two digits are the year, and the next two digits are the month."
+      description: "A 10-digit format starting with YYMM. Note: The serial number alone does not establish the century, so only the month can be safely determined."
     }
   ],
   faqs: [
@@ -511,7 +511,7 @@ const amana: BrandPageConfig = {
     },
     {
       question: "How do I check the age of my Amana air conditioner or furnace?",
-      answer: "Enter the serial number from your unit's data plate into the decoder above with 'Amana' selected. Modern Amana equipment uses the same 10-digit format as its parent company, Goodman, where the first two digits are the year and the next two are the month (YYMMXXXXXX). For example, a serial starting with '2104' was manufactured in April 2021."
+      answer: "Enter the serial number from your unit's data plate into the decoder above with 'Amana' selected. The 10-digit format starts with YYMM, where MM is the month. Note that the serial number alone does not establish the century, so our decoder will report the known month but will omit the year to prevent inaccurate dates."
     },
     {
       question: "Why isn't my older Amana PTAC serial number working?",
@@ -523,7 +523,7 @@ const amana: BrandPageConfig = {
     },
     {
       question: "My Amana serial number has only 9 digits. Can it be decoded?",
-      answer: "Modern Amana equipment uses the same format as Goodman, which requires exactly 10 digits. If your serial number is 9 digits, check the data plate carefully for a faded or misread character."
+      answer: "Modern Amana HVAC equipment requires exactly 10 digits. If your serial number is 9 digits, check the data plate carefully for a faded or misread character."
     },
     {
       question: "Does this decoder support Amana water heaters?",

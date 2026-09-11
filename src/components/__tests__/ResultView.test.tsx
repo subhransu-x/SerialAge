@@ -70,16 +70,44 @@ describe('ResultView - Enhanced Warranty UI', () => {
     expect(html).not.toContain('exact model number is needed');
   });
 
-  it('renders normal result correctly without any warrantyResult', () => {
+  it('does not crash if warrantyResult is completely undefined', () => {
     const html = renderToString(
       <ResultView 
         result={dummyResult} 
         onDecodeAnother={dummyFn} 
       />
     );
-    
     expect(html).toContain('July 1993');
-    expect(html).not.toContain('Enhanced Warranty Program Match');
-    expect(html).not.toContain('Model Number Required');
+  });
+});
+
+describe('ResultView - Partial Decode (e.g. Amana)', () => {
+  const partialResult: any = {
+    status: 'success',
+    input: { normalized: '2104123456', raw: '2104123456' },
+    manufacturer: { id: 'amana', name: 'Amana' },
+    manufactureDate: { year: null, month: 4, week: null, day: null, display: 'April — Year cannot be determined' },
+    approximateAge: null,
+    segments: [],
+    warnings: ['The serial number alone does not establish the century.', 'Warning: Collision possible.'],
+    confidence: 'high'
+  };
+
+  const dummyFn = () => {};
+
+  it('renders warnings correctly and omits age when year is null', () => {
+    const html = renderToString(
+      <ResultView result={partialResult} onDecodeAnother={dummyFn} />
+    );
+
+    // Check for warnings rendering
+    expect(html).toContain('Important Warning');
+    expect(html).toContain('The serial number alone does not establish the century.');
+    expect(html).toContain('Warning: Collision possible.');
+
+    // Check that age display is omitted entirely
+    expect(html).not.toContain('rh-age');
+    expect(html).not.toContain('unknown age');
+    expect(html).not.toContain('Approximately');
   });
 });

@@ -191,7 +191,9 @@ export function ResultView({ result, warrantyResult, onDecodeAnother }: Props) {
         <div className="rh-left">
           <div className="rh-eyebrow">Manufacture Date</div>
           <div className="rh-date">{result.manufactureDate!.display}</div>
-          <div className="rh-age">Approximately {calcAge(result.manufactureDate!.year)}</div>
+          {result.manufactureDate!.year !== null && (
+            <div className="rh-age">Approximately {calcAge(result.manufactureDate!.year)}</div>
+          )}
           {result.approximateAge && (
             <div style={{ fontSize: '14px', marginTop: '8px', fontWeight: 500, color: 'var(--slate)' }}>
               {getAgeCategoryText(result.approximateAge.years)}
@@ -199,6 +201,30 @@ export function ResultView({ result, warrantyResult, onDecodeAnother }: Props) {
           )}
         </div>
       </div>
+
+      {result.warnings && result.warnings.length > 0 && (
+        <div className="re" style={{ borderTop: 'none', background: 'var(--brand-orange-light)', padding: '16px', borderLeft: '4px solid var(--brand-orange)' }}>
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+            <div style={{ color: 'var(--brand-orange)', marginTop: '2px' }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+            </div>
+            <div>
+              <div style={{ fontWeight: 700, color: '#9a3412', marginBottom: '6px' }}>
+                Important Warning
+              </div>
+              <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '14px', color: '#7c2d12', lineHeight: '1.5' }}>
+                {result.warnings.map((warning, i) => (
+                  <li key={i} style={{ marginBottom: i < result.warnings.length - 1 ? '6px' : '0' }}>{warning}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
 
       {warrantyResult && warrantyResult.id === 'INSUFFICIENT_INFORMATION' && (
         <div className="re" style={{ borderTop: 'none', background: 'var(--surface)', padding: '16px' }}>

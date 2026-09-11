@@ -45,6 +45,12 @@ describe('buildManufactureDate', () => {
     const result = buildManufactureDate(2020, 12, null, null);
     expect(result.display).toBe('December 2020');
   });
+
+  it('handles null year correctly', () => {
+    const result = buildManufactureDate(null, 12, null, null);
+    expect(result.display).toBe('December — Year cannot be determined');
+    expect(result.year).toBe(null);
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -126,5 +132,12 @@ describe('calculateAge', () => {
     const refDate = new Date(2025, 5, 15); // June 15, 2025
     const age = calculateAge(mfgDate, refDate);
     expect(age!.display).toBe('5 months');
+  });
+
+  it('returns null age when year is unknown', () => {
+    const mfgDate = buildManufactureDate(null, 1, null, 1);
+    const refDate = new Date(2025, 5, 15);
+    const age = calculateAge(mfgDate, refDate);
+    expect(age).toBeNull();
   });
 });

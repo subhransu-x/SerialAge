@@ -20,8 +20,8 @@ describe('Amana Decoder', () => {
         expect(result.manufactureDate?.year).toBeNull();
         expect(result.manufactureDate?.month).toBeGreaterThanOrEqual(1);
         expect(result.manufactureDate?.month).toBeLessThanOrEqual(12);
-        expect(result.manufactureDate?.display).toMatch(/^Unknown Year/);
-        
+        expect(result.manufactureDate?.display).toMatch(/— Year cannot be determined$/);
+
         expect(result.warnings.length).toBeGreaterThan(0);
         expect(result.warnings[0]).toContain('Century cannot be safely established');
         expect(result.warnings[1]).toContain('appliance');

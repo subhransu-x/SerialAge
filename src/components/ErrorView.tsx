@@ -70,7 +70,7 @@ export function ErrorView({ result, rawInput, onDecodeAnother }: Props) {
             <ul className="re-body-list" style={{ marginTop: 0 }}>
               {result.candidates.map((c, i) => (
                 <li key={i}>
-                  <strong>{c.manufactureDate.display}</strong> ({c.approximateAge?.display ?? 'unknown age'} old) via {c.formatUsed.name}
+                  <strong>{c.manufactureDate.display}</strong>{c.approximateAge ? ` (${c.approximateAge.display} old)` : ''} via {c.formatUsed.name}
                 </li>
               ))}
             </ul>
