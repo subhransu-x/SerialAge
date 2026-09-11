@@ -1,9 +1,69 @@
 import type { DecoderTestCase } from '../../../types';
 
+const currentYear = new Date().getFullYear();
+const currentTwoDigitStr = (currentYear % 100).toString().padStart(2, '0');
+const nextTwoDigitStr = ((currentYear + 1) % 100).toString().padStart(2, '0');
+
 export const fixtures: readonly DecoderTestCase[] = [
   // -------------------------------------------------------------------------
   // MODERN ICP UNITARY FORMAT (Format A)
   // -------------------------------------------------------------------------
+  {
+    manufacturerId: 'heil',
+    serialNumber: `L${currentTwoDigitStr}1212345`,
+    expectedStatus: 'success',
+    expectedFormatId: 'heil-modern-unitary',
+    expectedYear: currentYear,
+    expectedWeek: 12,
+    expectedMonth: null,
+    expectedProductType: 'unknown',
+    expectedConfidence: 'high',
+    source: null,
+    description: 'H-MOD-DYN-01: Modern Format A - Current Year',
+    notes: `Current year ${currentYear} is supported.`,
+  },
+  {
+    manufacturerId: 'heil',
+    serialNumber: `L${nextTwoDigitStr}1212345`,
+    expectedStatus: 'insufficient-info',
+    expectedFormatId: null,
+    expectedYear: null,
+    expectedWeek: null,
+    expectedMonth: null,
+    expectedProductType: null,
+    expectedConfidence: null,
+    source: null,
+    description: 'H-MOD-DYN-02: Modern Format A - Current Year + 1',
+    notes: `Future year ${currentYear + 1} is explicitly rejected.`,
+  },
+  {
+    manufacturerId: 'heil',
+    serialNumber: 'L000112345',
+    expectedStatus: 'success',
+    expectedFormatId: 'heil-modern-unitary',
+    expectedYear: 2000,
+    expectedWeek: 1,
+    expectedMonth: null,
+    expectedProductType: 'unknown',
+    expectedConfidence: 'high',
+    source: null,
+    description: 'H-MOD-DYN-03: Modern Format A - Year 2000, Week 01',
+    notes: 'Year 2000, Week 01 is supported.',
+  },
+  {
+    manufacturerId: 'heil',
+    serialNumber: 'L995312345',
+    expectedStatus: 'success',
+    expectedFormatId: 'heil-modern-unitary',
+    expectedYear: 1999,
+    expectedWeek: 53,
+    expectedMonth: null,
+    expectedProductType: 'unknown',
+    expectedConfidence: 'high',
+    source: null,
+    description: 'H-MOD-DYN-04: Modern Format A - Year 1999, Week 53',
+    notes: 'Year 1999, Week 53 is supported.',
+  },
   {
     manufacturerId: 'heil',
     serialNumber: 'E072514528',

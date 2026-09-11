@@ -36,8 +36,8 @@ const DUCTLESS_NEWER_PATTERN = /^V([0-9]{2})(0[1-9]|[1-4][0-9]|5[0-3])V([0-9]{5}
 /**
  * Resolve a 2-digit year for the modern ICP format (established early 1990s).
  * 90-99 -> 1990-1999
- * 00-27 (approx) -> 2000-2027
- * 28-89 -> unsupported gap
+ * 00 through current year -> 2000-20XX
+ * > current year through 89 -> unsupported gap
  */
 function resolveModernICPYear(twoDigit: number): number | null {
   if (twoDigit >= 90) {
@@ -47,8 +47,8 @@ function resolveModernICPYear(twoDigit: number): number | null {
   const currentYear = new Date().getFullYear();
   const currentTwoDigit = currentYear % 100;
   
-  // Allow up to one year into the future for late-year manufacturing runs
-  if (twoDigit <= currentTwoDigit + 1) {
+  // Strictly limit to the current calendar year. Do not infer future manufacturing years.
+  if (twoDigit <= currentTwoDigit) {
     return 2000 + twoDigit;
   }
   
