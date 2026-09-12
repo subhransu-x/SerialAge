@@ -1017,8 +1017,52 @@ const heil: BrandPageConfig = {
   ]
 };
 
+const tempstar: BrandPageConfig = {
+  manufacturerId: 'tempstar',
+  slug: 'tempstar-serial-number-decoder',
+  displayName: 'Tempstar',
+  relatedBrands: [{"name": "Heil", "slug": "heil-serial-number-decoder"}],
+  category: 'HVAC',
+  pageTitle: 'Tempstar Serial Number Decoder — Find Equipment Age | SerialAge',
+  metaDescription: 'Free decoder for Tempstar HVAC serial numbers. Find out the exact age and manufacture date of your Tempstar air conditioner, furnace, or heat pump.',
+  headline: 'Tempstar Serial Number Decoder',
+  shortDescription: 'Determine the manufacture date and age of your Tempstar HVAC equipment. This decoder supports the verified modern 10-character format (from 1990 to present) that contains the year and week of manufacture.',
+  ratingPlateLocation: "The serial number is located on the manufacturer's data plate (rating plate). For outdoor AC or heat pump units, it is usually on the side or back of the cabinet above the refrigerant valves. For indoor furnaces or air handlers, look inside the front access panel.",
+  limitations: [
+    "Week-based dates (WW) are precise to within 7 days, not a specific calendar date.",
+    "The decoder does not support historical Tempstar formats from the 1980s (including 1987-1989), as they are poorly verified.",
+    "We do not support older numeric or 9-character formats for Tempstar.",
+    "This tool does not assume unverified plant locations."
+  ],
+  sources: [
+    { type: 'internal', title: 'SerialAge Manufacturer Decoding Audit - Tempstar', description: 'Internal research record.' }
+  ],
+  supportedFormats: [
+    {
+      label: "Modern Standard (10-Character)",
+      example: "L004112345",
+      exampleType: "Verified",
+      description: "Verified format from 1990 to present. Positions 2-3 equal the year, positions 4-5 equal the week."
+    }
+  ],
+  faqs: [
+    {
+      question: "How do I read a modern Tempstar serial number?",
+      answer: "In the modern 10-character format (used since 1990), the first character indicates the plant (e.g., L for Lewisburg, TN). The second and third digits are the year of manufacture, and the fourth and fifth digits indicate the week. For example, L004112345 was built in the 41st week of 2000."
+    },
+    {
+      question: "Why doesn't my Tempstar serial number decode if it is from 1988?",
+      answer: "Tempstar formats before 1990 (such as 1987\u20131989) are currently marked as unsupported because historical documentation for those years is inconsistent. We prefer to tell you we don't know rather than provide an incorrect date."
+    },
+    {
+      question: "Does this decoder work for Carrier formats as well?",
+      answer: "No. Although Tempstar is under the ICP umbrella (which is owned by Carrier), Tempstar units use their own verified format rules. We do not apply Carrier decoding logic to Tempstar to prevent inaccurate results."
+    }
+  ]
+};
+
 export const ALL_BRAND_PAGES: BrandPageConfig[] = [
-  carrier, bryant, payne, goodman, amana, lennox, trane, rheem, ruud, york, heil
+  carrier, bryant, payne, goodman, amana, lennox, trane, rheem, ruud, york, heil, tempstar
 ];
 
 export function getBrandPageBySlug(slug: string): BrandPageConfig | undefined {

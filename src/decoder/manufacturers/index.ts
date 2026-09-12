@@ -14,3 +14,4 @@ import './rheem';
 import './ruud';
 import './trane';
 import './york';
+import './tempstar';
